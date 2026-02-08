@@ -1,6 +1,6 @@
 <?php 
 
-include __DIR__ . '/../src/db.php';
+require __DIR__ . '/../src/db.php';
 
 $page_title = 'Home Page';
 $welcome = 'Welcome';

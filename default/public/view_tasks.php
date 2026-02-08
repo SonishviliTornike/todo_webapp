@@ -2,26 +2,11 @@
 
 require __DIR__ . '/../src/db.php';
 
-$sql_query = 'SELECT * FROM `todo_webapp`.`tasks`';
+$sql_query = 'SELECT `task_id`, `task_title`, `task_description`,
+    `due_at`, `priority`, `is_completed` FROM
+        `todo_webapp`.`tasks`';
 
-$result = $pdo->query($sql_query);
-
-
-
-    
-$tasks = [];
-foreach ($result as $row) {
-    $tasks[] = array(
-        'task_id' =>  $row['task_id'],
-         'task_title' => $row['task_title'],
-         'task_description' => $row['task_description'],
-         'due_at' => $row['due_at'],
-         'priority' => $row['priority'],
-         'is_completed' => $row['is_completed']
-    );
-}
-
-
+$tasks = $pdo->query($sql_query);
 
 ob_start();
          
