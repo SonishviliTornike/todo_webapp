@@ -1,8 +1,9 @@
 <?php 
 
-require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/db.php';
 
 $page_title = 'Home Page';
+
 $welcome = 'Welcome';
 
 $sql_query = 'SELECT * FROM `todo_webapp`.`tasks` WHERE `priority` < 3';

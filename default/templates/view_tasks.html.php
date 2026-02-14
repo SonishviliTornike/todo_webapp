@@ -10,6 +10,7 @@
         </tr>
         </thead>
     <tbody>
+        <br><h3 class="total-tasks"><?= 'Total tasks:'. $totalTasks ?></h3><br>
         <?php foreach ($tasks as $task): ?>
             <tr>
                     <td><?= htmlspecialchars($task['task_title'], ENT_QUOTES, 'UTF-8') ?></td>

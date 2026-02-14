@@ -1,11 +1,11 @@
 <?php
 
-require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $task_id = $_GET['task_id'];
     if ($task_id > 0) {
-        $sql = 'SELECT * FROM `todo_webapp`.`tasks` WHERE task_id = :task_id';
+        $sql = 'SELECT `task_id`, `task_title`, `task_description`, `due_at` FROM `todo_webapp`.`tasks` WHERE task_id = :task_id';
 
         $stmt = $pdo->prepare($sql);
 

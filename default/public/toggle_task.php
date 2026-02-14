@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $task_id = $_POST['task_id'];

@@ -1,4 +1,4 @@
-<h1 class="welcome-h1"><?= $welcome?></h1>
+<br><h1 class="welcome-h1"><?= $welcome?></h1><br>
 
 
 <table class="tasks-table">
