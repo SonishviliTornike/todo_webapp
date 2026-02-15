@@ -1,14 +1,13 @@
 <?php 
 
 require_once __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/dbFunctions.php';
 
 $page_title = 'Home Page';
 
 $welcome = 'Welcome';
 
-$sql_query = 'SELECT * FROM `todo_webapp`.`tasks` WHERE `priority` < 3';
-
-$result = $pdo->query($sql_query);
+$result = getByPriority($pdo);
 
 $tasks = [];
 foreach($result as $row) {
@@ -17,8 +16,7 @@ foreach($result as $row) {
         'task_title' => $row['task_title'],
         'task_description' => $row['task_description'],
         'due_at' => $row['due_at'],
-        'priority' => $row['priority'],
-        'is_completed' => $row['is_completed']    
+        'priority' => $row['priority'],  
     );
 }
 

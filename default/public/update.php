@@ -1,55 +1,41 @@
 <?php
 
 require_once __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/dbFunctions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $task_id = $_GET['task_id'];
-    if ($task_id > 0) {
-        $sql = 'SELECT `task_id`, `task_title`, `task_description`, `due_at` FROM `todo_webapp`.`tasks` WHERE task_id = :task_id';
+    $taskId = (int)($_GET['task_id'] ?? null);
 
-        $stmt = $pdo->prepare($sql);
-
-        $stmt->bindValue(':task_id', $task_id, PDO::PARAM_INT);
-
-        $stmt->execute();
-        $task = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $due_at = date('Y-m-d\TH:i', strtotime($task['due_at']));
+    if($taskId > 0){
+        $tasks = getTask($pdo, $taskId);
+        
+        $taskTitle = $tasks['task_title'];
+    
+        $taskDescription = $tasks['task_description'];
+    
+        $dueAt = date('Y-m-d\TH:i', strtotime($tasks['due_at']));
         
         $page_title = 'Update Tasks';
+    
         ob_start();
         include __DIR__ . '/../templates/update.html.php';
         $output = ob_get_clean();
-
     }
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-    $task_id = $_POST['task_id'];
-    $task_title = $_POST['task_title'];
-    $task_description = $_POST['task_description'];
-    $due_at_raw = $_POST['due_at'];
+    $taskId = (int)($_POST['task_id'] ?? null);
+    $taskTitle = trim($_POST['task_title'] ?? '');
+    $taskDescription = trim($_POST['task_description'] ?? '');
+    $dueAtRaw = trim($_POST['due_at'] ?? '');
 
-    $due_at = $due_at_raw !== '' ? str_replace('T', ' ', $due_at_raw) . ':00' : null;
+    $dueAt= $dueAtRaw !== '' ? str_replace('T', ' ', $dueAtRaw) . ':00' : null;
 
-
-
-    $sql = 'UPDATE `todo_webapp`.`tasks`
-    SET task_title = :task_title, 
-    task_description = :task_description,
-    due_at = :due_at
-    WHERE task_id = :task_id
-    ';
-
-    $stmt = $pdo->prepare($sql);
-
-    $stmt->execute([
-        ':task_id' => $task_id,
-        ':task_title' => $task_title,
-        ':task_description' => $task_description,
-        ':due_at' => $due_at
-    ]);
-
-    header('Location: /view_tasks.php');
+    if($taskId > 0){
+        updateTask($pdo, $taskId, $taskTitle, $taskDescription, $dueAt);
+    
+        header('Location: /view_tasks.php');
+    }
 }
 
 include __DIR__ . '/../templates/layout.html.php';

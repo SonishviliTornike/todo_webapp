@@ -1,18 +1,15 @@
 <?php 
 
 require_once __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/dbFunctions.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $task_id = (int)($_POST['task_id'] ?? 0);    
+    $taskId = (int)($_POST['task_id'] ?? null);
+    if($taskId > 0){
+        deleteTask($pdo, $taskId);
 
-    if ($task_id > 0){
-        $sql=  'DELETE FROM todo_webapp.tasks WHERE task_id = :task_id';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['task_id' => $task_id]);
-    
     }
-        
 }
         
         

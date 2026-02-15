@@ -1,28 +1,18 @@
 <?php
 
 require_once __DIR__.'/../src/db.php';
+require_once __DIR__. '/../src/dbFunctions.php';
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $task_title = trim($_POST['task_title']);
-    $description= trim($_POST['task_description'] ?? '');
+    $taskTitle = trim($_POST['task_title']);
+    $taskDescription= trim($_POST['task_description'] ?? '');
 
-    $due_at_raw = $_POST['due_at'] ?? '';
-    $due_at = $due_at_raw !== '' ? str_replace('T', ' ', $due_at_raw) . ':00' : null;
+    $dueAtRaw = $_POST['due_at'] ?? '';
+    $dueAt = $dueAtRaw !== '' ? str_replace('T', ' ', $dueAtRaw) . ':00' : null;
     
     $priority = (int)($_POST['priority'] ?? 2);
 
-    $stmt = $pdo->prepare('INSERT INTO `todo_webapp`.`tasks` (
-        `task_title`, `task_description`, `created_at`, due_at, priority) VALUES (
-        :task_title, :task_description, NOW(), :due_at, :priority)');
-
-    
-
-    $stmt->execute([
-        ':task_title' => $task_title,
-        ':task_description' => $description,
-        ':due_at' => $due_at,
-        ':priority' => $priority
-    ]);
+    insertTask($pdo, $taskTitle, $taskDescription, $dueAt, $priority);
 
     header('Location: /view_tasks.php');
     exit;
