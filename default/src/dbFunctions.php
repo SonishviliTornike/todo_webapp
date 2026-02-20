@@ -36,12 +36,13 @@ function allTasks($pdo) {
 }
 
 
-function deleteTask($pdo, $taskId){
-    $sql = 'DELETE FROM `todo_webapp`.`tasks` WHERE task_id = :task_id';
-    $stmt = $pdo->prepare($sql);
+function delete($pdo,  $table, $field, $taskId){
+    $query = 'DELETE FROM `' . $table . '` WHERE `' . $field . '` = :value';
+
+    $stmt = $pdo->prepare($query);
 
     $values = [
-        ':task_id' => $taskId
+        ':value' => $taskId
     ];
 
     $stmt->execute($values);
@@ -79,12 +80,14 @@ function updateTask($pdo, $taskId, $taskTitle, $taskDescription, $dueAt) {
 
 }
 
-function toggleTask($pdo, $taskId, $isCompleted){
-    $sql = 'UPDATE `todo_webapp`.`tasks` SET
-    is_completed = :is_completed
-    WHERE task_id = :task_id';
+function setTaskCompleted(PDO $pdo, int $taskId, int $isCompleted){
+    if ($isCompleted !== 0 && $isCompleted !== 1){
+        throw new InvalidArgumentException('Toggle must be checked or unchecked');
+    }
 
-    $stmt = $pdo->prepare($sql);
+    $query = "UPDATE `tasks` SET `is_completed` = :is_completed WHERE `task_id` = :task_id";
+
+    $stmt = $pdo->prepare($query);
 
     $values = [
         ':is_completed' => $isCompleted,
@@ -95,7 +98,7 @@ function toggleTask($pdo, $taskId, $isCompleted){
 }
 
 function getByPriority($pdo){
-    $sql = 'SELECT `task_id`, `task_title`, `task_description`, `due_at`, `priority` FROM `tasks`
+    $sql = 'SELECT `task_id`, `task_title`, `task_description`, `due_at`, `priority` FROM `todo_webapp`.`tasks`
     WHERE `priority` < 3';
 
     $stmt = $pdo->prepare($sql);
