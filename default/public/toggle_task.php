@@ -11,12 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!ctype_digit((string)$taskIdRaw) || (int)$taskIdRaw < 0) {
         http_response_code(400);
-        exit('Invalid task');
+        exit('Error: Invalid task');
     } 
 
     if ($isCompletedRaw !== '0' && $isCompletedRaw !== '1'){
         http_response_code(400);
-        exit('Invalid action');
+        exit('Error: Toggle must be checked or unchecked');
     }
 
     $taskId = (int)$taskIdRaw;

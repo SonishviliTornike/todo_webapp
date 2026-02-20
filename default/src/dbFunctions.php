@@ -90,10 +90,6 @@ function updateTask($pdo, $taskId, $taskTitle, $taskDescription, $dueAt) {
 }
 
 function setTaskCompleted(PDO $pdo, int $taskId, int $isCompleted){
-    if ($isCompleted !== 0 && $isCompleted !== 1){
-        throw new InvalidArgumentException('Toggle must be checked or unchecked');
-    }
-
     $query = "UPDATE `tasks` SET `is_completed` = :is_completed WHERE `task_id` = :task_id";
 
     $stmt = $pdo->prepare($query);
@@ -119,25 +115,41 @@ function getByPriority($pdo){
 }
 
 function insert(PDO $pdo, string $table, array $values){
+    if (empty($values)) {
+        throw new InvalidArgumentException('Error: Empty values provided,');
+    } 
+
+    $allowed = [
+        'tasks' => [ 'task_title', 'task_description', 'priority', 'due_at'],
+    ];
+
+    if(!array_key_exists($table, $allowed)){
+        throw new InvalidArgumentException('Error: Invalid table name');
+    }
+
     $query = 'INSERT INTO `' . $table . '` (';
 
-    foreach($values as $key => $value) {
-        $query .= ' `' . $key . '`, ';
+    $fields = array_keys($values);
+    foreach ($fields as $field){
+        if(!in_array($field, $allowed[$table], true)){
+            throw new InvalidArgumentException('Error: Invalid table fields.');
+        }
+        $query .= '`' . $field . '`, ';
     }
+
 
     $query = rtrim($query, ', ');
 
     $query .= ') VALUES (';
 
-    foreach ($values as $key => $value) {
-        $query .= ':' . $key . ', ';
+    foreach ($fields as $field) {
+        $query .= ':' . $field . ', ';
     }
 
     $query = rtrim($query, ', ');
-
     $query .= ');';
 
-    $values = processDate($values);
+
     $stmt = $pdo->prepare($query);
     $stmt->execute($values);
 

@@ -10,7 +10,7 @@
     <input type="datetime-local" name="due_at" id="due_at"><br><br>
 
     <label for="priority">Enter Priority:</label>
-    <select name="priority" id="priority">
+    <select name="priority" id="priority" required>
         <option value="1">High</option>
         <option value="2" selected>Medium</option>
         <option value="3">Low</option>
