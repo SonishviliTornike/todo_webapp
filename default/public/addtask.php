@@ -9,14 +9,43 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $priority = trim($_POST['priority'] ?? '2');
 
     $dueAtRaw = $_POST['due_at'] ?? '';
-    $dueAt = new DateTime($dueAtRaw);
+
+    if ($taskTitle === '' || mb_strlen($taskTitle) > 100) {
+        http_response_code(400);
+        exit('Invalid title');
+    }
     
-    if(!ctype_digit((string)$priority) || (int) $priority <= 0) {
+    if ($taskDescription === '' || mb_strlen($taskDescription) > 1000){
+        http_response_code(400);
+        exit('Description too long');
+    }
+
+    if (!ctype_digit((string)$priority)) {
         http_response_code(400);
         exit('Invalid priority');
     }
-
     $priority = (int)$priority;
+
+
+    if ($priorty < 1 || $priority > 3){
+        http_response_code(400);
+        exit('Priority out of range');
+    }
+
+    $$dueAt = null;
+    if ($dueAtRaw !== '') {
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i', $dueAtRaw);
+        $err = DateTime::getLastErrors();
+        if (!$dt || $err['warning_count'] || $err['error_count']) {
+            http_response_code(400);
+            exit('Invalid due date');
+        }
+        $dueAt = $dt->format('Y-m-d H:i:s');
+}
+
+
+
+    $dueAt = new DateTime($dueAtRaw);
 
     $values = [
         'task_title' => $taskTitle,
@@ -24,7 +53,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         'priority' => $priority,
         'due_at' =>$dueAt 
     ];
-    
+
     insert($pdo, 'tasks', $values);
 
     header('Location: /view_tasks.php');
