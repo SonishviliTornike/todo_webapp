@@ -1,5 +1,14 @@
 <?php 
 
+function processDate($values) {
+    foreach ($values as $key => $value) {
+        if($value instanceof DateTime){
+            $values[$key] = $value->format('Y-m-d');
+        }
+    }
+    return $values;
+}
+
 function totalTasks($pdo){
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM `tasks`');
 
@@ -48,7 +57,7 @@ function delete($pdo,  $table, $field, $taskId){
     $stmt->execute($values);
 }
 
-function getTask($pdo, $taskId) {
+function get($pdo, $taskId) {
     $sql = 'SELECT `task_id`, `task_title`, `task_description`, `due_at` FROM `todo_webapp`.`tasks` WHERE task_id = :task_id';
     $stmt = $pdo-> prepare($sql);
     $values = [
@@ -109,19 +118,27 @@ function getByPriority($pdo){
     return $result;
 }
 
-function insertTask($pdo, $taskTitle, $taskDescription, $dueAt, $priority){
-    
-    $sql = 'INSERT INTO `todo_webapp`.`tasks` (
-        `task_title`, `task_description`, `created_at`, due_at, priority) VALUES (
-        :task_title, :task_description, NOW(), :due_at, :priority)';
-    $stmt = $pdo->prepare($sql);
-    
-    $values = [
-        ':task_title' => $taskTitle,
-        ':task_description' => $taskDescription,
-        ':due_at' => $dueAt,
-        ':priority' => $priority
-    ];
+function insert(PDO $pdo, string $table, array $values){
+    $query = 'INSERT INTO `' . $table . '` (';
 
+    foreach($values as $key => $value) {
+        $query .= ' `' . $key . '`, ';
+    }
+
+    $query = rtrim($query, ', ');
+
+    $query .= ') VALUES (';
+
+    foreach ($values as $key => $value) {
+        $query .= ':' . $key . ', ';
+    }
+
+    $query = rtrim($query, ', ');
+
+    $query .= ');';
+
+    $values = processDate($values);
+    $stmt = $pdo->prepare($query);
     $stmt->execute($values);
+
 }

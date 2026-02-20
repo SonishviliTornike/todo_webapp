@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     $taskId = (int)($_GET['task_id']);
     if($taskId > 0){
-        $tasks = getTask($pdo, $taskId);
+        $tasks = get($pdo, $taskId);
         
         $taskTitle = $tasks['task_title'];
         
