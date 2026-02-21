@@ -1,4 +1,10 @@
 
+<?php 
+if($errors){
+    echo $errors;
+} 
+?>
+
 <form action="addtask.php" method="post">
     <label for="task_title">Enter Task Title:</label>
     <input type="text" name="task_title" id="task_title" required maxlength="150"><br><br>
