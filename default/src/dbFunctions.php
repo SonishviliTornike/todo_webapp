@@ -102,16 +102,13 @@ function setTaskCompleted(PDO $pdo, int $taskId, int $isCompleted){
     $stmt->execute($values);
 }
 
-function getByPriority($pdo){
-    $sql = 'SELECT `task_id`, `task_title`, `task_description`, `due_at`, `priority` FROM `todo_webapp`.`tasks`
-    WHERE `priority` < 3';
+function showHighPriorityTasks($pdo){
+    $query = "SELECT `task_id`, `task_title`, `task_description`, `due_at`, `priority`, `is_completed` FROM `tasks` 
+    WHERE `priority` < 2";
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
+    $stmt = $pdo->query($query);
 
-    $result = $stmt->fetchAll();
-
-    return $result;
+    return $stmt->fetchAll();
 }
 
 function insert(PDO $pdo, string $table, array $values){
