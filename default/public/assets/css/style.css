@@ -239,3 +239,9 @@ footer{
     padding: 12px 14px;
   }
 }
+
+
+.error-text{
+  color: red;
+  text-align: center;
+}
