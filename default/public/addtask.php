@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             $table = 'tasks';
-            $fields = ['task_id', 'task_title', 'task_description', 'priority', 'due_at'];
+            $fields = ['task_title', 'task_description', 'priority', 'due_at'];
             insert($pdo, $table, $fields, $values);
         
             header('Location: /view_tasks.php');

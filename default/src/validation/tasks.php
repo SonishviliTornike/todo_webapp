@@ -3,11 +3,15 @@
 function taskCreateValidation(array $input) {
     $errors = [];
     $data = [];
-
+    $data['task_id'] = trim($input['task_id'] ?? 0);
     $data['task_title'] = trim($input['task_title'] ?? '');
     $data['task_description'] = trim($input['task_description'] ?? '');
     $data['priority'] = trim($input['priority'] ?? '');
     $data['due_at_raw'] = trim($input['due_at'] ?? '');
+
+    if ($data['task_id'] < 0 ){
+        $errors['task_id'][] = 'Task cannot be updated';
+    }
     
     if ($data['task_title'] === '' || mb_strlen($data['task_title']) > 100) {
         $errors['task_title'][] = 'Title is required and must be less than 100 characters.';
@@ -35,13 +39,13 @@ function taskCreateValidation(array $input) {
         if (!$dt || $err['warning_count'] || $err['error_count']) {
             $errors['due_at'][] = 'Invalid deadline value';
         } else {
-            $data['due_at'] = $dt->format('Y-m-d H:i:s');
+            $data['due_at'] = $dt->format('Y-m-d H:i');
         }
     }
 
     $today_date = new DateTimeImmutable();
-    $today_date = $today_date->format('Y-m-d:H:i:s');
-    
+    $today_date = $today_date->format('Y-m-d H:i');
+
     if ($data['due_at'] < $today_date){
         $errors['due_at'][] = 'Cannot select past date';
     }

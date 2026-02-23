@@ -5,10 +5,11 @@ require_once __DIR__ . '/../src/dbFunctions.php';
 
 
 
+$table = 'tasks';
 
-$tasks = allTasks($pdo);
+$tasks = all($pdo, $table);
 
-$totalTasks = totalTasks($pdo);
+$totalTasks = totalTasks($pdo, $table);
 
 ob_start();
          

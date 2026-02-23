@@ -11,7 +11,6 @@ $page_title = 'Edit Task';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     [$values, $errors] = taskCreateValidation($_POST);
-
     if(!empty($errors)) {
         $old_values = $values;
         http_response_code(400);
@@ -21,9 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $output = ob_get_clean();
     } else {
         try {
-            update($pdo, $table, $fields, $values);
+            $table = 'tasks';
+            $fields = ['task_title', 'task_description', 'priority', 'due_at'];
+
+            update($pdo, $table, $fields, $values, 'task_id');
+
             header('Location: /view_tasks.php');
             exit;
+
         } catch(PDOException $e) {
             $errors['form'] = ['Server error. Please try again.'];
             http_response_code(500);
@@ -34,20 +38,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } 
 
 } else {
-    $taskId = (int)($_GET['task_id']);
+    $taskId = (int)($_GET['task_id'] ?? 0);
     if($taskId > 0){
-        $tasks = get($pdo, $taskId);
-        var_dump($tasks);
+        $table = 'tasks';
+        $field = 'task_id';
+        $tasks = get($pdo, $table, $field, $taskId);
         $old_tasks = [];
         foreach ($tasks as $task) {
             $old_tasks[] = [
+                'task_id' => $taskId,
                 'task_title' => $task['task_title'],
                 'task_description' => $task['task_description'],
-                'due_at' => $task['due_At']
+                'due_at' => $task['due_at'],
+                'priority' => $task['priority']
 
             ];
         }
-        var_dump($old_tasks);
         ob_start();
         include __DIR__ . '/../templates/update.html.php';
         $output = ob_get_clean();

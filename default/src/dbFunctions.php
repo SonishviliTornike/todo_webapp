@@ -1,16 +1,6 @@
 <?php 
-
-function processDate($values) {
-    foreach ($values as $key => $value) {
-        if($value instanceof DateTime){
-            $values[$key] = $value->format('Y-m-d');
-        }
-    }
-    return $values;
-}
-
-function totalTasks($pdo){
-    $stmt = $pdo->prepare('SELECT COUNT(*) FROM `tasks`');
+function totalTasks(PDO $pdo, string $table){
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM `' . $table. '`');
 
     $stmt->execute();
     
@@ -19,49 +9,38 @@ function totalTasks($pdo){
     return $row[0];
 }
 
-function allTasks($pdo) {
-    $sql = 'SELECT `task_id`, `task_title`, `task_description`,
-    `due_at`, `priority`, `is_completed` FROM
-        `todo_webapp`.`tasks`';
+function all(PDO $pdo, string $table) {
+    $sql = 'SELECT * FROM `' . $table . '`'; 
 
     $stmt = $pdo->prepare($sql);
 
     $stmt->execute();
 
-    $tasks = [];
-    while ($row = $stmt->fetch()) {
-        $tasks[] = [
-            'task_id' => $row['task_id'],
-            'task_title' => $row['task_title'],
-            'task_description' => $row['task_description'],
-            'due_at' => $row['due_at'],
-            'priority' => $row['priority'],
-            'is_completed' => $row['is_completed']
-        
-        ];
-    }
-
-    return $tasks;
+    return $stmt->fetchAll();
 }
 
 
-function delete($pdo,  $table, $field, $taskId){
+function delete(PDO $pdo,  string $table, string $field, int $value) {
     $query = 'DELETE FROM `' . $table . '` WHERE `' . $field . '` = :value';
 
     $stmt = $pdo->prepare($query);
 
     $values = [
-        ':value' => $taskId
+        ':value' => $value
     ];
 
     $stmt->execute($values);
+    return true;
 }
 
-function get($pdo, $taskId) {
-    $sql = 'SELECT `task_id`, `task_title`, `task_description`, `due_at` FROM `todo_webapp`.`tasks` WHERE task_id = :task_id';
-    $stmt = $pdo-> prepare($sql);
+function get(PDO $pdo, string $table , string $field, int $value) {
+    $query = 'SELECT * FROM `' . $table . '` WHERE `' . $field . '` = :value';
+
+
+    $stmt = $pdo-> prepare($query);
+
     $values = [
-        ':task_id' => $taskId
+        ':value' => $value
     ];
     $stmt->execute($values);
 
@@ -96,11 +75,12 @@ function insert(PDO $pdo, string $table, array $fields, array $values){
     if (empty($values)) {
         throw new InvalidArgumentException('Error: Empty values provided,');
     } 
-        
+    
+    unset($values['task_id']);
     $allowed = [
         'tasks' => [ 'task_title', 'task_description', 'priority', 'due_at'],
         ];
-        
+    
         if(!array_key_exists($table, $allowed)){
             throw new InvalidArgumentException('Error: Invalid table name');
         }
@@ -110,9 +90,10 @@ function insert(PDO $pdo, string $table, array $fields, array $values){
     foreach ($fields as $field){
         if(!in_array($field, $allowed[$table], true)){
             throw new InvalidArgumentException('Error: Invalid table fields.');
-            }
-            $query .= '`' . $field . '`, ';
         }
+        $query .= '`' . $field . '`, ';
+        
+    }
             
             
     $query = rtrim($query, ', ');
@@ -123,40 +104,47 @@ function insert(PDO $pdo, string $table, array $fields, array $values){
         $query .= ':' . $field . ', ';
     }
         
-        $query = rtrim($query, ', ');
-        $query .= ');';
-        
-        
-        $stmt = $pdo->prepare($query);
-        $stmt->execute($values);
+    $query = rtrim($query, ', ');
+    $query .= ');';
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($values);
 }
                             
-function update(PDO $pdo, string $table, array $fields, array $values) {
+function update(PDO $pdo, string $table, array $fields, array $values, string $primaryKey) {
     if (empty($values)) {
         throw new InvalidArgumentException('Error: empty values provided');
     }
 
     $allowed = [
-        'tasks' => ['task_id', 'task_title', 'task_description', 'due_at']
+        'tasks' => ['task_title', 'task_description', 'due_at', 'priority']
     ];
 
     if (!array_key_exists($table, $allowed)) {
         throw new InvalidArgumentException('Error: Invalid database table');
     }
 
-    $query = 'UPDATE `' . $table . '` SET';
+    $query = 'UPDATE `' . $table . '` SET ';
 
     foreach ($fields as $field) {
         if(!in_array($field, $allowed[$table])) {
             throw new InvalidArgumentException('Error: Invalid fields.');
         }
 
-        $query .= ' `' . $field . '` = :' . $field;
+        $query .= ' `' . $field . '` = :' . $field . ', ';
     }
-    var_dump($query);
+
+    $query = rtrim($query, ', ');
+    $query .= ' WHERE `' . $primaryKey . '` = :primaryKey';
+
 
     $stmt = $pdo->prepare($query);
+    
+    $values['primaryKey'] = $values[$primaryKey];
+    
+    unset($values[$primaryKey]);
 
+    
     $stmt->execute($values);
 
 }
