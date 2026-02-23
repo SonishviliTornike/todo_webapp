@@ -38,6 +38,14 @@ function taskCreateValidation(array $input) {
             $data['due_at'] = $dt->format('Y-m-d H:i:s');
         }
     }
+
+    $today_date = new DateTimeImmutable();
+    $today_date = $today_date->format('Y-m-d:H:i:s');
+    
+    if ($data['due_at'] < $today_date){
+        $errors['due_at'][] = 'Cannot select past date';
+    }
+
     unset($data['due_at_raw']);  
     return [$data, $errors];
 }
