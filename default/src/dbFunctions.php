@@ -65,89 +65,98 @@ function get($pdo, $taskId) {
     ];
     $stmt->execute($values);
 
-    return $stmt->fetch();
-}
-
-
-function updateTask($pdo, $taskId, $taskTitle, $taskDescription, $dueAt) {
-    $sql = 'UPDATE `todo_webapp`.`tasks` SET
-    `task_title` = :task_title,
-    `task_description` = :task_description,
-    `due_at` = :due_at
-    WHERE `task_id` = :task_id';
-
-    $stmt = $pdo->prepare($sql);
-
-    $values = [
-        ':task_title' => $taskTitle,
-        ':task_description' => $taskDescription,
-        ':due_at' => $dueAt,
-        ':task_id' => $taskId
-    ];
-
-    $stmt->execute($values);
-
-}
-
-function setTaskCompleted(PDO $pdo, int $taskId, int $isCompleted){
-    $query = "UPDATE `tasks` SET `is_completed` = :is_completed WHERE `task_id` = :task_id";
-
-    $stmt = $pdo->prepare($query);
-
-    $values = [
-        ':is_completed' => $isCompleted,
-        ':task_id' => $taskId
-    ];
-
-    $stmt->execute($values);
-}
-
-function showHighPriorityTasks($pdo){
-    $query = "SELECT `task_id`, `task_title`, `task_description`, `due_at`, `priority`, `is_completed` FROM `tasks` 
-    WHERE `priority` < 2";
-
-    $stmt = $pdo->query($query);
-
     return $stmt->fetchAll();
 }
 
-function insert(PDO $pdo, string $table, array $values){
+
+
+function setTaskCompleted(PDO $pdo, int $taskId, int $isCompleted){
+    $query = "UPDATE `tasks` SET `is_completed` = :is_completed WHERE `task_id` = :task_id";
+    
+    $stmt = $pdo->prepare($query);
+    
+    $values = [
+        ':is_completed' => $isCompleted,
+        ':task_id' => $taskId
+        ];
+        
+        $stmt->execute($values);
+        }
+        
+        function showHighPriorityTasks($pdo){
+            $query = "SELECT `task_id`, `task_title`, `task_description`, `due_at`, `priority`, `is_completed` FROM `tasks` 
+    WHERE `priority` < 2";
+
+$stmt = $pdo->query($query);
+
+return $stmt->fetchAll();
+}
+
+function insert(PDO $pdo, string $table, array $fields, array $values){
     if (empty($values)) {
         throw new InvalidArgumentException('Error: Empty values provided,');
     } 
-
+        
     $allowed = [
         'tasks' => [ 'task_title', 'task_description', 'priority', 'due_at'],
-    ];
-
-    if(!array_key_exists($table, $allowed)){
-        throw new InvalidArgumentException('Error: Invalid table name');
-    }
-
+        ];
+        
+        if(!array_key_exists($table, $allowed)){
+            throw new InvalidArgumentException('Error: Invalid table name');
+        }
+            
     $query = 'INSERT INTO `' . $table . '` (';
 
-    $fields = array_keys($values);
     foreach ($fields as $field){
         if(!in_array($field, $allowed[$table], true)){
             throw new InvalidArgumentException('Error: Invalid table fields.');
+            }
+            $query .= '`' . $field . '`, ';
         }
-        $query .= '`' . $field . '`, ';
-    }
-
-
+            
+            
     $query = rtrim($query, ', ');
-
+    
     $query .= ') VALUES (';
-
+    
     foreach ($fields as $field) {
         $query .= ':' . $field . ', ';
     }
+        
+        $query = rtrim($query, ', ');
+        $query .= ');';
+        
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($values);
+}
+                            
+function update(PDO $pdo, string $table, array $fields, array $values) {
+    if (empty($values)) {
+        throw new InvalidArgumentException('Error: empty values provided');
+    }
 
-    $query = rtrim($query, ', ');
-    $query .= ');';
+    $allowed = [
+        'tasks' => ['task_id', 'task_title', 'task_description', 'due_at']
+    ];
 
+    if (!array_key_exists($table, $allowed)) {
+        throw new InvalidArgumentException('Error: Invalid database table');
+    }
+
+    $query = 'UPDATE `' . $table . '` SET';
+
+    foreach ($fields as $field) {
+        if(!in_array($field, $allowed[$table])) {
+            throw new InvalidArgumentException('Error: Invalid fields.');
+        }
+
+        $query .= ' `' . $field . '` = :' . $field;
+    }
+    var_dump($query);
 
     $stmt = $pdo->prepare($query);
+
     $stmt->execute($values);
 
 }

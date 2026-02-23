@@ -6,7 +6,7 @@ function taskCreateValidation(array $input) {
 
     $data['task_title'] = trim($input['task_title'] ?? '');
     $data['task_description'] = trim($input['task_description'] ?? '');
-    $data['priority'] = trim($input['priority'] ?? '2');
+    $data['priority'] = trim($input['priority'] ?? '');
     $data['due_at_raw'] = trim($input['due_at'] ?? '');
     
     if ($data['task_title'] === '' || mb_strlen($data['task_title']) > 100) {

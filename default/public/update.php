@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../src/db.php';
 require_once __DIR__ . '/../src/dbFunctions.php';
+require_once __DIR__ . '/../src/validation/tasks.php';
 
 $output = '';
 
@@ -9,32 +10,44 @@ $page_title = 'Edit Task';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    $taskId = (int)($_POST['task_id'] ?? null);
+    [$values, $errors] = taskCreateValidation($_POST);
 
-    $taskTitle = trim($_POST['task_title'] ?? '');
-    $taskDescription = trim($_POST['task_description'] ?? '');
-    $dueAtRaw = trim($_POST['due_at'] ?? '');
+    if(!empty($errors)) {
+        $old_values = $values;
+        http_response_code(400);
 
-    $dueAt= $dueAtRaw !== '' ? str_replace('T', ' ', $dueAtRaw) . ':00' : null;
+        ob_start();
+        include __DIR__ . '/../templates/update.html.php';
+        $output = ob_get_clean();
+    } else {
+        try {
+            update($pdo, $table, $fields, $values);
+            header('Location: /view_tasks.php');
+            exit;
+        } catch(PDOException $e) {
+            $errors['form'] = ['Server error. Please try again.'];
+            http_response_code(500);
+            ob_start();
+            include __DIR__ . '/../templates/update.html.php';
+            $output = ob_get_clean();
+        }
+    } 
 
-    if($taskId > 0){
-        updateTask($pdo, $taskId, $taskTitle, $taskDescription, $dueAt);
-    
-        header('Location: /view_tasks.php');
-    }
 } else {
     $taskId = (int)($_GET['task_id']);
     if($taskId > 0){
         $tasks = get($pdo, $taskId);
-        
-        $taskTitle = $tasks['task_title'];
-        
-        $taskDescription = $tasks['task_description'];
-        
-        $dueAt = date('Y-m-d\TH:i', strtotime($tasks['due_at']));
-        
-        $page_title = 'Update Tasks';
-        
+        var_dump($tasks);
+        $old_tasks = [];
+        foreach ($tasks as $task) {
+            $old_tasks[] = [
+                'task_title' => $task['task_title'],
+                'task_description' => $task['task_description'],
+                'due_at' => $task['due_At']
+
+            ];
+        }
+        var_dump($old_tasks);
         ob_start();
         include __DIR__ . '/../templates/update.html.php';
         $output = ob_get_clean();

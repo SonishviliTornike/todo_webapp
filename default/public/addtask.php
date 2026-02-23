@@ -18,13 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $output = ob_get_clean();
     } else {
         try {
-            insert($pdo, 'tasks', $values);
+            $table = 'tasks';
+            $fields = ['task_id', 'task_title', 'task_description', 'priority', 'due_at'];
+            insert($pdo, $table, $fields, $values);
         
             header('Location: /view_tasks.php');
 
             exit;
         } catch(PDOException $e) {
-            $errors['form'] = ['Server error. Please try again'];
+            $errors['form'] = ['Server error. Please try again.'];
             http_response_code(500);
             ob_start();
 
