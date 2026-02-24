@@ -6,24 +6,27 @@ require_once __DIR__ . '/../src/validation/tasks.php';
 
 $output = '';
 
-$page_title = 'Edit Task';
+$page_title = 'Insert task';
+
+ob_start();
+include __DIR__ . '/../templates/insertEdit.html.php';
+$output = ob_get_clean();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    [$values, $errors] = taskCreateValidation($_POST);
+    [$values, $errors] = taskValidation($_POST['task']);
     if(!empty($errors)) {
         $old_values = $values;
         http_response_code(400);
 
         ob_start();
-        include __DIR__ . '/../templates/update.html.php';
+        include __DIR__ . '/../templates/insertEdit.html.php';
         $output = ob_get_clean();
     } else {
         try {
             $table = 'tasks';
             $fields = ['task_title', 'task_description', 'priority', 'due_at'];
 
-            update($pdo, $table, $fields, $values, 'task_id');
+            save($pdo, $table,  'task_id', $fields, $values);
 
             header('Location: /view_tasks.php');
             exit;
@@ -32,21 +35,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['form'] = ['Server error. Please try again.'];
             http_response_code(500);
             ob_start();
-            include __DIR__ . '/../templates/update.html.php';
+            include __DIR__ . '/../templates/insertEdit.html.php';
             $output = ob_get_clean();
         }
     } 
 
 } else {
+    
+    $page_title = 'Edit task';
     $taskId = (int)($_GET['task_id'] ?? 0);
     if($taskId > 0){
         $table = 'tasks';
         $field = 'task_id';
-        $tasks = get($pdo, $table, $field, $taskId);
-        $old_tasks = [];
-        foreach ($tasks as $task) {
-            $old_tasks[] = [
-                'task_id' => $taskId,
+        $task = find($pdo, $table, $field, $taskId);
+
+        if ($task) {
+            $old_task = [
+                'task_id' => $task['task_id'],
                 'task_title' => $task['task_title'],
                 'task_description' => $task['task_description'],
                 'due_at' => $task['due_at'],
@@ -54,8 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             ];
         }
+
         ob_start();
-        include __DIR__ . '/../templates/update.html.php';
+        include __DIR__ . '/../templates/insertEdit.html.php';
         $output = ob_get_clean();
         }
 }

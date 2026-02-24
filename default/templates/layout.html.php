@@ -16,7 +16,7 @@
 <nav>
     <ul>
         <li><a href="index.php">Home Page</a></li>
-        <li><a href="addtask.php">Add Task</a></li>
+        <li><a href="insertEdit.php">Add Task</a></li>
         <li><a href="view_tasks.php">View Task List</a></li>
     </ul>
 </nav>

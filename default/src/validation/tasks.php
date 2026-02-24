@@ -1,6 +1,6 @@
 <?php 
 
-function taskCreateValidation(array $input) {
+function taskValidation(array $input) {
     $errors = [];
     $data = [];
     $data['task_id'] = trim($input['task_id'] ?? 0);

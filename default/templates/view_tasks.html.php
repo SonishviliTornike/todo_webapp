@@ -36,9 +36,9 @@
                     </form>
                 </td>
                 <td>
-                    <form action="update.php" method="get">
+                    <form action="insertEdit.php" method="get">
                         <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
-                        <input type="submit" value="Update Task">
+                        <input type="submit" value="Edit Task">
                     </form>
                 </td>
                 <td>

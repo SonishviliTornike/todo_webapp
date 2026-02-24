@@ -33,7 +33,7 @@ function delete(PDO $pdo,  string $table, string $field, int $value) {
     return true;
 }
 
-function get(PDO $pdo, string $table , string $field, int $value) {
+function find(PDO $pdo, string $table , string $field, int $value) {
     $query = 'SELECT * FROM `' . $table . '` WHERE `' . $field . '` = :value';
 
 
@@ -44,7 +44,7 @@ function get(PDO $pdo, string $table , string $field, int $value) {
     ];
     $stmt->execute($values);
 
-    return $stmt->fetchAll();
+    return $stmt->fetch();
 }
 
 
@@ -111,7 +111,7 @@ function insert(PDO $pdo, string $table, array $fields, array $values){
     $stmt->execute($values);
 }
                             
-function update(PDO $pdo, string $table, array $fields, array $values, string $primaryKey) {
+function update(PDO $pdo, string $table, array $fields,  string $primaryKey, array $values) {
     if (empty($values)) {
         throw new InvalidArgumentException('Error: empty values provided');
     }
@@ -147,4 +147,16 @@ function update(PDO $pdo, string $table, array $fields, array $values, string $p
     
     $stmt->execute($values);
 
+}
+
+function save(PDO $pdo, string $table, string $primaryKey, array $fields, array $record ) {
+    try{
+        if (empty($record[$primaryKey])){
+            unset($record[$primaryKey]);
+        }
+        insert($pdo, $table, $fields,$record );
+
+    } catch(PDOException $e) {
+        update($pdo, $table, $fields, $primaryKey, $record);
+    }
 }
