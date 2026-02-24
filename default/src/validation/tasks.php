@@ -32,9 +32,6 @@ function taskValidation(array $input) {
     }
 
     $data['due_at'] = null;
-    $today_date = new DateTimeImmutable();
-    $today_date = $today_date->format('Y-m-d H:i:s');
-
 
     if($data['due_at_raw'] !== '') {
         $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $data['due_at_raw']);
@@ -50,7 +47,6 @@ function taskValidation(array $input) {
 
             }
         }
-    
     }
     unset($data['due_at_raw']);  
     return [$data, $errors];
