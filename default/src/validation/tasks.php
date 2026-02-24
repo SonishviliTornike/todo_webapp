@@ -32,24 +32,26 @@ function taskValidation(array $input) {
     }
 
     $data['due_at'] = null;
+    $today_date = new DateTimeImmutable();
+    $today_date = $today_date->format('Y-m-d H:i:s');
+
 
     if($data['due_at_raw'] !== '') {
         $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $data['due_at_raw']);
         $err = DateTimeImmutable::getLastErrors() ?: ['warning_count' => 0, 'error_count' => 0];
+        $now = new DateTimeImmutable();
         if (!$dt || $err['warning_count'] || $err['error_count']) {
             $errors['due_at'][] = 'Invalid deadline value';
         } else {
-            $data['due_at'] = $dt->format('Y-m-d H:i');
+            if ($dt < $now){
+                $errors['due_at'][] = 'Cannot add past date.';        
+            } else {
+                $data['due_at'] = $dt->format('Y-m-d H:i:s');
+
+            }
         }
+    
     }
-
-    $today_date = new DateTimeImmutable();
-    $today_date = $today_date->format('Y-m-d H:i');
-
-    if ($data['due_at'] < $today_date){
-        $errors['due_at'][] = 'Cannot select past date';
-    }
-
     unset($data['due_at_raw']);  
     return [$data, $errors];
 }

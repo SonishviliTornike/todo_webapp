@@ -7,7 +7,7 @@ require_once __DIR__ . '/../src/dbFunctions.php';
 
 $table = 'tasks';
 
-$tasks = all($pdo, $table);
+$tasks = findAll($pdo, $table);
 
 $totalTasks = totalTasks($pdo, $table);
 

@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     setTaskCompleted($pdo, $taskId, $isCompleted);
         
-    header('Location: view_tasks.php');
+    header('Location: /view_tasks.php');
     exit;
 }
 http_response_code(405);

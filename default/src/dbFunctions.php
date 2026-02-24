@@ -1,5 +1,10 @@
 <?php 
 function totalTasks(PDO $pdo, string $table){
+
+    $allowed = ['tasks'];
+    if(!in_array($table, $allowed, true)) {
+        throw new InvalidArgumentException('Invalid table name');
+    }
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM `' . $table. '`');
 
     $stmt->execute();
@@ -9,10 +14,17 @@ function totalTasks(PDO $pdo, string $table){
     return $row[0];
 }
 
-function all(PDO $pdo, string $table) {
-    $sql = 'SELECT * FROM `' . $table . '`'; 
+function findAll(PDO $pdo, string $table) {
+    $query = 'SELECT * FROM `' . $table . '`'; 
 
-    $stmt = $pdo->prepare($sql);
+    $allowed = [
+        'tasks'
+    ];
+    if(!in_array($table, $allowed, true)) {
+        throw new InvalidArgumentException('Invalid table name');
+    }
+
+    $stmt = $pdo->prepare($query);
 
     $stmt->execute();
 
@@ -22,20 +34,42 @@ function all(PDO $pdo, string $table) {
 
 function delete(PDO $pdo,  string $table, string $field, int $value) {
     $query = 'DELETE FROM `' . $table . '` WHERE `' . $field . '` = :value';
+    
+    $allowed = [
+        'tasks' => ['task_id']
+        ];
+
+    if(!array_key_exists($table, $allowed)){
+        throw new InvalidArgumentException('Invalid table name provided');
+    }
+    
+    if (!in_array($field, $allowed[$table], true)){
+        throw new InvalidArgumentException('Invalid field name provided.');
+    }
 
     $stmt = $pdo->prepare($query);
 
     $values = [
-        ':value' => $value
+        'value' => $value
     ];
-
     $stmt->execute($values);
-    return true;
+    return  $stmt->rowCount() === 1;
 }
 
 function find(PDO $pdo, string $table , string $field, int $value) {
     $query = 'SELECT * FROM `' . $table . '` WHERE `' . $field . '` = :value';
 
+    $allowed = [
+        'tasks' => ['task_id']
+    ];
+
+    if (!array_key_exists($table, $allowed)) {
+        throw new InvalidArgumentException('Invalid table name provided');
+    }
+    
+    if (!in_array($field, $allowed[$table], true)) {
+        throw new InvalidArgumentException('Invalid field name provided.');
+    }
 
     $stmt = $pdo-> prepare($query);
 
@@ -51,6 +85,19 @@ function find(PDO $pdo, string $table , string $field, int $value) {
 
 function setTaskCompleted(PDO $pdo, int $taskId, int $isCompleted){
     $query = "UPDATE `tasks` SET `is_completed` = :is_completed WHERE `task_id` = :task_id";
+
+    $allowed = [
+        'tasks' => ['is_completed']
+
+    ];
+
+    if (!array_key_exists('tasks', $allowed)){
+        throw new InvalidArgumentException('Invalid table name provided.');
+    }
+
+    if (!in_array('is_completed', $allowed['tasks'], true)) {
+        throw new InvalidArgumentException('Invalid field name provided.');
+    }
     
     $stmt = $pdo->prepare($query);
     
@@ -150,13 +197,10 @@ function update(PDO $pdo, string $table, array $fields,  string $primaryKey, arr
 }
 
 function save(PDO $pdo, string $table, string $primaryKey, array $fields, array $record ) {
-    try{
-        if (empty($record[$primaryKey])){
-            unset($record[$primaryKey]);
-        }
-        insert($pdo, $table, $fields,$record );
-
-    } catch(PDOException $e) {
+    if (!empty($record[$primaryKey])){
         update($pdo, $table, $fields, $primaryKey, $record);
+        return ;
     }
+    insert($pdo, $table, $fields, $record);
+
 }
