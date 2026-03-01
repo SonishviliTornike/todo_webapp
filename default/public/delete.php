@@ -1,17 +1,17 @@
 <?php 
 
-require_once __DIR__ . '/../src/db.php';
-require_once __DIR__ . '/../src/dbFunctions.php';
+require_once __DIR__ . '/../src/Core/db.php';
+require_once __DIR__ . '/../Model/DatabaseTable.php';
 
 
 $errors = [];
 
-
+$tasksTable = new DatabaseTable($pdo, 'tasks', 'task_id');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     $taskId = (int)($_POST['task_id'] ?? 0);
     if($taskId > 0){
-        $success = delete($pdo, 'tasks', 'task_id', $taskId);
+        $success = $tasksTable->delete($taskId);
         if ($success) {
             header('Location: /view_tasks.php');
             exit;

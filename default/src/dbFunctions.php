@@ -109,13 +109,13 @@ function setTaskCompleted(PDO $pdo, int $taskId, int $isCompleted){
         $stmt->execute($values);
         }
         
-        function showHighPriorityTasks($pdo){
-            $query = "SELECT `task_id`, `task_title`, `task_description`, `due_at`, `priority`, `is_completed` FROM `tasks` 
-    WHERE `priority` < 2";
+function showHighPriorityTasks($pdo){
+    $query = "SELECT `task_id`, `task_title`, `task_description`, `due_at`, `priority`, `is_completed` FROM `tasks` 
+        WHERE `priority` < 2";
 
-$stmt = $pdo->query($query);
+    $stmt = $pdo->query($query);
 
-return $stmt->fetchAll();
+    return $stmt->fetchAll();
 }
 
 function insert(PDO $pdo, string $table, array $fields, array $values){

@@ -1,10 +1,13 @@
 <?php
 
-require_once __DIR__ . '/../src/db.php';
-require_once __DIR__ . '/../src/dbFunctions.php'; 
+require_once __DIR__ . '/../src/Core/db.php';
+require_once __DIR__ . '/../Model/DatabaseTable.php'; 
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $tasksTable = new DatabaseTable($pdo, 'tasks', 'task_id');
+
     $taskIdRaw = $_POST['task_id'] ?? null;
     $isCompletedRaw = $_POST['is_completed'] ?? 0;
 
@@ -21,8 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $taskId = (int)$taskIdRaw;
     $isCompleted = (int)$isCompletedRaw;
+
+    $values = [
+        'task_id' => $taskId,
+        'is_completed' => $isCompleted
+    ];
     
-    setTaskCompleted($pdo, $taskId, $isCompleted);
+    $tasksTable->setTaskCompleted($values);
         
     header('Location: /view_tasks.php');
     exit;

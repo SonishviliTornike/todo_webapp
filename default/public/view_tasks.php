@@ -1,15 +1,14 @@
 <?php
 
-require_once __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/Core/db.php';
 require_once __DIR__ . '/../src/dbFunctions.php';
 
 
 
-$table = 'tasks';
 
-$tasks = findAll($pdo, $table);
+$tasks = findAll($pdo, 'tasks');
 
-$totalTasks = totalTasks($pdo, $table);
+$totalTasks = totalTasks($pdo, 'tasks');
 
 ob_start();
          

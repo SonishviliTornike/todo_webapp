@@ -12,9 +12,6 @@
         </thead>
     <tbody>
         <?php foreach ($tasks as $task): ?>
-            <?php if($task['is_completed'] === 1): ?>
-                <?php continue; ?>
-            <?php endif; ?>
             <tr>
                 <td><?= htmlspecialchars($task['task_title'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                 <td><?= htmlspecialchars($task['task_description'] ?? '', ENT_QUOTES,'UTF-8') ?></td>

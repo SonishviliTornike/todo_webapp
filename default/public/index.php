@@ -1,14 +1,15 @@
 <?php 
 
-require_once __DIR__ . '/../src/db.php';
-require_once __DIR__ . '/../src/dbFunctions.php';
+require_once __DIR__ . '/../src/Core/db.php';
+require_once __DIR__ . '/../Model/DatabaseTable.php';
 
 $page_title = 'Home Page';
 
 $welcome = 'Welcome';
 
-$result = showHighPriorityTasks($pdo);
+$tasksTable = new DatabaseTable($pdo, 'tasks', 'tasks_id');
 
+$result = $tasksTable->showHighPriortyTasks();
 
 $tasks = [];
 foreach($result as $row) {
@@ -17,7 +18,6 @@ foreach($result as $row) {
         'task_description' => $row['task_description'],
         'due_at' => $row['due_at'],
         'priority' => $row['priority'],  
-        'is_completed' => $row['is_completed']
         );
 }
         
