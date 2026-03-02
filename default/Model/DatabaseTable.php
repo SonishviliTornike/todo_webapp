@@ -69,10 +69,33 @@ class DatabaseTable {
     }
     
     //Must finish insert function and then make classes for controllers to make it even dry
-    private function insert(array $fields, array $values) {
+    public function insert(array $values) {
         if (!isset($values)) {
             throw new InvalidArgumentException('Error: Empty values provided!');
         }
+
+        $query = 'INSERT INTO `' . $this->table . '` (';
+
+        foreach ($values as $key => $value) {
+            $query .= '`' . $key . '`, ';
+        }
+        
+        $query = rtrim($query, ', ');
+
+        $query .= ') VALUES (';
+        
+        foreach ($values as $key => $value) {
+            $query .= ':' . $key . ', ';
+        }
+
+        $query = rtrim($query, ', ');
+
+        $query .= ');';
+
+        $stmt = $this->pdo->prepare($query);
+
+        $stmt->execute($values);
+
     }
 
 

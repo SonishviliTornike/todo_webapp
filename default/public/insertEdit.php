@@ -1,8 +1,11 @@
 <?php
 
 require_once __DIR__ . '/../src/Core/db.php';
-require_once __DIR__ . '/../src/dbFunctions.php';
+require_once __DIR__ . '/../Model/DatabaseTable.php';
 require_once __DIR__ . '/../src/validation/tasks.php';
+
+
+$tasksTable = new DatabaseTable($pdo, 'tasks', 'tasks_id');
 
 $output = '';
 
@@ -14,7 +17,7 @@ $output = ob_get_clean();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     [$values, $errors] = taskValidation($_POST['task']);
-    if(!empty($errors)) {
+    if(!isset($errors)) {
         $old_values = $values;
         http_response_code(400);
 
@@ -26,8 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $table = 'tasks';
             $fields = ['task_title', 'task_description', 'priority', 'due_at'];
 
-            save($pdo, $table,  'task_id', $fields, $values);
-
+            
+            // save($pdo, $table,  'task_id', $fields, $values);
+            $tasksTable->insert($values);
             header('Location: /view_tasks.php');
             exit;
 
