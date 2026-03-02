@@ -26,12 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $output = ob_get_clean();
     } else {
         try {
-            $table = 'tasks';
-            $fields = ['task_title', 'task_description', 'priority', 'due_at'];
 
-            
-            // save($pdo, $table,  'task_id', $fields, $values);
-            $tasksTable->insert($values);
+            $taskTable->save($_POST['task']);
             header('Location: /view_tasks.php');
             exit;
 
@@ -51,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if($taskId > 0){
         $table = 'tasks';
         $field = 'task_id';
-        $task = find($pdo, $table, $field, $taskId);
+        $task = $tasksTable->find($taskId);
 
         if ($task) {
             $old_task = [

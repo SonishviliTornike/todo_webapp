@@ -62,7 +62,7 @@ class DatabaseTable {
     public function setTaskCompleted(array $values) {
         $query = 'UPDATE `' . $this->table . '` SET `is_completed` = :is_completed WHERE `task_id` = :task_id';
 
-        $stmt = $this->pdo->prepare($query);
+        $stmt = $this->pdo->prepare($query);        
 
         $stmt->execute($values);
 
@@ -98,7 +98,57 @@ class DatabaseTable {
 
     }
 
+    private function update($values) {
 
+        if (!isset($values)) {
+            throw new InvalidArgumentException("Error: emprty array was provided.");
+        }
+
+        $query = 'UPDATE `' . $this->table . '` SET ';
+
+        foreach($values as $key => $value) {
+            $query .= '`' . $key . '` ' . ' = :' . $key . ', ';
+        }
+
+        $query = rtrim($query, ', ');
+
+        $stmt = $this->pdo->prepare($query);
+
+        $stmt->execute($values);
+    }
+
+    public function save($record) {
+        if (empty($record[$this->primaryKey])){
+            unset($record[$this->primaryKey]);
+            $this->insert($record);
+        } 
+        $this->update($record);
+
+    }
+
+    public function find(int $value) {
+        if(!empty($value)){
+            throw new InvalidArgumentException('Error: Invalid argument provided.');
+        }
+
+        $query = 'SELECT * FROM `'  .  $this->table . '` WHERE ' . $this->primaryKey . ' = :value';
+        
+        $stmt = $this->pdo->prepare($query);
+
+        $values = [':value' => $value];
+
+        $stmt->execute($values);
+
+        return $stmt->fetch();
+    }
+
+    public function findAll() {
+        $query = 'SELECT * FROM `' . $this->table . '`';
+
+        $stmt = $this->pdo->query($query);
+
+        return $stmt->fetchAll();
+    }
 
 
 }

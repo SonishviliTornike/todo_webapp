@@ -1,14 +1,20 @@
 <?php
 
 require_once __DIR__ . '/../src/Core/db.php';
-require_once __DIR__ . '/../src/dbFunctions.php';
+require_once __DIR__ . '/../Model/DatabaseTable.php';
+
+
+$tasksTable = new DatabaseTable($pdo, 'tasks', 'task_id');
 
 
 
 
-$tasks = findAll($pdo, 'tasks');
+$tasks = $tasksTable->findAll();
 
-$totalTasks = totalTasks($pdo, 'tasks');
+
+$totalTasks = $tasksTable->totalTasks();
+
+var_dump($totalTasks);  
 
 ob_start();
          
