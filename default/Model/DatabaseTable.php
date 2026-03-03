@@ -112,7 +112,12 @@ class DatabaseTable {
 
         $query = rtrim($query, ', ');
 
-        $stmt = $this->pdo->prepare($query);
+        
+        $query = ' WHERE `' . $this->primaryKey . ' : = primaryKey';
+
+        $values['primaryKey'] = $values['task_id'];
+
+        $stmt = $this->pdo->prepare($query); 
 
         $stmt->execute($values);
     }
@@ -121,13 +126,15 @@ class DatabaseTable {
         if (empty($record[$this->primaryKey])){
             unset($record[$this->primaryKey]);
             $this->insert($record);
-        } 
-        $this->update($record);
+        } else {
+            $this->update($record);
+
+        }
 
     }
 
     public function find(int $value) {
-        if(!empty($value)){
+        if(empty($value)){
             throw new InvalidArgumentException('Error: Invalid argument provided.');
         }
 

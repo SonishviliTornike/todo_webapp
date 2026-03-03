@@ -1,6 +1,6 @@
 
 
-<form action="insertEdit.php" method="post">
+<form action="index.php?action=insertEdit" method="post">
     <label for="task_title">Edit Task Title:</label>
     <input type="text" name="task[task_title]" id="task_title" required maxlength="150" value="<?= htmlspecialchars($old_task['task_title'] ?? '', ENT_QUOTES, 'UTF-8');?>"><br><br>
 

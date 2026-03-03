@@ -6,14 +6,22 @@ class TasksController {
 
 
     public function list() {
+        $page_title = 'Tasks';
         $tasks = $this->tasksTable->findAll();
 
         $totalTasks = $this->tasksTable->totalTasks();
 
-        return ['tasks' => $tasks, 'totalTasks' => $totalTasks];
+        return [
+            'page_title' => $page_title, 
+            'template' => 'view_tasks.html.php',
+            'variables' => [
+                'tasks' => $tasks,
+                'totalTasks' => $totalTasks
+            ]
+        ];
         
     }
-
+    //ამოსაღები და ცალკე გასატანი იქნება 
     public function setTaskCompleted() {
         $taskIdRaw = $_POST['task_id'] ?? null;
         $isCompletedRaw = $_POST['is_completed'] ?? 0;
@@ -37,41 +45,79 @@ class TasksController {
         ];
 
         $this->tasksTable->setTaskCompleted($values);
-
+        header('Location: /index.php?action=list');
     }
+
     public function insertEdit() { 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            try {
-                $page_title = 'Insert task';
-                $this->tasksTable->save($_POST['task']);
-                return ['page_title' => $page_title];
-            } catch (PDOException $e) {
-                $page_title = 'Error';
-                $errors['form'] = ['Server error: Please try again.'];
-                return ['errors' => $errors];
-            }
-        } else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $page_title = 'Edit task';
-
-            $taskId = $_GET['task_id'] ?? null;
-
-            if ($taskId < '0') {
-                $errors[] = ['Erorr: Invalid primary key provided.'];
-            }
-            $taskId = (int)$taskId;
-            $task = $this->tasksTable->find($taskId);
-
-            if ($task) {
-                $old_task = [
-                    'task_id' => $task['task_id'],
-                    'task_title' => $task['task_title'],
-                    'task_description' => $task['task_description'],
-                    'due_at' => $task['due_at'],
-                    'priority' => $task['priority']
+        $page_title = 'Insert task';
+        if ($_SERVER['REQUEST_METHOD'] === 'GET'){
+            
+            $taskId = $_GET['task_id'] ?? '0';
+            
+            if(isset($taskId)){
+                $page_title = 'Edit task';
+                if ($taskId < '0') {
+                    $page_title = 'Error';
+                    $errors[] = ['Erorr: Invalid primary key provided.'];
+                    return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
+                }
+                $taskId = (int)$taskId;
+                $old_task = $this->tasksTable->find($taskId);
+                
+                return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => [
+                    'old_task' => $old_task
+                    ]
                 ];
-                return ['old_task' => $old_task];
+
             }
+        } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->tasksTable->save($_POST['task']);
+
+            header('Location: /index.php?action=list');
+            exit;
+            
+        } else {
+            return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
         }
+    }
+
+    public function delete() {
+        if (isset($_POST['task_id'])) {
+            $taskId = $_POST['task_id'] ?? 0;
+            if ($taskId >! 0 ) {
+                $errors = ['Error Invalid primary key provided.'];
+                $page_title = 'Error';
+                return ['errors' => $errors, 'page_title' => $page_title];
+                }
+            $taskId = (int)$taskId;
+
+            $this->tasksTable->delete($taskId);
+
+            return $this->list();
+
+
+            
+        }
+    }
+
+    public function home() {
+        $page_title = 'Home Page';
+
+        $welcome = 'Welcome';
+        $tasks = [];
+        $result = $this->tasksTable->showHighPriortyTasks();
+        foreach($result as $row) {
+            $tasks[] = array(
+                'task_title' => $row['task_title'],
+                'task_description' => $row['task_description'],
+                'due_at' => $row['due_at'],
+                'priority' => $row['priority'],  
+                );
+        }
+
+        return ['page_title' => $page_title, 'template' => 'home.html.php', 'variables' => [
+            'tasks' => $tasks,
+        ]];
     }
     
 }

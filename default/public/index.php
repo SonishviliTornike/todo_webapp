@@ -1,30 +1,39 @@
 <?php 
 
+function loadTemplate($templateFileName, $variables) {
+    extract($variables);
+
+    ob_start();
+
+    include __DIR__ . '/../templates/' . $templateFileName;
+
+    return ob_get_clean();
+}
+
 require_once __DIR__ . '/../src/Core/db.php';
 require_once __DIR__ . '/../Model/DatabaseTable.php';
+require_once __DIR__ . '/../Controllers/TasksController.php';
 
-$page_title = 'Home Page';
 
-$welcome = 'Welcome';
 
-$tasksTable = new DatabaseTable($pdo, 'tasks', 'tasks_id');
 
-$result = $tasksTable->showHighPriortyTasks();
+$tasksTable = new DatabaseTable($pdo, 'tasks', 'task_id');
 
-$tasks = [];
-foreach($result as $row) {
-    $tasks[] = array(
-        'task_title' => $row['task_title'],
-        'task_description' => $row['task_description'],
-        'due_at' => $row['due_at'],
-        'priority' => $row['priority'],  
-        );
-}
-        
-ob_start();
+$taskController =  new TasksController($tasksTable);
 
-include __DIR__.'/../templates/home.html.php';
+$action = $_GET['action'] ?? 'home';
 
-$output = ob_get_clean();
+$page = $taskController->$action();
+
+// var_dump($page);
+
+$page_title = $page['page_title'];
+
+$variables = $page['variables'];
+
+// var_dump($variables);
+
+$output = loadTemplate($page['template'], $variables);
+
 
 include __DIR__.'/../templates/layout.html.php';
