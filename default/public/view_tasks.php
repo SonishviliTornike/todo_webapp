@@ -2,19 +2,21 @@
 
 require_once __DIR__ . '/../src/Core/db.php';
 require_once __DIR__ . '/../Model/DatabaseTable.php';
+require_once __DIR__ . '/../Controllers/TasksController.php';
+
 
 
 $tasksTable = new DatabaseTable($pdo, 'tasks', 'task_id');
 
+$page = new TasksController($tasksTable);
 
 
+$page = $page->list();
 
-$tasks = $tasksTable->findAll();
+$tasks = $page['tasks'];
 
 
-$totalTasks = $tasksTable->totalTasks();
-
-var_dump($totalTasks);  
+$totalTasks = $page['tasks'];
 
 ob_start();
          

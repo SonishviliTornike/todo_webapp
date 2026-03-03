@@ -9,11 +9,11 @@ class DatabaseTable {
         $query = 'SELECT COUNT(*) FROM `' . $this->table . '` ';
         
         $stmt = $this->pdo->query($query);
-
+        
         return $stmt->fetch(PDO::FETCH_NUM);
     }
 
-    public function list() {
+    public function findAll() {
 
         $query = 'SELECT * FROM `' . $this->table . '`';
 
@@ -141,14 +141,5 @@ class DatabaseTable {
 
         return $stmt->fetch();
     }
-
-    public function findAll() {
-        $query = 'SELECT * FROM `' . $this->table . '`';
-
-        $stmt = $this->pdo->query($query);
-
-        return $stmt->fetchAll();
-    }
-
 
 }
