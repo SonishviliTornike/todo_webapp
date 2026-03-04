@@ -25,13 +25,9 @@ $action = $_GET['action'] ?? 'home';
 
 $page = $taskController->$action();
 
-// var_dump($page);
-
 $page_title = $page['page_title'];
 
 $variables = $page['variables'];
-
-// var_dump($variables);
 
 $output = loadTemplate($page['template'], $variables);
 

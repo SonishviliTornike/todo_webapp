@@ -1,5 +1,5 @@
 <?php 
-
+require_once __DIR__ . '/../src/validation/tasks.php';
 
 class TasksController {
     public function __construct(private DatabaseTable $tasksTable) {}
@@ -50,36 +50,41 @@ class TasksController {
 
     public function insertEdit() { 
         $page_title = 'Insert task';
-        if ($_SERVER['REQUEST_METHOD'] === 'GET'){
-            
-            $taskId = $_GET['task_id'] ?? '0';
-            
-            if(isset($taskId)){
-                $page_title = 'Edit task';
-                if ($taskId < '0') {
-                    $page_title = 'Error';
-                    $errors[] = ['Erorr: Invalid primary key provided.'];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['task'])) {
+                [$values, $errors] = taskValidation($_POST['task']);
+                $this->tasksTable->save($values);
+                if($errors) {
                     return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
                 }
-                $taskId = (int)$taskId;
-                $old_task = $this->tasksTable->find($taskId);
-                
-                return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => [
-                    'old_task' => $old_task
-                    ]
-                ];
+                header('Location: /index.php?action=list');
+                exit;
+
+            } else {
+                $taskId = $_POST['task_id'] ?? '0';
+                if(isset($taskId)){
+                    $page_title = 'Edit task';
+                    if ($taskId < '0') {
+                        $page_title = 'Error';
+                        $errors[] = ['Erorr: Invalid primary key provided.'];
+                        return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
+                    }
+                    $taskId = (int)$taskId;
+                    $old_task = $this->tasksTable->find($taskId);
+                    
+                    return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => [
+                        'old_task' => $old_task
+                        ]
+                    ];
+    
+                }
 
             }
-        } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->tasksTable->save($_POST['task']);
-
-            header('Location: /index.php?action=list');
-            exit;
-            
+                
         } else {
-            return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
-        }
+        return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
     }
+}
 
     public function delete() {
         if (isset($_POST['task_id'])) {

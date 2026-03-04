@@ -36,7 +36,7 @@
                     </form>
                 </td>
                 <td>
-                    <form action="index.php?action=insertEdit" method="get">
+                    <form action="index.php?action=insertEdit" method="post">
                         <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
                         <input type="submit" value="Edit Task">
                     </form>

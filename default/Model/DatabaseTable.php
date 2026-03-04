@@ -113,11 +113,12 @@ class DatabaseTable {
         $query = rtrim($query, ', ');
 
         
-        $query = ' WHERE `' . $this->primaryKey . ' : = primaryKey';
+        $query .= ' WHERE `' . $this->primaryKey . '` = :primaryKey';
 
         $values['primaryKey'] = $values['task_id'];
 
-        $stmt = $this->pdo->prepare($query); 
+        $stmt = $this->pdo->prepare($query);   
+
 
         $stmt->execute($values);
     }
