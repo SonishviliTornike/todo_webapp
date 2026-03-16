@@ -1,7 +1,7 @@
 <?php 
-namespace Default\Src\Core;
+namespace App\Core;
 
-use Default\Src\Config\DatabaseConfig;
+use App\Config\DatabaseConfig;
 
 class DatabaseConnection {
     private $config;
@@ -12,9 +12,9 @@ class DatabaseConnection {
     public function __construct() {
         $this->config = new DatabaseConfig();
 
-        $dsn = $this->config->getDsnConfig();
-        $user = $this->config->getUserConfig();
-        $pass = $this->config->getPassConfig();
+        $this->dsn = $this->config->getDsnConfig();
+        $this->user = $this->config->getUserConfig();
+        $this->pass = $this->config->getPassConfig();
     }
 
     public function getPdoConnection() {

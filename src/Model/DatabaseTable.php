@@ -1,8 +1,10 @@
 <?php 
 
+namespace App\Model;
+
 class DatabaseTable {
     
-    public function __construct(private PDO $pdo, private string $table, private string $primaryKey){}
+    public function __construct(private  $pdo, private string $table, private string $primaryKey){}
 
 
     public function totalTasks() {
@@ -10,7 +12,7 @@ class DatabaseTable {
         
         $stmt = $this->pdo->query($query);
         
-        return $stmt->fetch(PDO::FETCH_NUM);
+        return $stmt->fetch(\PDO::FETCH_NUM);
     }
 
     public function findAll() {
@@ -32,7 +34,7 @@ class DatabaseTable {
 
         $stmt = $this->pdo->prepare($query);
 
-        $stmt->bindValue(':task_id', $taskId, PDO::PARAM_INT);
+        $stmt->bindValue(':task_id', $taskId, \PDO::PARAM_INT);
 
         $stmt->execute();
 
@@ -51,7 +53,7 @@ class DatabaseTable {
 
         $stmt = $this->pdo->prepare($query);
 
-        $stmt->bindValue(':limit' , $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':limit' , $limit, \PDO::PARAM_INT);
 
         $stmt->execute();
 
@@ -67,11 +69,10 @@ class DatabaseTable {
         $stmt->execute($values);
 
     }
-    
-    //Must finish insert function and then make classes for controllers to make it even dry
+
     public function insert(array $values) {
         if (!isset($values)) {
-            throw new InvalidArgumentException('Error: Empty values provided!');
+            throw new \InvalidArgumentException('Error: Empty values provided!');
         }
 
         $query = 'INSERT INTO `' . $this->table . '` (';
@@ -101,7 +102,7 @@ class DatabaseTable {
     private function update($values) {
 
         if (!isset($values)) {
-            throw new InvalidArgumentException("Error: emprty array was provided.");
+            throw new \InvalidArgumentException("Error: emprty array was provided.");
         }
 
         $query = 'UPDATE `' . $this->table . '` SET ';
@@ -136,7 +137,7 @@ class DatabaseTable {
 
     public function find(int $value) {
         if(empty($value)){
-            throw new InvalidArgumentException('Error: Invalid argument provided.');
+            throw new \InvalidArgumentException('Error: Invalid argument provided.');
         }
 
         $query = 'SELECT * FROM `'  .  $this->table . '` WHERE ' . $this->primaryKey . ' = :value';

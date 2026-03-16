@@ -1,0 +1,14 @@
+{
+    "name": "tornike/todo_webapp",
+    "description": "To do web application",
+    "type": "project",
+    "require" : {
+        "php" : ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+
+}

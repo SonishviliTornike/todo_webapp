@@ -1,5 +1,8 @@
 <?php 
-require_once __DIR__ . '/../src/validation/tasks.php';
+
+namespace App\Controllers;
+use App\Model\DatabaseTable;
+use App\Validation\TaskValidation;
 
 class TasksController {
     public function __construct(private DatabaseTable $tasksTable) {}
@@ -52,7 +55,8 @@ class TasksController {
         $page_title = 'Insert task';
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['task'])) {
-                [$values, $errors] = taskValidation($_POST['task']);
+                $validation = new TaskValidation($_POST['task']);
+                [$values, $errors] = $validation->validate();
                 $this->tasksTable->save($values);
                 if($errors) {
                     return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];

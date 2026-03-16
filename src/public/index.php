@@ -1,6 +1,10 @@
 <?php 
-namespace Default\Public;
-use Default\Src\Core\DatabaseConnection;
+require __DIR__ . '/../../vendor/autoload.php';
+
+use App\Core\DatabaseConnection;
+use App\Model\DatabaseTable;
+use App\Controllers\TasksController;
+
 function loadTemplate($templateFileName, $variables) {
     extract($variables);
 
@@ -11,14 +15,12 @@ function loadTemplate($templateFileName, $variables) {
     return ob_get_clean();
 }
 
-require_once __DIR__ . '/../src/Core/db.php';
-// require_once __DIR__ . '/../Model/DatabaseTable.php';
-require_once __DIR__ . '/../Controllers/TasksController.php';
+
 
 $pdo = new DatabaseConnection();
 
 
-$tasksTable = new DatabaseTable($pdo, 'tasks', 'task_id');
+$tasksTable = new DatabaseTable($pdo->getPdoConnection(), 'tasks', 'task_id');
 
 $taskController =  new TasksController($tasksTable);
 

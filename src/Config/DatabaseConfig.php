@@ -1,13 +1,13 @@
 <?php
 
-namespace Default\Src\Config;
+namespace App\Config;
 
 class DatabaseConfig {
-    private $db;
-    private $user;
-    private $pass;
-    private $host;
-    private $dsn;
+    private string $db;
+    private string $user;
+    private string $pass;
+    private string $host;
+    private string $dsn;
 
     public function __construct() {
         $this->db = getenv('MYSQL_DATABASE');
