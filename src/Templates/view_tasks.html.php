@@ -25,7 +25,7 @@
                 ?>
                 <td><?= $priority ?></td>
                 <td>
-                    <form method="post" action="index.php?action=setTaskCompleted">
+                    <form method="post" action="/tasks/setTaskCompleted/<?$task['task_id'] ?>">
                         <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
                         <input type="hidden" name="is_completed" value="0">
                         <input type="checkbox"
@@ -36,13 +36,13 @@
                     </form>
                 </td>
                 <td>
-                    <form action="index.php?action=insertEdit" method="post">
+                    <form action="/tasks/insertedit/<?= $task['task_id'] ?>" method="get">
                         <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
                         <input type="submit" value="Edit Task">
                     </form>
                 </td>
                 <td>
-                    <form action="index.php?action=delete" method="post">
+                    <form action="/tasks/delete" method="post">
                         <input type="hidden" name='task_id' value="<?= $task['task_id'] ?>">
                         <input type="submit" value="Remove Task">
                     </form>

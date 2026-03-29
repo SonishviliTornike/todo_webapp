@@ -25,7 +25,7 @@ class TasksController {
         
     }
     //ამოსაღები და ცალკე გასატანი იქნება 
-    public function setTaskCompleted() {
+    public function setTaskCompletedSubmit() {
         $taskIdRaw = $_POST['task_id'] ?? null;
         $isCompletedRaw = $_POST['is_completed'] ?? 0;
 
@@ -48,12 +48,11 @@ class TasksController {
         ];
 
         $this->tasksTable->setTaskCompleted($values);
-        header('Location: /index.php?action=list');
+        header('Location: /tasks/list');
     }
 
-    public function insertEdit() { 
+    public function insertEditSubmit() { 
         $page_title = 'Insert task';
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['task'])) {
                 $validation = new TaskValidation($_POST['task']);
                 [$values, $errors] = $validation->validate();
@@ -61,36 +60,30 @@ class TasksController {
                 if($errors) {
                     return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
                 }
-                header('Location: /index.php?action=list');
+                header('Location: /tasks/list');
                 exit;
 
-            } else {
-                $taskId = $_POST['task_id'] ?? '0';
-                if(isset($taskId)){
-                    $page_title = 'Edit task';
-                    if ($taskId < '0') {
-                        $page_title = 'Error';
-                        $errors[] = ['Erorr: Invalid primary key provided.'];
-                        return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
-                    }
-                    $taskId = (int)$taskId;
-                    $old_task = $this->tasksTable->find($taskId);
-                    
-                    return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => [
-                        'old_task' => $old_task
-                        ]
-                    ];
-    
-                }
+            }
+        return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
+
+    }
+
+    public function insertEdit($taskId = null) {
+        if (isset($taskId)){
+            $page_title = 'Edit task';
+            if($taskId <= 0) {
+                $page_title = 'Error';
+                $errors[] = ['Error: Invalid primary key provided.'];
+                return ['page_title' => $page_title, 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
 
             }
-                
-        } else {
-        return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
-    }
-}
+            $task = $this->tasksTable->find($taskId) ?? null;
 
-    public function delete() {
+            return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task ?? null]];
+        }
+    }
+
+    public function deleteSubmit() {
         if (isset($_POST['task_id'])) {
             $taskId = $_POST['task_id'] ?? 0;
             if ($taskId >! 0 ) {
@@ -102,7 +95,7 @@ class TasksController {
 
             $this->tasksTable->delete($taskId);
 
-            return $this->list();
+            header('Location: /tasks/list');
 
 
             
