@@ -40,7 +40,6 @@ class EntryPoint {
             if ($method === 'POST') {
                 $action .= 'Submit';
             }
-
             $controller = $this->website->getController($controllerName);
 
             if (is_callable([$controller, $action])) {
@@ -49,6 +48,8 @@ class EntryPoint {
                 $page_title = $page['page_title'];
 
                 $variables = $page['variables'];
+
+                var_dump($page);
 
                 $output = $this->loadTemplate($page['template'], $variables);
                 

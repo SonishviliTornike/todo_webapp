@@ -1,6 +1,6 @@
 
 
-<form action="/tasks/insertEdit" method="post">
+<form action="/tasks/insertedit" method="post">
     <label for="task_title">Enter Task Title:</label>
     <input type="text" name="task[task_title]" id="task_title" required maxlength="150" value="<?= htmlspecialchars($task['task_title'] ?? '', ENT_QUOTES, 'UTF-8');?>"><br><br>
 

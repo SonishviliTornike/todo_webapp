@@ -53,18 +53,18 @@ class Tasks {
 
     public function insertEditSubmit() { 
         $page_title = 'Insert task';
-            var_dump($_POST);
-            if (isset($_POST['task'])) {
-                $validation = new TaskValidation($_POST['task']);
-                [$values, $errors] = $validation->validate();
-                if($errors) {
-                    return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
-                }
-                $this->tasksTable->save($values);
-                header('Location: /tasks/list');
-                exit;
-
+        if (isset($_POST['task'])) {
+            $validation = new TaskValidation($_POST['task']);
+            [$values, $errors] = $validation->validate();
+            if($errors) {
+                return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
             }
+            var_dump($values);
+            $this->tasksTable->save($values);
+            header('Location: /tasks/list');
+            exit;
+
+        }
         return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
 
     }

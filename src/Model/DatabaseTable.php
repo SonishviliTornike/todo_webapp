@@ -95,6 +95,7 @@ class DatabaseTable {
 
         $stmt = $this->pdo->prepare($query);
 
+
         $stmt->execute($values);
 
     }

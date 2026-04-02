@@ -10,7 +10,7 @@ class TaskValidation {
     private function sanitizingData() {
         $data = [];
 
-        $data['task_id'] = trim($this->input['task_id'] ?? '0');
+        $data['id'] = trim($this->input['id'] ?? '');
         $data['task_title'] = trim($this->input['task_title'] ?? '');
         $data['task_description'] = trim($this->input['task_description'] ?? '');
         $data['priority'] = trim($this->input['priority'] ?? '');
@@ -22,9 +22,12 @@ class TaskValidation {
     public function validate() {
         $data = $this->sanitizingData();
         $errors = [];
-        if ((int)$data['task_id'] < 0 || !ctype_digit($data['task_id'])) {
-            $errors['task_id'][] = 'Task cann\'t be updated.';
-        }
+        // if ($data['id'] == '') {
+        //     unset($data['id']);
+        // }
+        // if ((int)$data['id'] < 0 || !ctype_digit($data['id'])) {
+        //     $errors['id'][] = 'Task can\'t be updated.';
+        // }
 
         if ($data['task_title'] === '' || mb_strlen($data['task_title']) > 100) {
             $errors['task_title'][] = 'Task title can\'t be empty or more than 100 characters.';
