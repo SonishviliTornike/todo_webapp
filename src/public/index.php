@@ -1,9 +1,10 @@
 <?php 
+
 require __DIR__ . '/../../vendor/autoload.php';
 
 
-$uri = strtok(ltrim($_SERVER['REQUEST_URI'], '/'), '?');
 
+$uri = strtok(ltrim($_SERVER['REQUEST_URI'], '/'), '?');
 
 $tasksWebsite = new \App\Controllers\TaskWebsite;
 

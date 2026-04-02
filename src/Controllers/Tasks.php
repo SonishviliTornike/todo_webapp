@@ -4,7 +4,7 @@ namespace App\Controllers;
 use App\Model\DatabaseTable;
 use App\Validation\TaskValidation;
 
-class TasksController {
+class Tasks {
     public function __construct(private DatabaseTable $tasksTable) {}
 
 
@@ -24,9 +24,9 @@ class TasksController {
         ];
         
     }
-    //ამოსაღები და ცალკე გასატანი იქნება 
+
     public function setTaskCompletedSubmit() {
-        $taskIdRaw = $_POST['task_id'] ?? null;
+        $taskIdRaw = $_POST['id'] ?? null;
         $isCompletedRaw = $_POST['is_completed'] ?? 0;
 
         if (!ctype_digit((string)$taskIdRaw) || !isset($taskIdRaw)) {
@@ -43,7 +43,7 @@ class TasksController {
         $isCompleted = (int)$isCompletedRaw;
 
         $values = [
-            'task_id' => $taskId,
+            'id' => $taskId,
             'is_completed' => $isCompleted
         ];
 
@@ -53,13 +53,14 @@ class TasksController {
 
     public function insertEditSubmit() { 
         $page_title = 'Insert task';
+            var_dump($_POST);
             if (isset($_POST['task'])) {
                 $validation = new TaskValidation($_POST['task']);
                 [$values, $errors] = $validation->validate();
-                $this->tasksTable->save($values);
                 if($errors) {
                     return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
                 }
+                $this->tasksTable->save($values);
                 header('Location: /tasks/list');
                 exit;
 
@@ -68,7 +69,7 @@ class TasksController {
 
     }
 
-    public function insertEdit($taskId = null) {
+    public function insertEdit($taskId = null) {    
         if (isset($taskId)){
             $page_title = 'Edit task';
             if($taskId <= 0) {
@@ -81,13 +82,16 @@ class TasksController {
 
             return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task ?? null]];
         }
-    }
+        $page_title = 'Insert task';
+        return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
+        }
+    
 
     public function deleteSubmit() {
-        if (isset($_POST['task_id'])) {
-            $taskId = $_POST['task_id'] ?? 0;
+        if (isset($_POST['id'])) {
+            $taskId = $_POST['id'] ?? 0;
             if ($taskId >! 0 ) {
-                $errors = ['Error Invalid primary key provided.'];
+                $errors = ['Error: Invalid primary key provided.'];
                 $page_title = 'Error';
                 return ['errors' => $errors, 'page_title' => $page_title];
                 }

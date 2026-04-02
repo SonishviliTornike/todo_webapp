@@ -19,7 +19,7 @@ class EntryPoint {
 
     private function checkUri(string $uri) {
         if ($uri != strtolower($uri)) {
-            http_response_code(302);
+            http_response_code(301);
             header('Location: /' . strtolower($uri));
         }
     }
@@ -32,7 +32,6 @@ class EntryPoint {
             }
 
             $this->checkUri($uri);
-
             $route = explode('/', $uri);
 
             $controllerName = array_shift($route);
@@ -52,6 +51,7 @@ class EntryPoint {
                 $variables = $page['variables'];
 
                 $output = $this->loadTemplate($page['template'], $variables);
+                
             } else {
                 http_response_code(404);
                 $page_title = 'Not found';

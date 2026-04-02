@@ -29,12 +29,12 @@ class DatabaseTable {
     }
 
     public function delete(int $taskId) {
-        $query = 'DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :task_id';
+        $query = 'DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id';
 
 
         $stmt = $this->pdo->prepare($query);
 
-        $stmt->bindValue(':task_id', $taskId, \PDO::PARAM_INT);
+        $stmt->bindValue(':id', $taskId, \PDO::PARAM_INT);
 
         $stmt->execute();
 
@@ -62,7 +62,7 @@ class DatabaseTable {
     }
 
     public function setTaskCompleted(array $values) {
-        $query = 'UPDATE `' . $this->table . '` SET `is_completed` = :is_completed WHERE `task_id` = :task_id';
+        $query = 'UPDATE `' . $this->table . '` SET `is_completed` = :is_completed WHERE `id` = :id';
 
         $stmt = $this->pdo->prepare($query);        
 
@@ -116,7 +116,7 @@ class DatabaseTable {
         
         $query .= ' WHERE `' . $this->primaryKey . '` = :primaryKey';
 
-        $values['primaryKey'] = $values['task_id'];
+        $values['primaryKey'] = $values['id'];
 
         $stmt = $this->pdo->prepare($query);   
 

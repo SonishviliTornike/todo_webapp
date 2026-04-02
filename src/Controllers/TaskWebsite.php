@@ -4,7 +4,8 @@ namespace App\Controllers;
 
 use App\Core\DatabaseConnection;
 use App\Model\DatabaseTable;
-use App\Controllers\TasksController;
+use App\Controllers\Tasks;
+use App\Controllers\Users;
 
 class TaskWebsite implements \App\Model\Website {
     public function getDefaultRoute(): string {
@@ -13,9 +14,12 @@ class TaskWebsite implements \App\Model\Website {
 
     public function getController(string $controllerName): ? object {
         $pdo = new DatabaseConnection();
-        $tasksTable = new DatabaseTable($pdo->getPdoConnection(), 'tasks', 'task_id');
         if ($controllerName == 'tasks') {
-            $controller = new TasksController($tasksTable);
+            $tasksTable = new DatabaseTable($pdo->getPdoConnection(), 'tasks', 'id');
+            $controller = new Tasks($tasksTable);
+        } else if ($controllerName == 'users') {
+            $usersTable = new DatabaseTable($pdo->getPdoConnection(), 'users', 'id');
+            $controller = new Users($usersTable);
         }
 
         return $controller;

@@ -1,7 +1,7 @@
 
 
-<form action="/tasks/insertedit/<?php $task ?>" method="post">
-    <label for="task_title">Edit Task Title:</label>
+<form action="/tasks/insertEdit" method="post">
+    <label for="task_title">Enter Task Title:</label>
     <input type="text" name="task[task_title]" id="task_title" required maxlength="150" value="<?= htmlspecialchars($task['task_title'] ?? '', ENT_QUOTES, 'UTF-8');?>"><br><br>
 
     <label for="task_description">Enter Task:</label><br>
@@ -17,7 +17,7 @@
         <option value="3" <?= $currentPrioirty == 3 ? 'selected' : '' ?>>Low</option>
     </select><br><br>
 
-    <input type="hidden" name="task[task_id]" id="task_id" value="<?= $task['task_id'] ?? 0 ?>">
+    <input type="hidden" name="task[id]" id="id" value="<?= $task['id']?>">
     <input type="submit" name="submit" value="Save"><br><br>
 </form>
 
