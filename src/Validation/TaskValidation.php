@@ -40,7 +40,7 @@ class TaskValidation {
 
     private function processTaskText() {
         $this->data['task_description'] = trim($this->data['task_description'] ?? '');
-        if (empty($data['task_description']) || mb_strlen($this->data['task_description']) > 1000) {
+        if (empty($this->data['task_description']) || mb_strlen($this->data['task_description']) > 1000) {
             $this->errors['task_description'][] = 'Task can\'t be empty or more than 1000 characters';
         }        
     }
