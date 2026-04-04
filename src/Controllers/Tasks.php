@@ -55,7 +55,7 @@ class Tasks {
         $page_title = 'Insert task';
         if (isset($_POST['task'])) {
             $validation = new TaskValidation($_POST['task']);
-            [$values, $errors] = $validation->validate();
+            [$values, $errors] = $validation->processPostRequest();
             if($errors) {
                 return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
             }

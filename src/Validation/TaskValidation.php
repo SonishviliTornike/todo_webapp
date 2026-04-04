@@ -8,79 +8,82 @@ class TaskValidation {
     private $errors = []; 
 
     public function __construct(private array $input) {}
+    
+    public function processPostRequest() {
+        $this->processId();
+        $this->processTaskTitle();
+        $this->processTaskText();
+        $this->processPriority();
+        $this->processDate();
+
+        return [$this->data, $this->errors];
+    }
 
 
-    private function sanitizingData() {
-        $data = [];
-
-        $data['id'] = trim($this->input['id'] ?? '');
-        $data['task_title'] = trim($this->input['task_title'] ?? '');
-        $data['task_description'] = trim($this->input['task_description'] ?? '');
-        $data['priority'] = trim($this->input['priority'] ?? '');
-        $data['due_at_raw'] = trim($this->input['due_at_raw'] ?? '');
-
-        if ($data['id'] == '') {
-            unset($data['id']);
-        }
-
-        return $data;
-    } 
-    // I must validate each data in each function
     private function processId() {
-        $this->data['id'] = trim($this->input ?? '');
+        $this->data['id'] = trim($this->input['id'] ?? '');
         
         if ($this->data['id'] == '') {
             unset($this->data['id']);
         } else if ((int)$this->data['id'] < 0 || !ctype_digit($this->data['id'])) {
             $this->errors['id'][] = 'Task can\'t be inserted or updated due to invalid id value';
         }
+    }
 
-        return (int)$this->data['id'];
+    private function processTaskTitle() {
+        $this->data['task_title'] = trim($this->input['task_title'] ?? '');
+        if (empty($this->data['task_title']) || mb_strlen($this->data['task_title']) > 100) {
+            $this->errors['task_title'][] = 'Task title can\'t be empty or more than 100 characters';
+        }
 
     }
 
-    public function validate() {
-        $data = $this->sanitizingData();
-        $errors = [];
+    private function processTaskText() {
+        $this->data['task_description'] = trim($this->data['task_description'] ?? '');
+        if (empty($data['task_description']) || mb_strlen($this->data['task_description']) > 1000) {
+            $this->errors['task_description'][] = 'Task can\'t be empty or more than 1000 characters';
+        }        
+    }
+
+    private function processPriority() {
+        $this->data['priortiy'] = trim($this->input['priority'] ?? '');
+
+        if (empty($this->data['priority'])) {
+            $this->errors['priority'][] = 'Priority must be High, Medium, Low';
+        }
         
-        if ((int)$data['id'] < 0 || !ctype_digit($data['id'])) {
-            $errors['id'][] = 'Task can\'t be updated.';
-        }
+        $p = (int)$this->data['priority'];
 
-        if ($data['task_title'] === '' || mb_strlen($data['task_title']) > 100) {
-            $errors['task_title'][] = 'Task title can\'t be empty or more than 100 characters.';
+        if (!ctype_digit($p)) {
+            $this->errors['priority'][] = 'Priority must be High, Medium, Low';
         }
-
-        if ($data['task_description'] === '' || mb_strlen($data['task_description']) > 1000) {
-            $errors['task_description'][] = 'Task description can\'t be empty or more than 1000 characters.';
+        if (!in_array($p, [1,2,3], true)) {
+            $this->errors['priority'][] = 'Priority must be High, Medium, Low';
         }
+        $this->data['priority'] = $p;
 
-        if (!ctype_digit($data['priority'] )) {
-            $errors['priority'][] = 'Task priority must be High, Medium, Low';
-        } else {
-            $p = (int)$data['priority'];
-            if (!in_array($p, [1,2,3], true)) {
-                $errors['priority'][] = 'Priority must be High, Medium, Low';
-            }
-            $data['priority'] = $p;
-        }
-        $data['due_at'] = null;
+    }
 
-        if($data['due_at_raw'] !== '') {
-            $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $data['due_at_raw']);
+    private function processDate() {
+        $this->data['due_at'] = null;
+
+        if ($this->data['due_at_raw'] !== '') {
+            $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $this->data['due_at_raw']);
             $err = DateTimeImmutable::getLastErrors() ?: ['warning_count' => 0, 'error_count' => 0];
             $now = new DateTimeImmutable();
-            if (!$dt || $err['warning_count'] || $err['error_count']) {
-                $errors['due_at'][] = 'Invalid deadline value.';
+
+            if (!$dt || $err['warning_count'] || $err['err_count']) {
+                $this->errors['due_at'][] = 'Invalid deadline value';
             } else {
                 if ($dt < $now) {
-                    $errors['due_at'][] = 'Cannot add past date.';
+                    $this->errors['due_at'][] = 'Invalid deadline value';
                 } else {
-                    $data['due_at'] = $dt->format('Y-m-d H:i:s');
+                    $this->data['due_at'] = $dt->format('Y-m-d H:i:s');
                 }
             }
+            unset($this->data['due_at_raw']);
+
         }
-        unset($data['due_at_raw']);
-        return [$data, $errors];
     }
+
 }
