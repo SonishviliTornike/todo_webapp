@@ -57,7 +57,7 @@ class Tasks {
             $validation = new TaskValidation($_POST['task']);
             [$values, $errors] = $validation->validate();
             if($errors) {
-                return ['page_title' => $page_title, 'variables' => ['errors' => $errors]];
+                return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
             }
             var_dump($values);
             $this->tasksTable->save($values);

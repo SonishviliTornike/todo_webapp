@@ -4,6 +4,9 @@ namespace App\Validation;
 use DateTimeImmutable;
 
 class TaskValidation {
+    private $data = [];
+    private $errors = []; 
+
     public function __construct(private array $input) {}
 
 
@@ -16,18 +19,29 @@ class TaskValidation {
         $data['priority'] = trim($this->input['priority'] ?? '');
         $data['due_at_raw'] = trim($this->input['due_at_raw'] ?? '');
 
+        if ($data['id'] == '') {
+            unset($data['id']);
+        }
+
         return $data;
     } 
+    // I must validate each data in each function
+    private function processId() {
+        $id = $this->data['id'] ?? '';
+        $id = trim($id);
+        
+        if ($id == '') {
+            $this->errors = [];
+        }
+    }
 
     public function validate() {
         $data = $this->sanitizingData();
         $errors = [];
-        // if ($data['id'] == '') {
-        //     unset($data['id']);
-        // }
-        // if ((int)$data['id'] < 0 || !ctype_digit($data['id'])) {
-        //     $errors['id'][] = 'Task can\'t be updated.';
-        // }
+        
+        if ((int)$data['id'] < 0 || !ctype_digit($data['id'])) {
+            $errors['id'][] = 'Task can\'t be updated.';
+        }
 
         if ($data['task_title'] === '' || mb_strlen($data['task_title']) > 100) {
             $errors['task_title'][] = 'Task title can\'t be empty or more than 100 characters.';
