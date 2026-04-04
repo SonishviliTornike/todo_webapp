@@ -46,7 +46,6 @@ class Tasks {
             'id' => $taskId,
             'is_completed' => $isCompleted
         ];
-
         $this->tasksTable->setTaskCompleted($values);
         header('Location: /tasks/list');
     }
@@ -59,7 +58,6 @@ class Tasks {
             if($errors) {
                 return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
             }
-            var_dump($values);
             $this->tasksTable->save($values);
             header('Location: /tasks/list');
             exit;

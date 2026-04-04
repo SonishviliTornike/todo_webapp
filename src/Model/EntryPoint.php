@@ -39,6 +39,7 @@ class EntryPoint {
             $action = array_shift($route);
             if ($method === 'POST') {
                 $action .= 'Submit';
+                // var_dump($_POST['task']);
             }
             $controller = $this->website->getController($controllerName);
 
@@ -48,8 +49,6 @@ class EntryPoint {
                 $page_title = $page['page_title'];
 
                 $variables = $page['variables'];
-
-                var_dump($page);
 
                 $output = $this->loadTemplate($page['template'], $variables);
                 

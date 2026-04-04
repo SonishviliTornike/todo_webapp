@@ -15,6 +15,7 @@ class TaskValidation {
         $this->processTaskText();
         $this->processPriority();
         $this->processDate();
+        
 
         return [$this->data, $this->errors];
     }
@@ -22,7 +23,6 @@ class TaskValidation {
 
     private function processId() {
         $this->data['id'] = trim($this->input['id'] ?? '');
-        
         if ($this->data['id'] == '') {
             unset($this->data['id']);
         } else if ((int)$this->data['id'] < 0 || !ctype_digit($this->data['id'])) {
@@ -46,33 +46,31 @@ class TaskValidation {
     }
 
     private function processPriority() {
-        $this->data['priortiy'] = trim($this->input['priority'] ?? '');
+        $this->data['priority'] = trim($this->input['priority'] ?? '2');
 
-        if (empty($this->data['priority'])) {
+        if (empty($this->data['priority']) || !ctype_digit($this->data['priority'])) {
             $this->errors['priority'][] = 'Priority must be High, Medium, Low';
         }
         
-        $p = (int)$this->data['priority'];
 
-        if (!ctype_digit($p)) {
-            $this->errors['priority'][] = 'Priority must be High, Medium, Low';
-        }
+        $p = (int)$this->data['priority'];
         if (!in_array($p, [1,2,3], true)) {
             $this->errors['priority'][] = 'Priority must be High, Medium, Low';
         }
+
         $this->data['priority'] = $p;
 
     }
 
     private function processDate() {
         $this->data['due_at'] = null;
+        $this->data['due_at_raw'] = trim($this->input['due_at'] ?? '');
 
         if ($this->data['due_at_raw'] !== '') {
             $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $this->data['due_at_raw']);
-            $err = DateTimeImmutable::getLastErrors() ?: ['warning_count' => 0, 'error_count' => 0];
+            $err = DateTimeImmutable::getLastErrors() ?: ['warning_count' => 0, 'err_count' => 0];
             $now = new DateTimeImmutable();
-
-            if (!$dt || $err['warning_count'] || $err['err_count']) {
+            if (!$dt || $err['warning_count'] != 0 || $err['err_count'] != 0 ) {
                 $this->errors['due_at'][] = 'Invalid deadline value';
             } else {
                 if ($dt < $now) {
@@ -83,6 +81,9 @@ class TaskValidation {
             }
             unset($this->data['due_at_raw']);
 
+        } else {
+            unset($this->data['due_at_raw']);
+            $this->data['due_at'] = new DateTimeImmutable();
         }
     }
 
