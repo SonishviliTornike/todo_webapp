@@ -27,12 +27,16 @@ class TaskValidation {
     } 
     // I must validate each data in each function
     private function processId() {
-        $id = $this->data['id'] ?? '';
-        $id = trim($id);
+        $this->data['id'] = trim($this->input ?? '');
         
-        if ($id == '') {
-            $this->errors = [];
+        if ($this->data['id'] == '') {
+            unset($this->data['id']);
+        } else if ((int)$this->data['id'] < 0 || !ctype_digit($this->data['id'])) {
+            $this->errors['id'][] = 'Task can\'t be inserted or updated due to invalid id value';
         }
+
+        return (int)$this->data['id'];
+
     }
 
     public function validate() {
