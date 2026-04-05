@@ -40,8 +40,6 @@
                         <input type="hidden" name="id" value="<?= $task['id'] ?>">
                         <input type="submit" value="Edit Task">
                     </form>
-                </td>
-                <td>
                     <form action="/tasks/delete" method="post">
                         <input type="hidden" name='id' value="<?= $task['id'] ?>">
                         <input type="submit" value="Remove Task">

@@ -10,7 +10,9 @@ class TaskValidation {
     public function __construct(private array $input) {}
     
     public function processPostRequest() {
-        $this->processId();
+        if (ctype_digit($this->input['id'])) {
+            $this->processId();
+        }
         $this->processTaskTitle();
         $this->processTaskText();
         $this->processPriority();
@@ -39,7 +41,7 @@ class TaskValidation {
     }
 
     private function processTaskText() {
-        $this->data['task_description'] = trim($this->data['task_description'] ?? '');
+        $this->data['task_description'] = trim($this->input['task_description'] ?? '');
         if (empty($this->data['task_description']) || mb_strlen($this->data['task_description']) > 1000) {
             $this->errors['task_description'][] = 'Task can\'t be empty or more than 1000 characters';
         }        

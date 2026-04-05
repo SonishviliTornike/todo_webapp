@@ -18,7 +18,10 @@
     </select><br><br>
 
     <input type="hidden" name="task[id]" id="id" value="<?= $task['id']?>">
-    <input type="submit" name="submit" value="Save"><br><br>
+    <div style="display:flex; gap:12px; align-items:center;">
+        <input type="submit" name="submit" value="Save">
+        <a href="/tasks/list" class="btn">Return</a>
+    </div>
 </form>
 
 <?php if (!empty($errors)): ?>
