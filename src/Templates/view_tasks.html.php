@@ -10,7 +10,7 @@
         </tr>
         </thead>
     <tbody>
-        <br><h3 class="total-tasks"><?= 'Total tasks: '. (int)$totalTasks[0] ?></h3><br>
+        <br><h3 class="total-tasks"><?= 'Total tasks: '. htmlspecialchars((int)$totalTasks[0], ENT_QUOTES, 'UTF-8') ?></h3><br>
         <?php foreach ($tasks as $task): ?>
             <tr>    
                 <td><?= htmlspecialchars($task['task_title'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
@@ -25,7 +25,7 @@
                 ?>
                 <td><?= $priority ?></td>
                 <td>
-                    <form method="post" action="/tasks/setTaskCompleted/<?$task['id'] ?>">
+                    <form method="post" action="/tasks/setTaskCompleted">
                         <input type="hidden" name="id" value="<?= $task['id'] ?>">
                         <input type="hidden" name="is_completed" value="0">
                         <input type="checkbox"

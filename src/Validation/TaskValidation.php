@@ -2,6 +2,7 @@
 namespace App\Validation;
 
 use DateTimeImmutable;
+//HERE IS WORK, LOOK AT LAST CHAT WITH GEMINI
 
 class TaskValidation {
     private $data = [];
@@ -10,18 +11,24 @@ class TaskValidation {
     public function __construct(private array $input) {}
     
     public function processPostRequest() {
-        if (ctype_digit($this->input['id'])) {
-            $this->processId();
-        }
-        $this->processTaskTitle();
-        $this->processTaskText();
-        $this->processPriority();
-        $this->processDate();
-        
+        $this->processFlow();
 
         return [$this->data, $this->errors];
     }
 
+    private function processFlow() {
+        if (isset($this->input['id']) && ctype_digit($this->input['id'])) {
+            $this->processId();
+        }
+        $this->processTaskTitle();
+
+        $this->processTaskText();
+
+        $this->processPriority();
+
+        $this->processDate();
+
+    }
 
     private function processId() {
         $this->data['id'] = trim($this->input['id'] ?? '');
@@ -67,11 +74,11 @@ class TaskValidation {
     private function processDate() {
         $this->data['due_at'] = null;
         $this->data['due_at_raw'] = trim($this->input['due_at'] ?? '');
+        $now = new DateTimeImmutable();
 
         if ($this->data['due_at_raw'] !== '') {
             $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $this->data['due_at_raw']);
             $err = DateTimeImmutable::getLastErrors() ?: ['warning_count' => 0, 'err_count' => 0];
-            $now = new DateTimeImmutable();
             if (!$dt || $err['warning_count'] != 0 || $err['err_count'] != 0 ) {
                 $this->errors['due_at'][] = 'Invalid deadline value';
             } else {
@@ -85,7 +92,7 @@ class TaskValidation {
 
         } else {
             unset($this->data['due_at_raw']);
-            $this->data['due_at'] = new DateTimeImmutable();
+            $this->data['due_at'] = $now->format('Y-m-d H:i:s');
         }
     }
 

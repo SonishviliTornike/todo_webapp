@@ -39,11 +39,11 @@ class EntryPoint {
             $action = array_shift($route);
             if ($method === 'POST') {
                 $action .= 'Submit';
-                // var_dump($_POST['task']);
             }
             $controller = $this->website->getController($controllerName);
 
-            if (is_callable([$controller, $action])) {
+            // var_dump($controller);
+            if (is_callable([$controller, $action])) {    
                 $page = $controller->$action(...$route);
 
                 $page_title = $page['page_title'];

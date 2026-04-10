@@ -43,7 +43,7 @@ class DatabaseTable {
     }
     
 
-    public function showHighPriortyTasks(int $limit = 15) {
+    public function showHighPriorityTasks(int $limit = 15) {
         $query = "SELECT `task_title`, `task_description`, `due_at`, `priority`, is_completed FROM  `{$this->table}` 
             WHERE `priority` < 2 
             AND `is_completed` = 0 

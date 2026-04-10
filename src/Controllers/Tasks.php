@@ -28,10 +28,9 @@ class Tasks {
     public function setTaskCompletedSubmit() {
         $taskIdRaw = $_POST['id'] ?? null;
         $isCompletedRaw = $_POST['is_completed'] ?? 0;
-
-        if (!ctype_digit((string)$taskIdRaw) || !isset($taskIdRaw)) {
+        if (!isset($taskIdRaw) || !ctype_digit($taskIdRaw)) {
             http_response_code(400);
-            exit('Error: invalid task');
+            exit('Invalid task id.');
         }
 
         if ($isCompletedRaw !== '0' && $isCompletedRaw !== '1') {
@@ -56,7 +55,7 @@ class Tasks {
             $validation = new TaskValidation($_POST['task']);
             [$values, $errors] = $validation->processPostRequest();
             if($errors) {
-                return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
+                return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
             }
             $this->tasksTable->save($values);
             header('Location: /tasks/list');
@@ -73,7 +72,7 @@ class Tasks {
             if($taskId <= 0) {
                 $page_title = 'Error';
                 $errors[] = ['Error: Invalid primary key provided.'];
-                return ['page_title' => $page_title, 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
+                return ['page_title' => $page_title, 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
 
             }
             $task = $this->tasksTable->find($taskId) ?? null;
@@ -88,7 +87,7 @@ class Tasks {
     public function deleteSubmit() {
         if (isset($_POST['id'])) {
             $taskId = $_POST['id'] ?? 0;
-            if ($taskId >! 0 ) {
+            if ($taskId <= 0 ) {
                 $errors = ['Error: Invalid primary key provided.'];
                 $page_title = 'Error';
                 return ['errors' => $errors, 'page_title' => $page_title];
@@ -109,7 +108,7 @@ class Tasks {
 
         $welcome = 'Welcome';
         $tasks = [];
-        $result = $this->tasksTable->showHighPriortyTasks();
+        $result = $this->tasksTable->showHighPriorityTasks();
         foreach($result as $row) {
             $tasks[] = array(
                 'task_title' => $row['task_title'],
