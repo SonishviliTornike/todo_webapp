@@ -13,9 +13,9 @@
         <br><h3 class="total-tasks"><?= 'Total tasks: '. htmlspecialchars((int)$totalTasks[0], ENT_QUOTES, 'UTF-8') ?></h3><br>
         <?php foreach ($tasks as $task): ?>
             <tr>    
-                <td><?= htmlspecialchars($task['task_title'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                <td><?= htmlspecialchars($task['task_description'] ?? '', ENT_QUOTES,'UTF-8') ?></td>
-                <td><?= htmlspecialchars($task['due_at'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                <td data-label="Title"><?= htmlspecialchars($task['task_title'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                <td data-label="Description"><?= htmlspecialchars($task['task_description'] ?? '', ENT_QUOTES,'UTF-8') ?></td>
+                <td data-label="Due"><?= htmlspecialchars($task['due_at'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                 <?php $priority = $task['priority'];
                     $priority = match ((int)$task['priority']){
                         1 => 'High',
@@ -23,7 +23,7 @@
                         3 => 'Low',
                     }
                 ?>
-                <td><?= $priority ?></td>
+                <td data-label="Priority"><?= $priority ?></td>
                 <td>
                     <form method="post" action="/tasks/setTaskCompleted">
                         <input type="hidden" name="id" value="<?= $task['id'] ?>">

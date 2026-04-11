@@ -2,7 +2,7 @@
 namespace App\Validation;
 
 use DateTimeImmutable;
-//HERE IS WORK, LOOK AT LAST CHAT WITH GEMINI
+
 
 class TaskValidation {
     private $data = [];
@@ -17,9 +17,8 @@ class TaskValidation {
     }
 
     private function processFlow() {
-        if (isset($this->input['id']) && ctype_digit($this->input['id'])) {
-            $this->processId();
-        }
+        $this->processId();
+        
         $this->processTaskTitle();
 
         $this->processTaskText();
@@ -29,14 +28,18 @@ class TaskValidation {
         $this->processDate();
 
     }
-
+    //HERE IS WORK, LOOK AT LAST CHAT WITH GEMINI id to fix
     private function processId() {
-        $this->data['id'] = trim($this->input['id'] ?? '');
-        if ($this->data['id'] == '') {
-            unset($this->data['id']);
-        } else if ((int)$this->data['id'] < 0 || !ctype_digit($this->data['id'])) {
+        $id = trim($this->input['id'] ?? '');
+        if (!isset($id) || empty($id)) {
+            unset($id);
+        } else if ((int)$id <= 0 || !ctype_digit($id)) {
             $this->errors['id'][] = 'Task can\'t be inserted or updated due to invalid id value';
         }
+        if(isset($id)) {
+            $this->data['id'] = $id;
+        }
+        
     }
 
     private function processTaskTitle() {
@@ -59,15 +62,15 @@ class TaskValidation {
 
         if (empty($this->data['priority']) || !ctype_digit($this->data['priority'])) {
             $this->errors['priority'][] = 'Priority must be High, Medium, Low';
-        }
-        
+        }else {
+            $p = (int)$this->data['priority'];
+            if (!in_array($p, [1,2,3], true)) {
+                $this->errors['priority'][] = 'Priority must be High, Medium, Low';
+            }
+    
+            $this->data['priority'] = $p;
 
-        $p = (int)$this->data['priority'];
-        if (!in_array($p, [1,2,3], true)) {
-            $this->errors['priority'][] = 'Priority must be High, Medium, Low';
         }
-
-        $this->data['priority'] = $p;
 
     }
 
@@ -84,6 +87,7 @@ class TaskValidation {
             } else {
                 if ($dt < $now) {
                     $this->errors['due_at'][] = 'Invalid deadline value';
+
                 } else {
                     $this->data['due_at'] = $dt->format('Y-m-d H:i:s');
                 }
