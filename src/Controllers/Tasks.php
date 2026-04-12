@@ -3,16 +3,18 @@
 namespace App\Controllers;
 use App\Model\DatabaseTable;
 use App\Validation\TaskValidation;
+use App\Model\TasksTable;
+
 
 class Tasks {
-    public function __construct(private DatabaseTable $tasksTable) {}
+    public function __construct(private DatabaseTable $databaseTable, private TasksTable $tasksTable) {}
 
-
+    
     public function list() {
         $page_title = 'Tasks';
-        $tasks = $this->tasksTable->findAll();
+        $tasks = $this->databaseTable->findAll();
 
-        $totalTasks = $this->tasksTable->totalTasks();
+        $totalTasks = $this->databaseTable->totalTasks();
 
         return [
             'page_title' => $page_title, 
@@ -57,7 +59,7 @@ class Tasks {
             if($errors) {
                 return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
             }
-            $this->tasksTable->save($values);
+            $this->databaseTable->save($values);
             header('Location: /tasks/list');
             exit;
 
@@ -75,7 +77,7 @@ class Tasks {
                 return ['page_title' => $page_title, 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
 
             }
-            $task = $this->tasksTable->find($taskId) ?? null;
+            $task = $this->databaseTable->find($taskId) ?? null;
 
             return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task ?? null]];
         }
@@ -94,7 +96,7 @@ class Tasks {
                 }
             $taskId = (int)$taskId;
 
-            $this->tasksTable->delete($taskId);
+            $this->databaseTable->delete($taskId);
 
             header('Location: /tasks/list');
 
