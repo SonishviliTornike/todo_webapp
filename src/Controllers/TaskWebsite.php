@@ -21,15 +21,12 @@ class TaskWebsite implements \App\Model\Website {
             $tasksTable = new TasksTable($conn, 'tasks');
             $controller = new Tasks($databaseTable, $tasksTable);
         } else if ($controllerName == 'users') {
-            $usersTable = new DatabaseTable($pdo->getPdoConnection(), 'users', 'id');
+            $usersTable = new DatabaseTable($conn, 'users', 'id');
             $controller = new Users($usersTable);
         }
-
+        
         return $controller;
-    }
-
-    private function connect() {
-        $pdo = new DatabaseConnection();
-
+        
+            
     }
 }

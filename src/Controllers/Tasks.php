@@ -88,8 +88,8 @@ class Tasks {
 
     public function deleteSubmit() {
         if (isset($_POST['id'])) {
-            $taskId = $_POST['id'] ?? 0;
-            if ($taskId <= 0 ) {
+            $taskId = $_POST['id'] ?? '0';
+            if ((int)$taskId <= 0 ) {
                 $errors = ['Error: Invalid primary key provided.'];
                 $page_title = 'Error';
                 return ['errors' => $errors, 'page_title' => $page_title];
