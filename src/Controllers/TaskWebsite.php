@@ -14,16 +14,18 @@ class TaskWebsite implements \App\Model\Website {
     }   
 
     public function getController(string $controllerName): ? object {
+        $controller = null;
         $pdo = new DatabaseConnection();
         $conn = $pdo->getPdoConnection();
         if ($controllerName == 'tasks') {
             $databaseTable = new DatabaseTable($conn, 'tasks', 'id');
             $tasksTable = new TasksTable($conn, 'tasks');
             $controller = new Tasks($databaseTable, $tasksTable);
-        } else if ($controllerName == 'users') {
+        } elseif ($controllerName == 'users') {
             $usersTable = new DatabaseTable($conn, 'users', 'id');
             $controller = new Users($usersTable);
         }
+
         
         return $controller;
         

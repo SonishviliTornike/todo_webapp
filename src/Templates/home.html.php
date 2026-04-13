@@ -16,14 +16,7 @@
                 <td><?= htmlspecialchars($task['task_title'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                 <td><?= htmlspecialchars($task['task_description'] ?? '', ENT_QUOTES,'UTF-8') ?></td>
                 <td><?= htmlspecialchars($task['due_at'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                <?php $priority = $task['priority'];
-                    $priority = match ((int)$task['priority']){
-                        1 => 'High',
-                        default => 'Medium',
-                        3 => 'Low',
-                    }
-                ?>
-                <td><?= $priority ?></td>
+                <td><?= htmlspecialchars($task['priority'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>

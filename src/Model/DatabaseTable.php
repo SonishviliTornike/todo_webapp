@@ -6,15 +6,6 @@ class DatabaseTable {
     
     public function __construct(private \PDO $pdo, private string $table, private string $primaryKey){}
 
-
-    public function totalTasks() {
-        $query = 'SELECT COUNT(*) FROM `' . $this->table . '` ';
-        
-        $stmt = $this->pdo->query($query);
-        
-        return $stmt->fetch(\PDO::FETCH_NUM);
-    }
-
     public function findAll() {
 
         $query = 'SELECT * FROM `' . $this->table . '`';

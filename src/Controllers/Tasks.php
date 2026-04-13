@@ -14,7 +14,7 @@ class Tasks {
         $page_title = 'Tasks';
         $tasks = $this->databaseTable->findAll();
 
-        $totalTasks = $this->databaseTable->totalTasks();
+        $totalTasks = $this->tasksTable->totalTasks();
 
         return [
             'page_title' => $page_title, 

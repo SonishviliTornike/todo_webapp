@@ -33,5 +33,12 @@ class TasksTable {
         return $stmt->fetchAll();
     
     }
+    public function totalTasks() {
+        $query = 'SELECT COUNT(*) FROM `' . $this->table . '` ';
+        
+        $stmt = $this->pdo->query($query);
+        
+        return $stmt->fetch(\PDO::FETCH_NUM);
+    }
 
 }
