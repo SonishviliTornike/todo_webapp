@@ -1,7 +1,6 @@
 <?php 
 
 namespace App\Model;
-use App\Core\DatabaseConnection;
 
 class TasksTable {
     public function __construct(private \PDO $pdo,  private string $table) {}
@@ -16,7 +15,7 @@ class TasksTable {
     }
 
     
-    public function showHighPriorityTasks(int $limit = 15) {
+    public function showHighPriorityTasks(int $limit = 15): array {
         $query = "SELECT `task_title`, `task_description`, `due_at`, `priority`, is_completed FROM  `{$this->table}` 
             WHERE `priority` < 2 
             AND `is_completed` = 0 
@@ -33,7 +32,7 @@ class TasksTable {
         return $stmt->fetchAll();
     
     }
-    public function totalTasks() {
+    public function totalTasks(): array {
         $query = 'SELECT COUNT(*) FROM `' . $this->table . '` ';
         
         $stmt = $this->pdo->query($query);

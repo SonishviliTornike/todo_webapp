@@ -10,7 +10,7 @@ class Tasks {
     public function __construct(private DatabaseTable $databaseTable, private TasksTable $tasksTable) {}
 
     
-    public function list() {
+    public function list(): array {
         $page_title = 'Tasks';
         $tasks = $this->databaseTable->findAll();
 
@@ -51,7 +51,7 @@ class Tasks {
         header('Location: /tasks/list');
     }
 
-    public function insertEditSubmit() { 
+    public function insertEditSubmit(): array { 
         $page_title = 'Insert task';
         if (isset($_POST['task'])) {
             $validation = new TaskValidation($_POST['task']);
@@ -68,7 +68,7 @@ class Tasks {
 
     }
 
-    public function insertEdit($taskId = null) {    
+    public function insertEdit($taskId = null): array {    
         if (isset($taskId)){
             $page_title = 'Edit task';
             if($taskId <= 0) {
@@ -108,20 +108,10 @@ class Tasks {
     public function home() {
         $page_title = 'Home Page';
 
-        $welcome = 'Welcome';
-        $tasks = [];
         $result = $this->tasksTable->showHighPriorityTasks();
-        foreach($result as $row) {
-            $tasks[] = array(
-                'task_title' => $row['task_title'],
-                'task_description' => $row['task_description'],
-                'due_at' => $row['due_at'],
-                'priority' => $row['priority'],  
-                );
-        }
 
         return ['page_title' => $page_title, 'template' => 'home.html.php', 'variables' => [
-            'tasks' => $tasks,
+            'tasks' => $result,
         ]];
     }
     

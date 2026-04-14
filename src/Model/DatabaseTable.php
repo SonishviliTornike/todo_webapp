@@ -6,7 +6,7 @@ class DatabaseTable {
     
     public function __construct(private \PDO $pdo, private string $table, private string $primaryKey){}
 
-    public function findAll() {
+    public function findAll(): array {
 
         $query = 'SELECT * FROM `' . $this->table . '`';
 
@@ -14,12 +14,11 @@ class DatabaseTable {
 
         $stmt->execute();
 
-
         return $stmt->fetchAll();
 
     }
 
-    public function delete(int $taskId) {
+    public function delete(int $taskId): bool {
         $query = 'DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id';
 
 
@@ -30,13 +29,12 @@ class DatabaseTable {
         $stmt->execute();
 
         return $stmt->rowCount() === 1;
-
     }
     
 
    
     public function insert(array $values) {
-        if (!isset($values)) {
+        if (empty($values)) {
             throw new \InvalidArgumentException('Error: Empty values provided!');
         }
 
@@ -65,9 +63,9 @@ class DatabaseTable {
 
     }
 
-    private function update($values) {
+    private function update(array $values) {
 
-        if (!isset($values)) {
+        if (empty($values)) {
             throw new \InvalidArgumentException("Error: emprty array was provided.");
         }
 
@@ -82,7 +80,7 @@ class DatabaseTable {
         
         $query .= ' WHERE `' . $this->primaryKey . '` = :primaryKey';
 
-        $values['primaryKey'] = $values['id'];
+        $values['primaryKey'] = $values[$this->primaryKey];
 
         $stmt = $this->pdo->prepare($query);   
 
@@ -90,18 +88,17 @@ class DatabaseTable {
         $stmt->execute($values);
     }
 
-    public function save($record) {
-        if (empty($record[$this->primaryKey])){
+    public function save(array $record) {
+        if (empty($record[$this->primaryKey])) {
             unset($record[$this->primaryKey]);
             $this->insert($record);
         } else {
             $this->update($record);
-
         }
 
     }
 
-    public function find(int $value) {
+    public function find(int $value): array | false {
         if(empty($value)){
             throw new \InvalidArgumentException('Error: Invalid argument provided.');
         }

@@ -7,7 +7,7 @@ use PDOException;
 class EntryPoint {
     public function __construct(private Website $website) {}
 
-    private function loadTemplate(string $templateFileName, array $variables) {
+    private function loadTemplate(string $templateFileName, array $variables): string {
         extract($variables);
         
         ob_start();
@@ -42,7 +42,6 @@ class EntryPoint {
             }
             $controller = $this->website->getController($controllerName);
 
-            // var_dump($controller);
             if (is_callable([$controller, $action])) {    
                 $page = $controller->$action(...$route);
 
