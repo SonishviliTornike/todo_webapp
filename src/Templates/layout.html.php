@@ -18,6 +18,7 @@
         <li><a href="/">Home Page</a></li>
         <li><a href="/tasks/insertedit">Add Task</a></li>
         <li><a href="/tasks/list">View Task List</a></li>
+        <li><a href="/users/registrationform">Register an account</a></li>
     </ul>
 </nav>
 

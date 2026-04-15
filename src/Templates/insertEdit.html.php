@@ -20,7 +20,7 @@
     <input type="hidden" name="task[id]" id="id" value="<?= $task['id'] ?? ''?>">
     <div style="display:flex; gap:12px; align-items:center;">
         <input type="submit" name="submit" value="Save">
-        <a href="/tasks/list" class="btn">Return</a>
+        <a href="/tasks/home" class="btn">Return</a>
     </div>
 </form>
 

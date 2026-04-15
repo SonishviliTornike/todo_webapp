@@ -10,7 +10,7 @@ class TaskValidation {
 
     public function __construct(private array $input) {}
     
-    public function processPostRequest() {
+    public function processTaskSubmit() {
         $this->processFlow();
 
         return [$this->data, $this->errors];

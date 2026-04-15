@@ -18,13 +18,13 @@ class DatabaseTable {
 
     }
 
-    public function delete(int $taskId): bool {
+    public function delete(int $id): bool {
         $query = 'DELETE FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :id';
 
 
         $stmt = $this->pdo->prepare($query);
 
-        $stmt->bindValue(':id', $taskId, \PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
 
         $stmt->execute();
 
