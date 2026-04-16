@@ -50,8 +50,12 @@ class UserValidation {
     }
 
     private function processEmail() {
-        $email = trim($this->input['email']) ?? '';
+        $email = trim($this->input['email'] ?? '');
     
+        if ($email === '') {
+            $this->errors['email'][] = 'Email cant be blank.';
+            return;
+        }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->errors['email'][] = 'Invalid email address.';
@@ -63,19 +67,27 @@ class UserValidation {
             return;
         }
         
-        $splittedEmail = explode($email, '@');
-        $hostname = $splittedEmail[1];
+        $splittedEmail = explode('@', $email);
+        $hostname = strtolower($splittedEmail[1]);
         $mxhosts = [];
 
-        if (!getmxrr($hostname, $mxhosts)){
+        if (!getmxrr($hostname, $mxhosts)) {
             $this->errors['email'][] = 'Invalid email domain address.';
             return;
         }
 
         $this->data['email'] = $email;
+    }
+
+    private function processFullName() {
+        $fullName = ($this->input['fullName'] ?? '');
         
+        if(strlen($fullName) > 100 || strlen($fullName) < 3 ) {
+            $this->errors['fullName'][] = 'Full name can\'t be more than 100 characters or less than 3.';
+            return;
+        } 
 
-
+        $this->data['fullName'] = $fullName;
     }
 
 }
