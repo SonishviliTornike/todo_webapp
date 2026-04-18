@@ -5,30 +5,43 @@ class UserValidation {
     private $data = [];
     private $errors = [];
     
-    public function __construct(private array $input) {}
+    public function __construct() {}
 
-    public function processUserRegister(){
-        $this->proccessFlow();
+    public function processUserRegister(array $input){
+        $this->proccessFlow($input);
 
-        return [$this->data, $this->errors];
-    }
+        if (!empty($this->errors)) {
+            return false;
+        }   
+
+        return true;
 
 
-    private function proccessFlow() {
-        $this->processId();
         
-        $this->processUserName();
+    }
 
-        $this->processEmail();
+    public function getData(): array {
+        return $this->data;
+    }
 
-        $this->processFullName();
+    public function getErrors(): array {
+        return $this->errors;
+    }
+    private function proccessFlow(array $input) {
+        $this->processId($input);
+        
+        $this->processUserName($input);
 
-        $this->processPassword();
+        $this->processEmail($input);
+
+        $this->processFullName($input);
+
+        $this->processPassword($input);
     }
 
 
-    private function processId() {
-        $id = trim($this->input['id'] ?? '');
+    private function processId(array $input) {
+        $id = trim($input['id'] ?? '');
 
         if ($id === '') {
             return;
@@ -49,20 +62,32 @@ class UserValidation {
     }
 
 
-    private function processUserName() {
-        $userName = trim($this->input['userName'] ?? '');
+    private function processUserName(array $input) {
+        $userName = trim($input['userName'] ?? '');
 
         
-        if (empty($userName) || strlen($userName) > 55  || strlen($userName) < 3) {
-            $this->errors['userName'][] = 'User name must be min 3 characters long and max  55 characters long';
+        if (empty($userName)){
+            $this->errors['userName'][] = 'User name can\'t be blank.';
             return;
+        }
+             
+            
+    
+        if(strlen($userName) < 3) {
+            $this->errors['userName'][] = 'User name must be min 3 characters long.';
+            return;
+
+        } 
+        
+        if (strlen($userName) < 3) {
+            $this->errors['userName'][] = 'User name must be max 3 characters long.';
         }
 
         $this->data['userName'] = $userName;
     }
 
-    private function processEmail() {
-        $email = trim($this->input['email'] ?? '');
+    private function processEmail(array $input) {
+        $email = trim($input['email'] ?? '');
     
         if ($email === '') {
             $this->errors['email'][] = 'Email cant be blank.';
@@ -80,9 +105,10 @@ class UserValidation {
         }
         
         $splittedEmail = explode('@', $email);
-        $hostname = strtolower($splittedEmail[1]);
 
-        if (!dns_get_record($hostname)) {
+        $hostname = '@' . strtolower($splittedEmail[1]);
+
+        if (dns_get_record($hostname) === false) {
             $this->errors['email'][] = 'Invalid email domain address.';
             return;
         }
@@ -90,19 +116,24 @@ class UserValidation {
         $this->data['email'] = $email;
     }
 
-    private function processFullName() {
-        $fullName = trim($this->input['fullName'] ?? '');
+    private function processFullName(array $input) {
+        $fullName = trim($input['fullName'] ?? '');
         
-        if(strlen($fullName) > 100 || strlen($fullName) < 3 ) {
-            $this->errors['fullName'][] = 'Full name can\'t be more than 100 characters or less than 3.';
+        if(strlen($fullName) > 100) {
+            $this->errors['fullName'][] = 'Full name can\'t be more than 100 characters long.';
             return;
         } 
+
+        if (strlen($fullName) < 3 ) {
+            $this->errors['fullName'][] = 'Full name can\'t be less than 3 characters long';
+            return;
+        }
 
         $this->data['fullName'] = $fullName;
     }
 
-    private function processPassword() {
-        $password = trim($this->input['password'] ?? '');
+    private function processPassword(array $input) {
+        $password = trim($input['password'] ?? '');
         
 
         if($password === '') {
