@@ -88,6 +88,8 @@ class UserValidation {
 
     private function processEmail(array $input) {
         $email = trim($input['email'] ?? '');
+
+        
     
         if ($email === '') {
             $this->errors['email'][] = 'Email cant be blank.';
@@ -106,9 +108,9 @@ class UserValidation {
         
         $splittedEmail = explode('@', $email);
 
-        $hostname = '@' . strtolower($splittedEmail[1]);
+        $hostname = strtolower($splittedEmail[1]);
 
-        if (dns_get_record($hostname) === false) {
+        if (dns_get_record($hostname) === false || dns_get_record($hostname) === []) {
             $this->errors['email'][] = 'Invalid email domain address.';
             return;
         }

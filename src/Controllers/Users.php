@@ -15,7 +15,7 @@ class Users {
         ];
     }    
 
-    public function success() {
+    public function registrationSuccess() {
         return [
             'template' => 'registerSuccess.html.php',
             'page_title' => 'Registration Successful',
@@ -24,8 +24,6 @@ class Users {
     }
 
     public function registrationFormSubmit() {
-        $page_title = 'Register';
-
         if (isset($_POST)) {
             $userHandler = new UserValidation();
             $rawData = $_POST;
@@ -40,7 +38,9 @@ class Users {
 
             $this->databaseTable->save($cleanData);
 
-            header('Location: /tasks/home');
+            header('Location: /users/registrationSuccess');
+            exit;
+            
 
 
 
