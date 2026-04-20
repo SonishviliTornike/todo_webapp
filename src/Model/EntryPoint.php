@@ -9,10 +9,10 @@ class EntryPoint {
 
     private function loadTemplate(string $templateFileName, array $variables): string {
         extract($variables);
-        
+
         ob_start();
 
-        include __DIR__ . '/../templates/' . $templateFileName;
+        include __DIR__ . '/../Templates/' . $templateFileName;
 
         return ob_get_clean();
     }
@@ -46,11 +46,10 @@ class EntryPoint {
                 $page = $controller->$action(...$route);
 
                 $page_title = $page['page_title'];
-
+    
                 $variables = $page['variables'];
-
-                $output = $this->loadTemplate($page['template'], $variables);
                 
+                $output = $this->loadTemplate($page['template'], $variables);
             } else {
                 http_response_code(404);
                 $page_title = 'Not found';

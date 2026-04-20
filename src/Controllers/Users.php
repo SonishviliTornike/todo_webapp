@@ -15,9 +15,9 @@ class Users {
         ];
     }    
 
-    public function registrationSuccess() {
+    public function registerSuccess() {
         return [
-            'template' => 'registerSuccess.html.php',
+            'template' => 'registersuccess.html.php',
             'page_title' => 'Registration Successful',
             'variables' => ['']
         ];
@@ -37,13 +37,12 @@ class Users {
             $cleanData = $userHandler->getData();
 
             $this->databaseTable->save($cleanData);
-
-            header('Location: /users/registrationSuccess');
+            //problem
+            header('Location: /users/registersuccess');
             exit;
+
+        } else {
             
-
-
-
         }
 
     }

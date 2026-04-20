@@ -22,8 +22,8 @@ class TaskWebsite implements \App\Model\Website {
             $tasksTable = new TasksTable($conn, 'tasks');
             $controller = new Tasks($databaseTable, $tasksTable);
         } elseif ($controllerName == 'users') {
-            $usersTable = new DatabaseTable($conn, 'users', 'id');
-            $controller = new Users($usersTable);
+            $databaseTable = new DatabaseTable($conn, 'users', 'id');
+            $controller = new Users($databaseTable);
         }
 
         
