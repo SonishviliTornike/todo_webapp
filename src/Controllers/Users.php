@@ -5,7 +5,7 @@ use App\Model\DatabaseTable;
 use App\Validation\UserValidation;
 
 class Users {
-    public function __construct(private DatabaseTable $databaseTable){}
+    public function __construct(private DatabaseTable $tasksTable){}
 
     public function registrationForm() {
         return [
@@ -25,7 +25,7 @@ class Users {
 
     public function registrationFormSubmit() {
         if (isset($_POST)) {
-            $userHandler = new UserValidation();
+            $userHandler = new UserValidation($this->tasksTable);
             $rawData = $_POST;
 
             if($userHandler->processUserRegister($_POST) === false) {

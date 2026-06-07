@@ -1,4 +1,8 @@
-<h2>Register an account</h2>
+
+<div class="register-container">
+    <h2>Register an account</h2>
+</div>
+
 <form action="" method="post">
     <label for="userName">Enter username:</label>
     <input type="text" name="userName" id="userName" required maxlength="55" minlength="3" value="<?= htmlspecialchars($rawData['userName'] ?? '', ENT_QUOTES, 'UTF-8') ?? '' ?>">

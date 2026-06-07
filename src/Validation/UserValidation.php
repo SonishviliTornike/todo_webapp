@@ -1,11 +1,12 @@
 <?php
 namespace App\Validation;
 
+
 class UserValidation {
     private $data = [];
     private $errors = [];
     
-    public function __construct() {}
+    public function __construct(private \App\Model\DatabaseTable $databaseTable) {}
 
     public function processUserRegister(array $input){
         $this->proccessFlow($input);
@@ -83,6 +84,7 @@ class UserValidation {
             $this->errors['userName'][] = 'User name must be max 3 characters long.';
         }
 
+        $this->databaseTable->find('userId', $)
         $this->data['userName'] = $userName;
     }
 

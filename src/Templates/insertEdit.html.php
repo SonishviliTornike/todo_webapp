@@ -1,3 +1,10 @@
+<div class="add-edit-container">
+    <?php if (empty($task['id'])):?>
+        <h2>Insert Task</h2>
+    <?else: ?>
+        <h2>Edit Task</h2>
+    <?endif;?>
+</div>
 
 
 <form action="/tasks/insertedit" method="post">

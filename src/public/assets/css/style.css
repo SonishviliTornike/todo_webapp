@@ -334,6 +334,22 @@ form:not(.tasks-table form) {
   box-shadow: var(--shadow-lg);
 }
 
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+}
+
+.add-edit-container {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+  color: var(--text-muted);
+}
+
 label {
   display: block;
   font-size: 12px;
@@ -489,6 +505,7 @@ a.btn:focus-visible {
 @media (max-width: 900px) {
   main, header, nav, footer {
     width: min(1160px, 96vw);
+    margin-inline: auto;
   }
 }
 
