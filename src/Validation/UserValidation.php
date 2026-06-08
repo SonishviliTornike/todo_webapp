@@ -6,7 +6,7 @@ class UserValidation {
     private $data = [];
     private $errors = [];
     
-    public function __construct(private \App\Model\DatabaseTable $databaseTable) {}
+    public function __construct(private \App\Model\DatabaseTable $usersTable) {}
 
     public function processUserRegister(array $input){
         $this->proccessFlow($input);
@@ -67,34 +67,43 @@ class UserValidation {
         $userName = trim($input['userName'] ?? '');
 
         
-        if (empty($userName)){
+        if ($userName === ''){
             $this->errors['userName'][] = 'User name can\'t be blank.';
             return;
         }
-             
-            
-    
+
         if(strlen($userName) < 3) {
             $this->errors['userName'][] = 'User name must be min 3 characters long.';
             return;
 
         } 
         
-        if (strlen($userName) < 3) {
-            $this->errors['userName'][] = 'User name must be max 3 characters long.';
+        if (strlen($userName) > 55) {
+            $this->errors['userName'][] = 'User name must be max 55 characters long.';
+            return;
         }
 
-        $this->databaseTable->find('userId', $)
+        $duplicateUser = $this->usersTable->find($userName, 'userName');
+        
+        if ($duplicateUser !== false) {
+            $this->errors['userName'][] = 'This username already exists.';
+            return;
+        }
+    
+        
         $this->data['userName'] = $userName;
     }
 
     private function processEmail(array $input) {
         $email = trim($input['email'] ?? '');
-
-        
     
         if ($email === '') {
-            $this->errors['email'][] = 'Email cant be blank.';
+            $this->errors['email'][] = 'Email can\'t be blank.';
+            return;
+        }
+        
+        if (strlen($email) > 254){
+            $this->errors['email'][] = 'Email can\'t be more than 254 characters long.';
             return;
         }
 
@@ -102,18 +111,21 @@ class UserValidation {
             $this->errors['email'][] = 'Invalid email address.';
             return;
         }
-        
-        if (strlen($email) > 254) {
-            $this->errors['email'][] = 'Email must be max 254 characters long.';
-            return;
-        }
-        
         $splittedEmail = explode('@', $email);
 
         $hostname = strtolower($splittedEmail[1]);
 
-        if (dns_get_record($hostname) === false || dns_get_record($hostname) === []) {
+        $checkedDns = dns_get_record($hostname);
+
+        if ($checkedDns === false  || $checkedDns === []) {
             $this->errors['email'][] = 'Invalid email domain address.';
+            return;
+        }
+
+        $duplicateEmail = $this->usersTable->find($email, 'email');
+
+        if ($duplicateEmail !== false) {
+            $this->errors['email'][] = 'Account with this email addres already exists.';
             return;
         }
 
@@ -122,22 +134,28 @@ class UserValidation {
 
     private function processFullName(array $input) {
         $fullName = trim($input['fullName'] ?? '');
-        
-        if(strlen($fullName) > 100) {
-            $this->errors['fullName'][] = 'Full name can\'t be more than 100 characters long.';
-            return;
-        } 
 
+        if ($fullName === '') {
+            $this->errors['fullName'][] = 'Full name can\'t be blank';
+            return;
+        }
+        
         if (strlen($fullName) < 3 ) {
             $this->errors['fullName'][] = 'Full name can\'t be less than 3 characters long';
             return;
         }
 
+        if(strlen($fullName) > 100) {
+            $this->errors['fullName'][] = 'Full name can\'t be more than 100 characters long.';
+            return;
+        } 
+
+
         $this->data['fullName'] = $fullName;
     }
 
     private function processPassword(array $input) {
-        $password = trim($input['password'] ?? '');
+        $password = $input['password'] ?? '';
         
 
         if($password === '') {
@@ -145,10 +163,14 @@ class UserValidation {
             return;
         }
 
-        if(strlen($password) <= 10) {
+        if(strlen($password) < 11) {
             $this->errors['password'][] = 'Password must be minimum 11 characters long.';
             return;
         }
+        if (strlen($password) > 15) {
+            $this->errors['password'][] = 'Password must be maximum 15 characters long';
+        }
+
 
        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 

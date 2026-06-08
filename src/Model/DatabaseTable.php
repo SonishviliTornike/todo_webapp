@@ -4,7 +4,9 @@ namespace App\Model;
 
 class DatabaseTable {
     
-    public function __construct(private \PDO $pdo, private string $table, private string $primaryKey){}
+    public function __construct(private \PDO $pdo, private string $table, private string $primaryKey, private ?array $allowedColumNames){
+        $this->allowedColumNames[] = $this->primaryKey;
+    }
 
     public function findAll(): array {
 
@@ -98,12 +100,19 @@ class DatabaseTable {
 
     }
 
-    public function find(int $value): array | false {
+    public function find($value, $columnName = null): array | false {
         if(empty($value)){
             throw new \InvalidArgumentException('Error: Invalid argument provided.');
         }
+        if (!isset($columnName)){
+            $columnName = $this->primaryKey;
+        }
+        if (!in_array($columnName, $this->allowedColumNames)) {
+            throw new \InvalidArgumentException('Error: Invalid column name provided.');
+        }
 
-        $query = 'SELECT * FROM `'  .  $this->table . '` WHERE ' . $this->primaryKey . ' = :value';
+
+        $query = 'SELECT * FROM `'  .  $this->table . '` WHERE ' . $columnName . ' = :value';
         
         $stmt = $this->pdo->prepare($query);
 

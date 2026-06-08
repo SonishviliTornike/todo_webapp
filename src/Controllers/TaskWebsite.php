@@ -21,13 +21,14 @@ class TaskWebsite implements \App\Model\Website {
 
     public function getController(string $controllerName): ? object {
         $controller = null;
-
         if ($controllerName == 'tasks') {
-            $databaseTable = new DatabaseTable($this->conn, 'tasks', 'id');
+            $allowedColumnNames = ['id', 'task_title'];
+            $databaseTable = new DatabaseTable($this->conn, 'tasks', 'id', $allowedColumnNames);
             $tasksTable = new TasksTable($this->conn, 'tasks');
             $controller = new Tasks($databaseTable, $tasksTable);
         } elseif ($controllerName == 'users') {
-            $databaseTable = new DatabaseTable($this->conn, 'users', 'id');
+            $allowedColumnNames = ['email', 'userName'];
+            $databaseTable = new DatabaseTable($this->conn, 'users', 'id', $allowedColumnNames);
             $controller = new Users($databaseTable);
         }
 

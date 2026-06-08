@@ -5,7 +5,7 @@ use App\Model\DatabaseTable;
 use App\Validation\UserValidation;
 
 class Users {
-    public function __construct(private DatabaseTable $tasksTable){}
+    public function __construct(private DatabaseTable $usersTable){}
 
     public function registrationForm() {
         return [
@@ -25,7 +25,7 @@ class Users {
 
     public function registrationFormSubmit() {
         if (isset($_POST)) {
-            $userHandler = new UserValidation($this->tasksTable);
+            $userHandler = new UserValidation($this->usersTable);
             $rawData = $_POST;
 
             if($userHandler->processUserRegister($_POST) === false) {
@@ -36,7 +36,7 @@ class Users {
 
             $cleanData = $userHandler->getData();
 
-            $this->databaseTable->save($cleanData);
+            $this->usersTable->save($cleanData);
             //problem
             header('Location: /users/registersuccess');
             exit;
