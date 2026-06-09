@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?></title>
+    <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="icon" href="/assets/imgs/favicon.ico">
 </head>

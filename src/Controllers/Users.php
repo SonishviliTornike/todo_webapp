@@ -24,16 +24,15 @@ class Users {
     }
 
     public function registrationFormSubmit() {
-        if (isset($_POST)) {
+        $rawData = $_POST['users'];
+        if (!empty($rawData)) {
             $userHandler = new UserValidation($this->usersTable);
-            $rawData = $_POST;
 
-            if($userHandler->processUserRegister($_POST) === false) {
+            if($userHandler->processUserRegister($rawData) === false) {
                 $errors = $userHandler->getErrors();
                 return ['page_title' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => $errors, 'rawData' => $rawData]];
             }
-
-
+            
             $cleanData = $userHandler->getData();
 
             $this->usersTable->save($cleanData);
@@ -42,7 +41,7 @@ class Users {
             exit;
 
         } else {
-            
+            return ['page_title' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => 'Error occured invalid input', 'rawData' => $rawData]];
         }
 
     }

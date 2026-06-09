@@ -60,9 +60,9 @@ class EntryPoint {
 
         } catch (PDOException $e) {
             error_log('Error:' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine());
-            $page_title = 'An error has occured';
-
-            $output = 'Database error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
+            $page_title = 'Error';
+            // echo 'Error:' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine();
+            $output = 'Service is unavailable';
         }
 
         include __DIR__ . '/../templates/layout.html.php';

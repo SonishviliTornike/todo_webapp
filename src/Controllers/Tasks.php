@@ -77,9 +77,9 @@ class Tasks {
                 return ['page_title' => $page_title, 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
 
             }
-            $task = $this->databaseTable->find($taskId) ?? null;
-
-            return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task ?? null]];
+            $task = $this->databaseTable->find($taskId);
+            
+            return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];
         }
         $page_title = 'Insert task';
         return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
@@ -87,22 +87,21 @@ class Tasks {
     
 
     public function deleteSubmit() {
-        if (isset($_POST['id'])) {
-            $taskId = $_POST['id'] ?? '0';
-            if ((int)$taskId <= 0 ) {
+        $taskId = $_POST['id'] ?? null;
+
+        if ($taskId === null || $taskId <= 0) {
                 $errors = ['Error: Invalid primary key provided.'];
                 $page_title = 'Error';
                 return ['errors' => $errors, 'page_title' => $page_title];
-                }
-            $taskId = (int)$taskId;
-
-            $this->databaseTable->delete($taskId);
-
-            header('Location: /tasks/list');
-
-
-            
         }
+        $taskId = (int)$taskId;
+
+        $this->databaseTable->delete($taskId);
+
+        header('Location: /tasks/list');
+
+
+        
     }
 
     public function home() {

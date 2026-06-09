@@ -45,30 +45,34 @@ class TaskValidation {
     }
 
     private function processTaskTitle() {
-        $this->data['task_title'] = trim($this->input['task_title'] ?? '');
-        if (empty($this->data['task_title']) || mb_strlen($this->data['task_title']) > 100) {
+        $rawData = trim($this->input['task_title'] ?? '');
+
+        if ($rawData=== '' || mb_strlen($rawData) > 100) {
             $this->errors['task_title'][] = 'Task title can\'t be empty or more than 100 characters';
             return;
         }
 
+        $this->data['task_title'] = $rawData;
     }
 
     private function processTaskText() {
-        $this->data['task_description'] = trim($this->input['task_description'] ?? '');
-        if (empty($this->data['task_description']) || mb_strlen($this->data['task_description']) > 1000) {
+        $rawData =  trim($this->input['task_description'] ?? '');
+
+        if ($rawData === '' || mb_strlen($rawData) > 1000) {
             $this->errors['task_description'][] = 'Task can\'t be empty or more than 1000 characters';
             return;
         }        
+        $this->data['task_description'] = $rawData;
     }
 
     private function processPriority() {
-        $this->data['priority'] = trim($this->input['priority'] ?? '2');
+        $rawData = trim($this->input['priority'] ?? '2');
 
-        if (empty($this->data['priority']) || !ctype_digit($this->data['priority'])) {
+        if ($rawData === '' || !ctype_digit($rawData)) {
             $this->errors['priority'][] = 'Priority must be High, Medium, Low';
             return;
         }else {
-            $p = (int)$this->data['priority'];
+            $p = (int)$rawData;
             if (!in_array($p, [1,2,3], true)) {
                 $this->errors['priority'][] = 'Priority must be High, Medium, Low';
                 return;
@@ -81,7 +85,6 @@ class TaskValidation {
     }
 
     private function processDate() {
-        $this->data['due_at'] = null;
         $due_raw = trim($this->input['due_at'] ?? '');
         $now = new DateTimeImmutable();
 
