@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 use App\Model\DatabaseTable;
-use App\Validation\UserValidation;
+use App\Validation\RegisterValidation;
 
 class Users {
     public function __construct(private DatabaseTable $usersTable){}
@@ -26,9 +26,9 @@ class Users {
     public function registrationFormSubmit() {
         $rawData = $_POST['users'];
         if (!empty($rawData)) {
-            $userHandler = new UserValidation($this->usersTable);
+            $userHandler = new RegisterValidation($this->usersTable);
 
-            if($userHandler->processUserRegister($rawData) === false) {
+            if(!$userHandler->processUserRegister($rawData)) {
                 $errors = $userHandler->getErrors();
                 return ['page_title' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => $errors, 'rawData' => $rawData]];
             }
@@ -36,7 +36,7 @@ class Users {
             $cleanData = $userHandler->getData();
 
             $this->usersTable->save($cleanData);
-            //problem
+
             header('Location: /users/registersuccess');
             exit;
 

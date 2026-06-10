@@ -2,7 +2,7 @@
 namespace App\Validation;
 
 
-class UserValidation {
+class RegisterValidation {
     private $data = [];
     private $errors = [];
     
