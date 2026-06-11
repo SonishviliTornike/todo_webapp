@@ -5,7 +5,7 @@ use App\Model\DatabaseTable;
 use App\Validation\RegisterValidation;
 
 class Users {
-    public function __construct(private DatabaseTable $usersTable){}
+    public function __construct(private DatabaseTable $usersTable, private RegisterValidation $registerValidation){}
 
     public function registrationForm() {
         return [
@@ -26,14 +26,12 @@ class Users {
     public function registrationFormSubmit() {
         $rawData = $_POST['users'];
         if (!empty($rawData)) {
-            $userHandler = new RegisterValidation($this->usersTable);
-
-            if(!$userHandler->processUserRegister($rawData)) {
-                $errors = $userHandler->getErrors();
+            if(!$this->registerValidation->processUserRegister($rawData)) {
+                $errors = $this->registerValidation->getErrors();
                 return ['page_title' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => $errors, 'rawData' => $rawData]];
             }
             
-            $cleanData = $userHandler->getData();
+            $cleanData = $this->registerValidation->getData();
 
             $this->usersTable->save($cleanData);
 
