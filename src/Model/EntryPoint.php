@@ -7,7 +7,7 @@ use PDOException;
 class EntryPoint {
     public function __construct(private Website $website) {}
 
-    private function loadTemplate(string $templateFileName, array $variables): string {
+    private function loadTemplate(string $templateFileName, array $variables = []): string {
         extract($variables);
 
         ob_start();
@@ -47,7 +47,7 @@ class EntryPoint {
 
                 $page_title = $page['page_title'];
     
-                $variables = $page['variables'];
+                $variables = $page['variables'] ?? [];
                 
                 $output = $this->loadTemplate($page['template'], $variables);
             } else {
@@ -61,7 +61,6 @@ class EntryPoint {
         } catch (PDOException $e) {
             error_log('Error:' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine());
             $page_title = 'Error';
-            // echo 'Error:' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine();
             $output = 'Service is unavailable';
         }
 

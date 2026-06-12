@@ -107,6 +107,7 @@ class DatabaseTable {
         if (!isset($columnName)){
             $columnName = $this->primaryKey;
         }
+
         if (!in_array($columnName, $this->allowedColumNames)) {
             throw new \InvalidArgumentException('Error: Invalid column name provided.');
         }

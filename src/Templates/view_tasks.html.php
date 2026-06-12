@@ -12,6 +12,7 @@
         </tr>
         </thead>
     <tbody>
+
         <?php foreach ($tasks as $task): ?>
             <tr>    
                 <td data-label="Title"><?= htmlspecialchars($task['task_title'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
@@ -50,5 +51,4 @@
             </tr>
             <?php endforeach; ?>
     </tbody>
-
 </table>

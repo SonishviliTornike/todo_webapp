@@ -24,7 +24,7 @@ class Users {
     }
 
     public function registrationFormSubmit() {
-        $rawData = $_POST['users'];
+        $rawData = $_POST['users'] ?? [];
         if (!empty($rawData)) {
             if(!$this->registerValidation->processUserRegister($rawData)) {
                 $errors = $this->registerValidation->getErrors();

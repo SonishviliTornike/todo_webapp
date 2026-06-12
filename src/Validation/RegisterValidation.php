@@ -169,6 +169,7 @@ class RegisterValidation {
         }
         if (strlen($password) > 15) {
             $this->errors['password'][] = 'Password must be maximum 15 characters long';
+            return;
         }
 
 

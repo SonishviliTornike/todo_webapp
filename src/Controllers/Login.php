@@ -12,13 +12,28 @@ class Login {
     }
 
     public function login(): array {
-        return ['template' => 'login.html.php', 'page_title' => 'Log in', 'variables' => []];
+        return ['template' => 'login.html.php', 'page_title' => 'Log in'];
     }
 
 
     public function loginSubmit() {
         $rawUserData = $_POST['login'] ?? [];
-    
-        $success = $this->loginValidation->verify($rawUserData);
+
+        if (!$this->loginValidation->verify($rawUserData)) {
+            $errors = $this->loginValidation->getErrors();
+            return ['template' => 'login.html.php', 'page_title' => 'Log in', 'variables' => ['errors' => $errors, 'identity' => $rawUserData['identity']] ];
+        }
+        
+        $validUserData = $this->loginValidation->getData();
+
+        if (!$this->authentication->login($validUserData)) {
+            return ['template' => 'login.html.php', 'page_title' => 'Log in', 'variables' => ['errors' => ['Invalid Password']]];
+        }
+
+        header('Location: /tasks/home');
+        exit();
+
+
+
     }
 } 

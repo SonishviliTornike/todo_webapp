@@ -37,7 +37,8 @@ class LoginValidation {
                 return false;
             }
 
-            $this->data[] = $identity;
+            $this->data['identity'] = $identity;
+            $this->data['userColumnName'] = 'email';
     
         } else {
             if (strlen($identity) < 3) {
@@ -56,6 +57,7 @@ class LoginValidation {
             }
 
             $this->data['identity'] = $identity;
+            $this->data['userColumnName'] = 'userName';
             
         }
         return true;  

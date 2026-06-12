@@ -39,10 +39,10 @@ class TaskWebsite implements \App\Model\Website {
             $controller = new Users($databaseTable, $registerValidation);
 
         } elseif ($controllerName === 'login') {
-            $allowedColumnNames = ['email', 'userId', 'userName'];
+            $allowedColumnNames = ['email', 'id', 'userName'];
 
             $databaseTable = new DatabaseTable($this->conn, 'users', 'id', $allowedColumnNames);
-            $authentication = new Authentication($databaseTable, 'userName', 'passwordHash');
+            $authentication = new Authentication($databaseTable, 'passwordHash');
             $loginValidation = new LoginValidation($databaseTable);
             $controller = new Login($databaseTable, $authentication, $loginValidation);
 

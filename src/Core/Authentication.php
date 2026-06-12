@@ -3,17 +3,17 @@
 namespace App\Core;
 
 class Authentication {
-    public function __construct(private \App\Model\DatabaseTable $users, private string $userNameColumn, private string $passwordColumn) {
+    public function __construct(private \App\Model\DatabaseTable $users, private string $passwordColumn) {
         if (session_status() !== PHP_SESSION_ACTIVE) session_start();
     }
 
 
-    public function login(string $userName, string $password):bool {
-        $user = $this->users->find($this->userNameColumn, $userName);
-        if ($user !== false && password_verify($password, $user[$this->passwordColumn])) {
+    public function login(array $userData):bool {
+        $user = $this->users->find($userData['identity'], $userData['userColumnName']);
+        if ($user !== false && password_verify($userData['password'], $user[$this->passwordColumn])) {
             session_regenerate_id();
-            $_SESSION['userName'] = $userName;
-            $_SESSION['userId'] = $user['userId'];
+            $_SESSION['userName'] = $user['userName'];
+            $_SESSION['userId'] = $user['id'];
 
             return true;
         }
