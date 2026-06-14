@@ -18,8 +18,14 @@
         <li><a href="/">Home Page</a></li>
         <li><a href="/tasks/insertedit">Add Task</a></li>
         <li><a href="/tasks/list">View Task List</a></li>
-        <li><a href="/login/login">Log in</a></li>
-        <li><a href="/users/registrationform">Register an account</a></li>
+        <?php if ($isLoggedIn === false): ?>
+            <li><a href="/login/login">Log in</a></li>
+        <?php else:?>
+            <li><form action="/login/logout" method="post" class="logout-form">
+                <button type="submit">Log out</button>
+            </form></li>
+        <?php endif;?>
+        <!-- <li><a href="/users/registrationform">Register an account</a></li> -->
     </ul>
 </nav>
 

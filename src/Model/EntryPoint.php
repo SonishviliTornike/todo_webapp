@@ -41,10 +41,11 @@ class EntryPoint {
                 $action .= 'Submit';
             }
             $controller = $this->website->getController($controllerName);
+            $isLoggedIn = $this->website->getAuthentication();
 
-            if (is_callable([$controller, $action])) {    
+            if (is_callable([$controller, $action])) { 
                 $page = $controller->$action(...$route);
-
+                
                 $page_title = $page['page_title'];
     
                 $variables = $page['variables'] ?? [];
@@ -53,7 +54,6 @@ class EntryPoint {
             } else {
                 http_response_code(404);
                 $page_title = 'Not found';
-
                 $output = '<h2>Sorry, the page you are looking for could not be found.</h2>';
             }
 

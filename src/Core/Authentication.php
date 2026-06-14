@@ -8,9 +8,9 @@ class Authentication {
     }
 
 
-    public function login(array $userData):bool {
-        $user = $this->users->find($userData['identity'], $userData['userColumnName']);
-        if ($user !== false && password_verify($userData['password'], $user[$this->passwordColumn])) {
+    public function login(string $identity, string $userColumnName, string $password):bool {
+        $user = $this->users->find($identity, $userColumnName);
+        if ($user !== false && password_verify($password, $user[$this->passwordColumn])) {
             session_regenerate_id();
             $_SESSION['userName'] = $user['userName'];
             $_SESSION['userId'] = $user['id'];
@@ -24,7 +24,7 @@ class Authentication {
       return isset($_SESSION['userId']);
     }
 
-    public function logOut(): void {
+    public function logout(): void{
         session_unset();
 
         session_destroy();

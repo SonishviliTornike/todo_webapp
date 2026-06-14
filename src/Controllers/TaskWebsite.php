@@ -14,9 +14,13 @@ use App\Validation\LoginValidation;
 class TaskWebsite implements \App\Model\Website {
     private ?DatabaseConnection $pdo = null;
     private ?\PDO $conn = null;
+    private ?Authentication $authentication = null;
+    private ?DatabaseTable $usersTable = null;
     public function __construct() {
         $this->pdo = new DatabaseConnection();
         $this->conn = $this->pdo->getPdoConnection();
+        $this->usersTable = new  DatabaseTable($this->conn, 'users', 'id', ['email', 'id', 'userName']);
+        $this->authentication = new Authentication($this->usersTable, 'passwordHash');
     }
     public function getDefaultRoute(): string {
         return 'tasks/home';
@@ -32,19 +36,12 @@ class TaskWebsite implements \App\Model\Website {
             $controller = new Tasks($databaseTable, $tasksTable);
 
         } elseif ($controllerName === 'users') {
-            $allowedColumnNames = ['email', 'userName'];
-
-            $databaseTable = new DatabaseTable($this->conn, 'users', 'id', $allowedColumnNames);
-            $registerValidation = new RegisterValidation($databaseTable);
-            $controller = new Users($databaseTable, $registerValidation);
+            $registerValidation = new RegisterValidation($this->usersTable);
+            $controller = new Users($this->usersTable, $registerValidation);
 
         } elseif ($controllerName === 'login') {
-            $allowedColumnNames = ['email', 'id', 'userName'];
-
-            $databaseTable = new DatabaseTable($this->conn, 'users', 'id', $allowedColumnNames);
-            $authentication = new Authentication($databaseTable, 'passwordHash');
-            $loginValidation = new LoginValidation($databaseTable);
-            $controller = new Login($databaseTable, $authentication, $loginValidation);
+            $loginValidation = new LoginValidation();
+            $controller = new Login($this->usersTable, $this->authentication, $loginValidation);
 
         }
 
@@ -52,5 +49,9 @@ class TaskWebsite implements \App\Model\Website {
         return $controller;
         
             
+    }
+
+    public function getAuthentication(): bool {
+        return $this->authentication->isLoggedIn();
     }
 }

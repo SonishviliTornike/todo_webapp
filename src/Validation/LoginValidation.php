@@ -6,7 +6,7 @@ use App\Model\DatabaseTable;
 class LoginValidation {
     private $errors = [];
     private $data = [];
-    public function __construct(private DatabaseTable $usersTable) {
+    public function __construct() {
     }
     public function verify(array $rawData): bool {
         if (!$this->processIdentity($rawData) || !$this->processPassword($rawData)) {
@@ -32,11 +32,6 @@ class LoginValidation {
         }
 
         if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
-            if (!$this->usersTable->find($identity, 'email')) {
-                $this->errors['identity'][] = 'Invalid credentials';
-                return false;
-            }
-
             $this->data['identity'] = $identity;
             $this->data['userColumnName'] = 'email';
     
@@ -48,11 +43,6 @@ class LoginValidation {
 
             if (strlen($identity) > 55) {
                 $this->errors['identity'][] = 'Username can\'t be more than 55 characters long';
-                return false;
-            }
-
-            if (!$this->usersTable->find($identity, 'userName')) {
-                $this->errors['identity'][] = 'Invalid credentials';
                 return false;
             }
 
