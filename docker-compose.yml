@@ -32,5 +32,6 @@ services:
       - dbdata:/var/lib/mysql
       - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
 
+
 volumes:
   dbdata:
