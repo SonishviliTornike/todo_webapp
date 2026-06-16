@@ -7,14 +7,14 @@ use App\Model\TasksTable;
 
 
 class Tasks {
-    public function __construct(private DatabaseTable $databaseTable, private TasksTable $tasksTable) {}
+    public function __construct(private DatabaseTable $database_table, private TasksTable $tasks_table) {}
 
     
     public function list(): array {
         $page_title = 'Tasks';
-        $tasks = $this->databaseTable->findAll();
+        $tasks = $this->database_table->findAll();
 
-        $totalTasks = $this->tasksTable->totalTasks();
+        $totalTasks = $this->tasks_table->totalTasks();
 
         return [
             'page_title' => $page_title, 
@@ -27,31 +27,31 @@ class Tasks {
         
     }
 
-    public function setTaskCompletedSubmit() {
-        $taskIdRaw = $_POST['id'] ?? null;
-        $isCompletedRaw = $_POST['is_completed'] ?? 0;
-        if (!isset($taskIdRaw) || !ctype_digit($taskIdRaw)) {
+    public function set_task_completed_submit() {
+        $task_id_raw = $_POST['id'] ?? null;
+        $is_completed_raw = $_POST['is_completed'] ?? 0;
+        if (!isset($task_id_raw) || !ctype_digit($task_id_raw)) {
             http_response_code(400);
             exit('Invalid task id.');
         }
 
-        if ($isCompletedRaw !== '0' && $isCompletedRaw !== '1') {
+        if ($is_completed_raw !== '0' && $is_completed_raw !== '1') {
             http_response_code(400);
             exit('Error: task must be checked or unchecked');
         }
 
-        $taskId = (int)$taskIdRaw;
-        $isCompleted = (int)$isCompletedRaw;
+        $task_id = (int)$task_id_raw;
+        $is_completed = (int)$is_completed_raw;
 
         $values = [
-            'id' => $taskId,
-            'is_completed' => $isCompleted
+            'id' => $task_id,
+            'is_completed' => $is_completed
         ];
-        $this->tasksTable->setTaskCompleted($values);
+        $this->tasks_table->setTaskCompleted($values);
         header('Location: /tasks/list');
     }
 
-    public function insertEditSubmit(): array { 
+    public function insert_edit_submit(): array { 
         $page_title = 'Insert task';
         if (isset($_POST['task'])) {
             $validation = new TaskValidation($_POST['task']);
@@ -59,7 +59,7 @@ class Tasks {
             if($errors) {
                 return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
             }
-            $this->databaseTable->save($values);
+            $this->database_table->save($values);
             header('Location: /tasks/list');
             exit;
 
@@ -68,16 +68,16 @@ class Tasks {
 
     }
 
-    public function insertEdit($taskId = null): array {    
-        if (isset($taskId)){
+    public function insert_edit($task_id = null): array {    
+        if (isset($task_id)){
             $page_title = 'Edit task';
-            if($taskId <= 0) {
+            if($task_id <= 0) {
                 $page_title = 'Error';
                 $errors[] = ['Error: Invalid primary key provided.'];
                 return ['page_title' => $page_title, 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
 
             }
-            $task = $this->databaseTable->find($taskId);
+            $task = $this->database_table->find($task_id);
             
             return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];
         }
@@ -87,16 +87,16 @@ class Tasks {
     
 
     public function deleteSubmit() {
-        $taskId = $_POST['id'] ?? null;
+        $task_id = $_POST['id'] ?? null;
 
-        if ($taskId === null || $taskId <= 0) {
+        if ($task_id === null || $task_id <= 0) {
                 $errors = ['Error: Invalid primary key provided.'];
                 $page_title = 'Error';
                 return ['errors' => $errors, 'page_title' => $page_title];
         }
-        $taskId = (int)$taskId;
+        $task_id = (int)$task_id;
 
-        $this->databaseTable->delete($taskId);
+        $this->database_table->delete($task_id);
 
         header('Location: /tasks/list');
 

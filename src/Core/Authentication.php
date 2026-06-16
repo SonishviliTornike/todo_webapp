@@ -3,17 +3,17 @@
 namespace App\Core;
 
 class Authentication {
-    public function __construct(private \App\Model\DatabaseTable $users, private string $passwordColumn) {
+    public function __construct(private \App\Model\DatabaseTable $users, private string $password_column) {
         if (session_status() !== PHP_SESSION_ACTIVE) session_start();
     }
 
 
-    public function login(string $identity, string $userColumnName, string $password):bool {
-        $user = $this->users->find($identity, $userColumnName);
-        if ($user !== false && password_verify($password, $user[$this->passwordColumn])) {
+    public function login(string $identity, string $user_column_name, string $password):bool {
+        $user = $this->users->find($identity, $user_column_name);
+        if ($user !== false && password_verify($password, $user[$this->password_column])) {
             session_regenerate_id();
-            $_SESSION['userName'] = $user['userName'];
-            $_SESSION['userId'] = $user['id'];
+            $_SESSION['user_name'] = $user['user_name'];
+            $_SESSION['user_id'] = $user['id'];
 
             return true;
         }
@@ -21,7 +21,7 @@ class Authentication {
     }
 
     public function isLoggedIn(): bool {
-      return isset($_SESSION['userId']);
+      return isset($_SESSION['user_id']);
     }
 
     public function logout(): void{
