@@ -64,6 +64,6 @@ class EntryPoint {
             $output = 'Service is unavailable';
         }
 
-        include __DIR__ . '/../templates/layout.html.php';
+        include __DIR__ . '/../Templates/layout.html.php';
     }
 }
