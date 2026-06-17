@@ -47,7 +47,7 @@ class LoginValidation {
             }
 
             $this->data['identity'] = $identity;
-            $this->data['userColumnName'] = 'userName';
+            $this->data['userColumnName'] = 'user_name';
             
         }
         return true;  

@@ -19,8 +19,8 @@ class TaskWebsite implements \App\Model\Website {
     public function __construct() {
         $this->pdo = new DatabaseConnection();
         $this->conn = $this->pdo->getPdoConnection();
-        $this->usersTable = new  DatabaseTable($this->conn, 'users', 'id', ['email', 'id', 'userName']);
-        $this->authentication = new Authentication($this->usersTable, 'passwordHash');
+        $this->usersTable = new  DatabaseTable($this->conn, 'users', 'id', ['email', 'id', 'user_name']);
+        $this->authentication = new Authentication($this->usersTable, 'password_hash');
     }
     public function getDefaultRoute(): string {
         return 'tasks/home';

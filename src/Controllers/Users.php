@@ -10,7 +10,7 @@ class Users {
     public function registrationForm() {
         return [
             'template' => 'register.html.php',
-            'page_title' => 'Register an account',
+            'pageTitle' => 'Register an account',
             'variables' => ['']
         ];
     }    
@@ -18,7 +18,7 @@ class Users {
     public function registerSuccess() {
         return [
             'template' => 'registersuccess.html.php',
-            'page_title' => 'Registration Successful',
+            'pageTitle' => 'Registration Successful',
             'variables' => ['']
         ];
     }
@@ -28,7 +28,7 @@ class Users {
         if (!empty($rawData)) {
             if(!$this->registerValidation->processUserRegister($rawData)) {
                 $errors = $this->registerValidation->getErrors();
-                return ['page_title' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => $errors, 'rawData' => $rawData]];
+                return ['pageTitle' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => $errors, 'rawData' => $rawData]];
             }
             
             $cleanData = $this->registerValidation->getData();
@@ -39,7 +39,7 @@ class Users {
             exit;
 
         } else {
-            return ['page_title' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => 'Error occured invalid input', 'rawData' => $rawData]];
+            return ['pageTitle' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => 'Error occured invalid input', 'rawData' => $rawData]];
         }
 
     }

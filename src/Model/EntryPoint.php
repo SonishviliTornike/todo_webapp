@@ -46,21 +46,21 @@ class EntryPoint {
             if (is_callable([$controller, $action])) { 
                 $page = $controller->$action(...$route);
                 
-                $page_title = $page['pageTitle'];
+                $pageTitle = $page['pageTitle'] ?? 'Untitled';
     
                 $variables = $page['variables'] ?? [];
                 
                 $output = $this->loadTemplate($page['template'], $variables);
             } else {
                 http_response_code(404);
-                $page_title = 'Not found';
+                $pageTitle = 'Not found';
                 $output = '<h2>Sorry, the page you are looking for could not be found.</h2>';
             }
 
 
         } catch (PDOException $e) {
             error_log('Error:' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine());
-            $page_title = 'Error';
+            $pageTitle = 'Error';
             $output = 'Service is unavailable';
         }
 

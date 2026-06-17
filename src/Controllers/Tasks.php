@@ -40,31 +40,31 @@ class Tasks {
             exit('Error: task must be checked or unchecked');
         }
 
-        $task_id = (int)$taskIdRaw;
-        $is_completed = (int)$IsCompletedRaw;
+        $taskId = (int)$taskIdRaw;
+        $isCompleted = (int)$IsCompletedRaw;
 
         $values = [
-            'id' => $task_id,
-            'is_completed' => $IsCompletedRaw
+            'id' => $taskId,
+            'is_completed' => $isCompleted
         ];
         $this->tasksTable->setTaskCompleted($values);
         header('Location: /tasks/list');
     }
 
     public function insertEditSubmit(): array { 
-        $page_title = 'Insert task';
+        $pageTitle = 'Insert task';
         if (isset($_POST['task'])) {
             $validation = new TaskValidation($_POST['task']);
             [$values, $errors] = $validation->processTaskSubmit();
             if($errors) {
-                return ['pageTitle' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
+                return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
             }
             $this->databaseTable->save($values);
             header('Location: /tasks/list');
             exit;
 
         }
-        return ['pageTitle' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
+        return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['']];
 
     }
 
@@ -91,7 +91,7 @@ class Tasks {
 
         if ($taskId === null || $taskId <= 0) {
                 $errors = ['Error: Invalid primary key provided.'];
-                return ['errors' => $errors, 'page_title' => 'Error'];
+                return ['errors' => $errors, 'pageTitle' => 'Error'];
         }
         $taskId = (int)$taskId;
 
@@ -104,11 +104,11 @@ class Tasks {
     }
 
     public function home() {
-        $page_title = 'Home Page';
+        $pageTitle = 'Home Page';
 
         $result = $this->tasksTable->showHighPriorityTasks();
 
-        return ['page_title' => $page_title, 'template' => 'home.html.php', 'variables' => [
+        return ['pageTitle' => $pageTitle, 'template' => 'home.html.php', 'variables' => [
             'tasks' => $result,
         ]];
     }
