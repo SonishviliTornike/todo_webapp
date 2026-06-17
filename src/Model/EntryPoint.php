@@ -46,7 +46,7 @@ class EntryPoint {
             if (is_callable([$controller, $action])) { 
                 $page = $controller->$action(...$route);
                 
-                $page_title = $page['page_title'];
+                $page_title = $page['pageTitle'];
     
                 $variables = $page['variables'] ?? [];
                 

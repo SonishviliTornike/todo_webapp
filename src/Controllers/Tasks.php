@@ -7,17 +7,17 @@ use App\Model\TasksTable;
 
 
 class Tasks {
-    public function __construct(private DatabaseTable $database_table, private TasksTable $tasks_table) {}
+    public function __construct(private DatabaseTable $databaseTable, private TasksTable $tasksTable) {}
 
     
     public function list(): array {
-        $page_title = 'Tasks';
-        $tasks = $this->database_table->findAll();
+        $pageTitle = 'Tasks';
+        $tasks = $this->databaseTable->findAll();
 
-        $totalTasks = $this->tasks_table->totalTasks();
+        $totalTasks = $this->tasksTable->totalTasks();
 
         return [
-            'page_title' => $page_title, 
+            'pageTitle' => $pageTitle, 
             'template' => 'view_tasks.html.php',
             'variables' => [
                 'tasks' => $tasks,
@@ -27,76 +27,75 @@ class Tasks {
         
     }
 
-    public function set_task_completed_submit() {
-        $task_id_raw = $_POST['id'] ?? null;
-        $is_completed_raw = $_POST['is_completed'] ?? 0;
-        if (!isset($task_id_raw) || !ctype_digit($task_id_raw)) {
+    public function setTaskCompletedSubmit() {
+        $taskIdRaw = $_POST['id'] ?? null;
+        $IsCompletedRaw = $_POST['is_completed'] ?? 0;
+        if (!isset($taskIdRaw) || !ctype_digit($taskIdRaw)) {
             http_response_code(400);
             exit('Invalid task id.');
         }
 
-        if ($is_completed_raw !== '0' && $is_completed_raw !== '1') {
+        if ($IsCompletedRaw !== '0' && $IsCompletedRaw !== '1') {
             http_response_code(400);
             exit('Error: task must be checked or unchecked');
         }
 
-        $task_id = (int)$task_id_raw;
-        $is_completed = (int)$is_completed_raw;
+        $task_id = (int)$taskIdRaw;
+        $is_completed = (int)$IsCompletedRaw;
 
         $values = [
             'id' => $task_id,
-            'is_completed' => $is_completed
+            'is_completed' => $IsCompletedRaw
         ];
-        $this->tasks_table->setTaskCompleted($values);
+        $this->tasksTable->setTaskCompleted($values);
         header('Location: /tasks/list');
     }
 
-    public function insert_edit_submit(): array { 
+    public function insertEditSubmit(): array { 
         $page_title = 'Insert task';
         if (isset($_POST['task'])) {
             $validation = new TaskValidation($_POST['task']);
             [$values, $errors] = $validation->processTaskSubmit();
             if($errors) {
-                return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
+                return ['pageTitle' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
             }
-            $this->database_table->save($values);
+            $this->databaseTable->save($values);
             header('Location: /tasks/list');
             exit;
 
         }
-        return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
+        return ['pageTitle' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
 
     }
 
-    public function insert_edit($task_id = null): array {    
-        if (isset($task_id)){
-            $page_title = 'Edit task';
-            if($task_id <= 0) {
-                $page_title = 'Error';
+    public function insertEdit($taskId = null): array {    
+        if (isset($taskId)){
+            $pageTitle = 'Edit task';
+            if($taskId <= 0) {
+                $pageTitle = 'Error';
                 $errors[] = ['Error: Invalid primary key provided.'];
-                return ['page_title' => $page_title, 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
+                return ['pageTitle' => $pageTitle, 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
 
             }
-            $task = $this->database_table->find($task_id);
+            $task = $this->databaseTable->find($taskId);
             
-            return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];
+            return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];
         }
-        $page_title = 'Insert task';
-        return ['page_title' => $page_title, 'template' => 'insertEdit.html.php', 'variables' => ['']];
+
+        return ['pageTitle' => 'Insert Task', 'template' => 'insertEdit.html.php', 'variables' => ['']];
         }
     
 
     public function deleteSubmit() {
-        $task_id = $_POST['id'] ?? null;
+        $taskId = $_POST['id'] ?? null;
 
-        if ($task_id === null || $task_id <= 0) {
+        if ($taskId === null || $taskId <= 0) {
                 $errors = ['Error: Invalid primary key provided.'];
-                $page_title = 'Error';
-                return ['errors' => $errors, 'page_title' => $page_title];
+                return ['errors' => $errors, 'page_title' => 'Error'];
         }
-        $task_id = (int)$task_id;
+        $taskId = (int)$taskId;
 
-        $this->database_table->delete($task_id);
+        $this->databaseTable->delete($taskId);
 
         header('Location: /tasks/list');
 
