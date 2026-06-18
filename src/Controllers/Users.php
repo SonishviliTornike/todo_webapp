@@ -36,7 +36,7 @@ class Users {
             $this->usersTable->save($cleanData);
 
             header('Location: /users/registersuccess');
-            exit;
+            exit();
 
         } else {
             return ['pageTitle' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => 'Error occured invalid input', 'rawData' => $rawData]];

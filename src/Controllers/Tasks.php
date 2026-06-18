@@ -49,6 +49,7 @@ class Tasks {
         ];
         $this->tasksTable->setTaskCompleted($values);
         header('Location: /tasks/list');
+        exit();
     }
 
     public function insertEditSubmit(): array { 
@@ -61,7 +62,7 @@ class Tasks {
             }
             $this->databaseTable->save($values);
             header('Location: /tasks/list');
-            exit;
+            exit();
 
         }
         return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['']];
@@ -70,16 +71,15 @@ class Tasks {
 
     public function insertEdit($taskId = null): array {    
         if (isset($taskId)){
-            $pageTitle = 'Edit task';
+            $errors = [];
             if($taskId <= 0) {
-                $pageTitle = 'Error';
-                $errors[] = ['Error: Invalid primary key provided.'];
-                return ['pageTitle' => $pageTitle, 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
+                $errors['Erorr'][] = 'Error: Invalid primary key provided.';
+                return ['pageTitle' => 'Error', 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
 
             }
             $task = $this->databaseTable->find($taskId);
             
-            return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];
+            return ['pageTitle' => 'Edit task', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];
         }
 
         return ['pageTitle' => 'Insert Task', 'template' => 'insertEdit.html.php', 'variables' => ['']];
@@ -90,14 +90,15 @@ class Tasks {
         $taskId = $_POST['id'] ?? null;
 
         if ($taskId === null || $taskId <= 0) {
-                $errors = ['Error: Invalid primary key provided.'];
-                return ['errors' => $errors, 'pageTitle' => 'Error'];
+                $errors['Erorr'][] = 'Error: Invalid primary key provided.';
+                return ['errors' => $errors, 'template' => 'view_tasks.html.php', 'pageTitle' => 'Error'];
         }
         $taskId = (int)$taskId;
 
         $this->databaseTable->delete($taskId);
 
         header('Location: /tasks/list');
+        exit();
 
 
         

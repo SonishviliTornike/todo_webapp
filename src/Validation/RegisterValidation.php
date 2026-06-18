@@ -64,34 +64,34 @@ class RegisterValidation {
 
 
     private function processUserName(array $input) {
-        $userName = trim($input['userName'] ?? '');
+        $userName = trim($input['user_name'] ?? '');
 
         
         if ($userName === ''){
-            $this->errors['userName'][] = 'User name can\'t be blank.';
+            $this->errors['user_name'][] = 'User name can\'t be blank.';
             return;
         }
 
         if(strlen($userName) < 3) {
-            $this->errors['userName'][] = 'User name must be min 3 characters long.';
+            $this->errors['user_name'][] = 'User name must be min 3 characters long.';
             return;
 
         } 
         
         if (strlen($userName) > 55) {
-            $this->errors['userName'][] = 'User name must be max 55 characters long.';
+            $this->errors['user_name'][] = 'User name must be max 55 characters long.';
             return;
         }
 
-        $duplicateUser = $this->usersTable->find($userName, 'userName');
+        $duplicateUser = $this->usersTable->find($userName, 'user_name');
         
         if ($duplicateUser !== false) {
-            $this->errors['userName'][] = 'This username already exists.';
+            $this->errors['user_name'][] = 'This username already exists.';
             return;
         }
     
         
-        $this->data['userName'] = $userName;
+        $this->data['user_name'] = $userName;
     }
 
     private function processEmail(array $input) {
@@ -133,25 +133,25 @@ class RegisterValidation {
     }
 
     private function processFullName(array $input) {
-        $fullName = trim($input['fullName'] ?? '');
+        $fullName = trim($input['full_name'] ?? '');
 
         if ($fullName === '') {
-            $this->errors['fullName'][] = 'Full name can\'t be blank';
+            $this->errors['full_name'][] = 'Full name can\'t be blank';
             return;
         }
         
         if (strlen($fullName) < 3 ) {
-            $this->errors['fullName'][] = 'Full name can\'t be less than 3 characters long';
+            $this->errors['full_name'][] = 'Full name can\'t be less than 3 characters long';
             return;
         }
 
         if(strlen($fullName) > 100) {
-            $this->errors['fullName'][] = 'Full name can\'t be more than 100 characters long.';
+            $this->errors['full_name'][] = 'Full name can\'t be more than 100 characters long.';
             return;
         } 
 
 
-        $this->data['fullName'] = $fullName;
+        $this->data['full_name'] = $fullName;
     }
 
     private function processPassword(array $input) {
@@ -167,15 +167,15 @@ class RegisterValidation {
             $this->errors['password'][] = 'Password must be minimum 11 characters long.';
             return;
         }
-        if (strlen($password) > 15) {
-            $this->errors['password'][] = 'Password must be maximum 15 characters long';
+        if (strlen($password) > 150) {
+            $this->errors['password'][] = 'Password must be maximum 150 characters long';
             return;
         }
 
 
        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-       $this->data['passwordHash'] = $hashedPassword;
+       $this->data['password_hash'] = $hashedPassword;
 
     }
 

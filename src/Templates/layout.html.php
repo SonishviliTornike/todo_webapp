@@ -25,7 +25,7 @@
                 <button type="submit">Log out</button>
             </form></li>
         <?php endif;?>
-        <!-- <li><a href="/users/registrationform">Register an account</a></li> -->
+        <li><a href="/users/registrationform">Register an account</a></li>
     </ul>
 </nav>
 
