@@ -37,6 +37,8 @@ class EntryPoint {
             $controllerName = array_shift($route);
 
             $action = array_shift($route);
+
+            $this->website->checkLogin($controllerName);
             if ($method === 'POST') {
                 $action .= 'Submit';
             }

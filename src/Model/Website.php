@@ -9,4 +9,5 @@ interface Website {
     public function getController(string $taskController): ? object;
 
     public function getAuthentication(): bool;
+    public function checkLogin(string $controllerName): string;
 }

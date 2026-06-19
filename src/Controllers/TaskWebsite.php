@@ -54,4 +54,13 @@ class TaskWebsite implements \App\Model\Website {
     public function getAuthentication(): bool {
         return $this->authentication->isLoggedIn();
     }
+
+    public function checkLogin(string $controllerName): string {
+        $restrictedPages = ['tasks'];
+        if (in_array($controllerName, $restrictedPages) && !$this->authentication->isLoggedIn()) {
+            header('location: /login/login');
+            exit();
+        }
+        return $controllerName;
+    }
 }
