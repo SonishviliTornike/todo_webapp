@@ -23,7 +23,7 @@ class TaskWebsite implements \App\Model\Website {
         $this->authentication = new Authentication($this->usersTable, 'password_hash');
     }
     public function getDefaultRoute(): string {
-        return 'tasks/home';
+        return 'tasks/index';
     }   
 
     public function getController(string $controllerName): ? object {
@@ -58,7 +58,7 @@ class TaskWebsite implements \App\Model\Website {
     public function checkLogin(string $controllerName): string {
         $restrictedPages = ['tasks'];
         if (in_array($controllerName, $restrictedPages) && !$this->authentication->isLoggedIn()) {
-            header('location: /login/login');
+            header('location: /tasks/index');
             exit();
         }
         return $controllerName;
