@@ -55,12 +55,12 @@ class TaskWebsite implements \App\Model\Website {
         return $this->authentication->isLoggedIn();
     }
 
-    public function checkLogin(string $controllerName): string {
-        $restrictedPages = ['tasks'];
-        if (in_array($controllerName, $restrictedPages) && !$this->authentication->isLoggedIn()) {
-            header('location: /tasks/index');
+    public function checkLogin(string $uri): string {
+        $restrictedPages = ['tasks/home', 'tasks/insertedit', 'tasks/delete', 'tasks/list'];
+        if (in_array($uri, $restrictedPages) && !$this->authentication->isLoggedIn()) {
+            header('location: /login/login');
             exit();
         }
-        return $controllerName;
+        return $uri;
     }
 }
