@@ -116,8 +116,9 @@ class Tasks {
  
     
     public function index() {
+        
 
-    return ['pageTitle' => 'Todo webApp' , 'template' => 'index.html.php'];
+        return ['pageTitle' => 'Todo webApp' , 'template' => 'index.html.php'];
     }
 
 }

@@ -16,9 +16,9 @@
     <label for="password">Enter password</label>
     <input type="password" name="users[password]" id="password">
     
+    <label for="password_confrimation">Password confrimation:</label>
+    <input type="text" name="password_confrimation" id="password_confrimation">
     <input type="submit" name="submit" id="submit_user" value="Register">
-    <a class="btn" href="/tasks/home">Return</a>
-
 </form>
 
 
