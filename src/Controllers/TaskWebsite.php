@@ -56,8 +56,8 @@ class TaskWebsite implements \App\Model\Website {
     }
 
     public function checkLogin(string $uri): string {
-        $restrictedPages = ['tasks/home', 'tasks/insertedit', 'tasks/delete', 'tasks/list'];
-        if (in_array($uri, $restrictedPages) && !$this->authentication->isLoggedIn()) {
+        $allowedPages = ['tasks/index', 'login/login', 'users/register'];
+        if (!in_array($uri, $allowedPages, true) && !$this->authentication->isLoggedIn()) {
             header('location: /login/login');
             exit();
         }

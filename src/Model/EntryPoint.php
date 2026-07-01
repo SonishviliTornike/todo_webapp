@@ -21,6 +21,7 @@ class EntryPoint {
         if ($uri != strtolower($uri)) {
             http_response_code(301);
             header('Location: /' . strtolower($uri));
+            exit();
         }
     }
 
@@ -36,14 +37,15 @@ class EntryPoint {
             $controllerName = array_shift($route);
             $action = array_shift($route);
 
-            $this->website->checkLogin($controllerName);
+            $this->website->checkLogin($controllerName . '/' . $action);
             if ($method === 'POST') {
                 $action .= 'Submit';
             }
             $controller = $this->website->getController($controllerName);
-            $isLoggedIn = $this->website->getAuthentication();
-
+            
             if (is_callable([$controller, $action])) { 
+                $isLoggedIn = $this->website->getAuthentication();
+
                 $page = $controller->$action(...$route);
                 
                 $pageTitle = $page['pageTitle'] ?? 'Untitled';

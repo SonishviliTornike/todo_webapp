@@ -11,34 +11,38 @@
     <p class="hero__note">// free to start · no setup · open it and type</p>
   </div>
 
-  <div class="demo" aria-label="Example task list">
-    <div class="demo__head">
-      <span class="demo__title">Today</span>
-      <span class="demo__count" id="count">0 of 4 done</span>
-    </div>
-
-    <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
-      <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
-      <span class="task__label"><?= $?>/span>
-    </div>
-    <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
-      <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
-      <span class="task__label">Push the migration script</span>
-    </div>
-    <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
-      <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
-      <span class="task__label">Book the dentist</span>
-    </div>
-    <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
-      <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
-      <span class="task__label">Read one chapter</span>
-    </div>
-
-    <div class="demo__add">
-      <span class="task__box" aria-hidden="true"></span>
-      Add a task…
-    </div>
+  <?php if ($isLoggedIn): ?>
+      <?php foreach ($tasks as $task):?>
+          <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
+            <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="task__label"><?= $task['task_description'] ?></span>
+          </div>
+        <?php endforeach;?>
+  <?php  else: ?>
+    <div class="demo" aria-label="Example task list">
+      <div class="demo__head">
+        <span class="demo__title">Today</span>
+        <span class="demo__count" id="count">0 of 4 done</span>
+      </div>
+      <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
+        <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span class="task__label">Push the migration script</span>
+      </div>
+      <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
+        <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span class="task__label">Book the dentist</span>
+      </div>
+      <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
+        <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span class="task__label">Read one chapter</span>
+      </div>
+      <div class="demo__add">
+        <span class="task__box" aria-hidden="true"></span>
+        Add a task…
+      </div>
+    <?php endif; ?>
   </div>
+  
 </section>
 
 <section class="wrap features">

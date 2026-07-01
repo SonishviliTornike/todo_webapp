@@ -1,0 +1,13 @@
+# Normalize all text files to LF in the repo, regardless of the OS/editor
+# that saved them. Prevents CRLF noise from polluting diffs and blame.
+* text=auto eol=lf
+
+# Treat binary assets as binary so git never touches their bytes
+*.png  binary
+*.ico  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.woff  binary
+*.woff2 binary

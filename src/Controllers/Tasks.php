@@ -104,21 +104,14 @@ class Tasks {
         
     }
 
-    public function home() {
+    public function index() {
         $pageTitle = 'Home Page';
 
         $result = $this->tasksTable->showHighPriorityTasks();
 
-        return ['pageTitle' => $pageTitle, 'template' => 'home.html.php', 'variables' => [
+        return ['pageTitle' => $pageTitle, 'template' => 'index.html.php', 'variables' => [
             'tasks' => $result,
         ]];
     }
  
-    
-    public function index() {
-        
-
-        return ['pageTitle' => 'Todo webApp' , 'template' => 'index.html.php'];
-    }
-
 }

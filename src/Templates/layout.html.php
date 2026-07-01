@@ -15,11 +15,7 @@
 
 <nav>
     <ul>
-        <?php if ($isLoggedIn === false): ?>
-            <li><a href="/">Home Page</a></li>
-        <?php else: ?>
-            <li><a href="/tasks/home">Home page</a></li>
-        <?php endif; ?>
+        <li><a href="/">Home Page</a></li>
         <li><a href="/tasks/insertedit">Add Task</a></li>
         <li><a href="/tasks/list">View Task List</a></li>
         <?php if ($isLoggedIn === false): ?>
