@@ -1,6 +1,6 @@
 <div class="add-edit-container">
     <?php if (empty($task['id'])):?>
-        <h2>Insert Task</h2>
+        <h2>Add Task</h2>
     <?else: ?>
         <h2>Edit Task</h2>
     <?endif;?>
@@ -27,7 +27,6 @@
     <input type="hidden" name="task[id]" id="id" value="<?= $task['id'] ?? ''?>">
     <div style="display:flex; gap:12px; align-items:center;">
         <input type="submit" name="submit" value="Save">
-        <a href="/tasks/home" class="btn">Return</a>
     </div>
 </form>
 

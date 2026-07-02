@@ -31,7 +31,7 @@ class Login {
             return ['template' => 'login.html.php', 'pageTitle' => 'Log in', 'variables' => ['identity' => $rawData['identity'], 'errors' => [['Invalid credentials']]]];
         }
 
-        header('Location: /tasks/home');
+        header('Location: /tasks/index');
         exit();
 
     }

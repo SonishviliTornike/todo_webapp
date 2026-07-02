@@ -4,21 +4,32 @@
     <span class="eyebrow">A todo app that gets out of the way</span>
     <h1 class="hero__title">Add it. Do it.<br><span class="struck">Cross it off.</span></h1>
     <p class="hero__sub">Tally keeps every task in one plain list and nothing else. The only thing left to think about is finishing them.</p>
-    <div class="hero__cta">
-      <a class="btn btn--primary btn--lg" href="/users/registrationform">Start your list</a>
-      <a class="btn btn--ghost btn--lg" href="/login/login">Log in</a>
-    </div>
+    <?php if ($isLoggedIn === false): ?>
+      <div class="hero__cta">
+        <a class="btn btn--primary btn--lg" href="/users/registrationform">Start your list</a>
+        <a class="btn btn--ghost btn--lg" href="/login/login">Log in</a>
+      </div>
+    <?php endif;?>
     <p class="hero__note">// free to start · no setup · open it and type</p>
   </div>
 
-  <?php if ($isLoggedIn): ?>
-      <?php foreach ($tasks as $task):?>
-          <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
-            <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
-            <span class="task__label"><?= $task['task_description'] ?></span>
-          </div>
-        <?php endforeach;?>
+  <?php if ($isLoggedIn === true): ?>
+    <?php if (isset($tasks)):?>
+    <div class="demo" aria-label="Example task list">
+      <div class="demo__head">
+        <span class="demo__title">Today</span>
+        <span class="demo__count" id="count">0 of 4 done</span>
+      </div>
+          <?php foreach ($tasks as $task):?>
+            <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
+              <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+              <span class="task__label"><?= htmlspecialchars($task['task_description'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+          <?php endforeach;?>
+      </div>
+    <?php endif;?>
   <?php  else: ?>
+    
     <div class="demo" aria-label="Example task list">
       <div class="demo__head">
         <span class="demo__title">Today</span>
@@ -31,6 +42,10 @@
       <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
         <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
         <span class="task__label">Book the dentist</span>
+      </div>
+      <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
+        <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span class="task__label">Clean the house</span>
       </div>
       <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
         <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
@@ -69,7 +84,11 @@
 <section class="wrap closing">
   <span class="eyebrow">Ready when you are</span>
   <h2>Your first task is signing up.</h2>
-  <a class="btn btn--primary btn--lg" href="/users/registrationform">Start your list</a>
+  <?php if ($isLoggedIn === false): ?>
+    <a class="btn btn--primary btn--lg" href="/users/registrationform">Start your list</a>
+  <?php else: ?>
+    <a class="btn btn--primary btn--lg" href="/tasks/insertedit">Start your list</a>
+  <?php endif;?>
 </section>
 
 <script>

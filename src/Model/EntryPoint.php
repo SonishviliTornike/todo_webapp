@@ -7,7 +7,7 @@ use PDOException;
 class EntryPoint {
     public function __construct(private Website $website) {}
 
-    private function loadTemplate(string $templateFileName, array $variables = []): string {
+    private function loadTemplate(string $templateFileName, array $variables = [], bool $isLoggedIn = false): string {
         extract($variables);
 
         ob_start();
@@ -21,7 +21,7 @@ class EntryPoint {
         if ($uri != strtolower($uri)) {
             http_response_code(301);
             header('Location: /' . strtolower($uri));
-            exit();
+            exit(); 
         }
     }
 
@@ -52,7 +52,7 @@ class EntryPoint {
     
                 $variables = $page['variables'] ?? [];
                 
-                $output = $this->loadTemplate($page['template'], $variables);
+                $output = $this->loadTemplate($page['template'], $variables, $isLoggedIn);
             } else {
                 http_response_code(404);
                 $pageTitle = 'Not found';

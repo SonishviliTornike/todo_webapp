@@ -27,7 +27,7 @@
                 ?>
                 <td data-label="Priority"><?= htmlspecialchars($priority, ENT_QUOTES, 'UTF-8') ?></td>
                 <td>
-                    <form method="post" action="/tasks/setTaskCompleted">
+                    <form method="post" action="/tasks/settaskcompleted">
                         <input type="hidden" name="id" value="<?= $task['id'] ?>">
                         <input type="hidden" name="is_completed" value="0">
                         <input type="checkbox"
