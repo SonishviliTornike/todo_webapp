@@ -7,7 +7,7 @@ use App\Validation\RegisterValidation;
 class Users {
     public function __construct(private DatabaseTable $usersTable, private RegisterValidation $registerValidation){}
 
-    public function registrationForm() {
+    public function register() {
         return [
             'template' => 'register.html.php',
             'pageTitle' => 'Register an account',
@@ -23,7 +23,7 @@ class Users {
         ];
     }
 
-    public function registrationFormSubmit() {
+    public function registerSubmit() {
         $rawData = $_POST['users'] ?? [];
         if (!empty($rawData)) {
             if(!$this->registerValidation->processUserRegister($rawData)) {

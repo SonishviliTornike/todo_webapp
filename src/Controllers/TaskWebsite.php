@@ -30,7 +30,6 @@ class TaskWebsite implements \App\Model\Website {
         $controller = null;
         if ($controllerName === 'tasks') {
             $allowedColumnNames = ['id', 'task_title'];
-
             $databaseTable = new DatabaseTable($this->conn, 'tasks', 'id', $allowedColumnNames);
             $tasksTable = new TasksTable($this->conn, 'tasks');
             $controller = new Tasks($databaseTable, $tasksTable);

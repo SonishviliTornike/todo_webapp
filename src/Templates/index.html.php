@@ -6,7 +6,7 @@
     <p class="hero__sub">Tally keeps every task in one plain list and nothing else. The only thing left to think about is finishing them.</p>
     <?php if ($isLoggedIn === false): ?>
       <div class="hero__cta">
-        <a class="btn btn--primary btn--lg" href="/users/registrationform">Start your list</a>
+        <a class="btn btn--primary btn--lg" href="/users/register">Start your list</a>
         <a class="btn btn--ghost btn--lg" href="/login/login">Log in</a>
       </div>
     <?php endif;?>
@@ -21,7 +21,7 @@
         <span class="demo__count" id="count">0 of 4 done</span>
       </div>
           <?php foreach ($tasks as $task):?>
-            <div class="task" data-task role="button" tabindex="0" aria-pressed="false">
+            <div class="task" data-task role="button" tabindex="0" aria-pressed="false" data-id="<?=(int)$task['id']?>">
               <span class="task__box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
               <span class="task__label"><?= htmlspecialchars($task['task_description'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
             </div>
@@ -85,39 +85,40 @@
   <span class="eyebrow">Ready when you are</span>
   <h2>Your first task is signing up.</h2>
   <?php if ($isLoggedIn === false): ?>
-    <a class="btn btn--primary btn--lg" href="/users/registrationform">Start your list</a>
+    <a class="btn btn--primary btn--lg" href="/users/register">Start your list</a>
   <?php else: ?>
     <a class="btn btn--primary btn--lg" href="/tasks/insertedit">Start your list</a>
   <?php endif;?>
 </section>
+<?php if($isLoggedIn === false): ?>
+  <script>
+    (function () {
+      const tasks = Array.from(document.querySelectorAll('[data-task]'));
+      const count = document.getElementById('count');
+      if (!tasks.length || !count) return;
 
-<script>
-  (function () {
-    const tasks = Array.from(document.querySelectorAll('[data-task]'));
-    const count = document.getElementById('count');
-    if (!tasks.length || !count) return;
+      function render() {
+        const done = tasks.filter(t => t.classList.contains('is-done')).length;
+        count.textContent = done + ' of ' + tasks.length + ' done';
+      }
+      function toggle(el) {
+        const done = el.classList.toggle('is-done');
+        el.setAttribute('aria-pressed', String(done));
+        render();
+      }
 
-    function render() {
-      const done = tasks.filter(t => t.classList.contains('is-done')).length;
-      count.textContent = done + ' of ' + tasks.length + ' done';
-    }
-    function toggle(el) {
-      const done = el.classList.toggle('is-done');
-      el.setAttribute('aria-pressed', String(done));
-      render();
-    }
-
-    tasks.forEach(t => {
-      t.addEventListener('click', () => toggle(t));
-      t.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(t); }
+      tasks.forEach(t => {
+        t.addEventListener('click', () => toggle(t));
+        t.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(t); }
+        });
       });
-    });
 
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduce) {
-      setTimeout(() => toggle(tasks[0]), 900);
-      setTimeout(() => toggle(tasks[2]), 1500);
-    }
-  })();
-</script>
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        setTimeout(() => toggle(tasks[0]), 900);
+        setTimeout(() => toggle(tasks[2]), 1500);
+      }
+    })();
+  </script>
+<?php endif;?> 

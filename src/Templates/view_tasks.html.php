@@ -19,23 +19,21 @@
                 <td data-label="Description"><?= htmlspecialchars($task['task_description'] ?? '', ENT_QUOTES,'UTF-8') ?></td>
                 <td data-label="Due"><?= htmlspecialchars($task['due_at'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                 <?php
-                    $priority = match ((int)$task['priority']){
-                        1 => 'High',
-                        3 => 'Low',
-                        default => 'Medium',
-                    }
+                    [$priority, $prioSlug] = match ((int)$task['priority']){
+                        1 => ['High', 'high'],
+                        3 => ['Low', 'low'],
+                        default => ['Medium', 'medium'],
+                    };
                 ?>
-                <td data-label="Priority"><?= htmlspecialchars($priority, ENT_QUOTES, 'UTF-8') ?></td>
-                <td>
-                    <form method="post" action="/tasks/settaskcompleted">
-                        <input type="hidden" name="id" value="<?= $task['id'] ?>">
-                        <input type="hidden" name="is_completed" value="0">
-                        <input type="checkbox"
-                            name="is_completed"
-                            value="1"
-                            onchange="this.form.submit()"
-                            <?= $task['is_completed'] ? 'checked' : '' ?>>
-                    </form>
+                <td data-label="Priority"><span class="prio prio--<?= $prioSlug ?>"><?= htmlspecialchars($priority, ENT_QUOTES, 'UTF-8') ?></span></td>
+                <td data-label="Completed">
+                    <span class="task__box<?= $task['is_completed'] ? ' is-done' : '' ?>"
+                          data-id="<?= (int)$task['id'] ?>"
+                          role="button" tabindex="0"
+                          aria-label="Toggle completed"
+                          aria-pressed="<?= $task['is_completed'] ? 'true' : 'false' ?>">
+                        <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                    </span>
                 </td>
                 <td>
                     <form action="/tasks/insertEdit/<?= $task['id'] ?>" method="get">

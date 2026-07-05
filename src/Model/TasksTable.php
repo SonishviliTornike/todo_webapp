@@ -12,11 +12,13 @@ class TasksTable {
 
         $stmt->execute($values);
 
+        return $stmt->rowCount() === 1;
+
     }
 
     
     public function showHighPriorityTasks(int $limit = 15): array {
-        $query = "SELECT `task_title`, `task_description`, `due_at`, `priority`, is_completed FROM  `{$this->table}` 
+        $query = "SELECT `id`, `task_title`, `task_description`, `due_at`, `priority`, is_completed FROM  `{$this->table}` 
             WHERE `priority` < 2 
             AND `is_completed` = 0 
             ORDER BY `priority` ASC, `due_at` ASC 

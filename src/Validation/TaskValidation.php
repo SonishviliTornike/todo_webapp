@@ -10,22 +10,44 @@ class TaskValidation {
 
     public function __construct(private array $input) {}
     
-    public function processTaskSubmit() {
-        $this->processFlow();
+    public function validate() {
+        if ($this->processFlow() === false ) {
+            return false;
+        }
 
-        return [$this->data, $this->errors];
+        return true;
+    }
+
+    public function getData() {
+        return $this->data;
+    }
+
+    public function getErrors() {
+        return $this->errors;
     }
 
     private function processFlow() {
-        $this->processId();
+        if (!$this->processId()) {
+            return false;
+        }
         
-        $this->processTaskTitle();
+        if (!$this->processTaskTitle()) {
+            return false;
+        }
 
-        $this->processTaskText();
+        if (!$this->processTaskText()) {
+            return false;
+        }
 
-        $this->processPriority();
+        if (!$this->processPriority()) {
+            return false;
+        }
 
-        $this->processDate();
+        if (!$this->processDate()) {
+            return false;
+        }
+
+        return true;
 
     }
 
@@ -33,14 +55,16 @@ class TaskValidation {
         $id = trim($this->input['id'] ?? '');
 
         if ($id === '') {
-            return;
+            return true;
         }
         
         if((int)$id <= 0 || !ctype_digit($id)) {
             $this->errors['id'][] = 'Task cant be updated invalid id.';
-            return;
+            return false;
         } else {
             $this->data['id'] = (int)$id;
+
+            return true;
         }
     }
 
@@ -49,10 +73,11 @@ class TaskValidation {
 
         if ($rawData=== '' || mb_strlen($rawData) > 100) {
             $this->errors['task_title'][] = 'Task title can\'t be empty or more than 100 characters';
-            return;
+            return false;
         }
 
         $this->data['task_title'] = $rawData;
+        return true;
     }
 
     private function processTaskText() {
@@ -60,9 +85,10 @@ class TaskValidation {
 
         if ($rawData === '' || mb_strlen($rawData) > 1000) {
             $this->errors['task_description'][] = 'Task can\'t be empty or more than 1000 characters';
-            return;
+            return false;
         }        
         $this->data['task_description'] = $rawData;
+        return true;
     }
 
     private function processPriority() {
@@ -70,15 +96,16 @@ class TaskValidation {
 
         if ($rawData === '' || !ctype_digit($rawData)) {
             $this->errors['priority'][] = 'Priority must be High, Medium, Low';
-            return;
+            return false;
         }else {
             $p = (int)$rawData;
             if (!in_array($p, [1,2,3], true)) {
                 $this->errors['priority'][] = 'Priority must be High, Medium, Low';
-                return;
+                return false;
             }
     
             $this->data['priority'] = $p;
+            return true;
 
         }
 
@@ -90,18 +117,19 @@ class TaskValidation {
 
         if ($due_raw === '') {
             $this->data['due_at'] = $now->format('Y-m-d H:i');
-            return;
+            return true;
         }
         $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $due_raw);
         $err = DateTimeImmutable::getLastErrors() ?: ['warning_count' => 0, 'error_count' => 0];
         if (!$dt || $err['warning_count'] != 0 || $err['error_count'] != 0 ) {
             $this->errors['due_at'][] = 'Invalid deadline value.';
-            return;
+            return false;
         }
         if ($dt < $now) {
             $this->errors['due_at'][] = 'Deadline can\'t be past time.';   
-            return;
+            return false;
         }
         $this->data['due_at'] = $dt->format('Y-m-d H:i');
+        return true;
     }
 }

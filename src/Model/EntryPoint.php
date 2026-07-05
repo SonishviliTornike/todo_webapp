@@ -54,6 +54,7 @@ class EntryPoint {
                 
                 $output = $this->loadTemplate($page['template'], $variables, $isLoggedIn);
             } else {
+                $isLoggedIn = $this->website->getAuthentication();
                 http_response_code(404);
                 $pageTitle = 'Not found';
                 $output = '<h2>Sorry, the page you are looking for could not be found.</h2>';

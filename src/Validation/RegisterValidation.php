@@ -29,7 +29,6 @@ class RegisterValidation {
         return $this->errors;
     }
     private function proccessFlow(array $input) {
-        $this->processId($input);
         
         $this->processUserName($input);
 
@@ -38,28 +37,6 @@ class RegisterValidation {
         $this->processFullName($input);
 
         $this->processPassword($input);
-    }
-
-
-    private function processId(array $input) {
-        $id = trim($input['id'] ?? '');
-
-        if ($id === '') {
-            return;
-        }
-        
-        if (!ctype_digit($id)) {
-           $this->errors['id'][] = 'User information can\'t be updated:string detected.'; 
-           return;
-        }
-
-        if((int)$id <= 0) {
-            $this->errors['id'][] = 'User information can\'t be updated:Invalid id.';
-            return;
-        }
-
-        $this->data['id'] = (int)$id;
-        
     }
 
 
@@ -156,8 +133,13 @@ class RegisterValidation {
 
     private function processPassword(array $input) {
         $password = $input['password'] ?? '';
-        
+        $secondPassword = $input['second_password'] ?? '';     
+    
 
+        if ($password !== $secondPassword) {
+            $this->errors['password'][] = 'Passwords do not match';
+            return;
+        }
         if($password === '') {
             $this->errors['password'][] = 'Password cant be blank.';
             return;
@@ -172,10 +154,11 @@ class RegisterValidation {
             return;
         }
 
+        
 
        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-       $this->data['password_hash'] = $hashedPassword;
+       $this->data['passwordHash'] = $hashedPassword;
 
     }
 

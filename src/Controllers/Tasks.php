@@ -3,7 +3,9 @@
 namespace App\Controllers;
 use App\Model\DatabaseTable;
 use App\Validation\TaskValidation;
+use App\Validation\TaskCompletionValidation;
 use App\Model\TasksTable;
+use Uri\WhatWg\UrlValidationError;
 
 
 class Tasks {
@@ -28,38 +30,39 @@ class Tasks {
     }
 
     public function setTaskCompletedSubmit() {
-        $taskIdRaw = $_POST['id'] ?? null;
-        $IsCompletedRaw = $_POST['is_completed'] ?? 0;
-        if (!isset($taskIdRaw) || !ctype_digit($taskIdRaw)) {
+        $validation = new TaskCompletionValidation($_POST);
+        $state = $validation->validate();
+
+        if ($state === false) {
+            $errors = $validation->getErrors();
             http_response_code(400);
-            exit('Invalid task id.');
+            header('Content-type: application/json');
+            echo json_encode(['ok' => false, 'Error' => $errors]);
+            exit();
+
         }
+        $values = $validation->getData();
 
-        if ($IsCompletedRaw !== '0' && $IsCompletedRaw !== '1') {
-            http_response_code(400);
-            exit('Error: task must be checked or unchecked');
-        }
-
-        $taskId = (int)$taskIdRaw;
-        $isCompleted = (int)$IsCompletedRaw;
-
-        $values = [
-            'id' => $taskId,
-            'is_completed' => $isCompleted
-        ];
-        $this->tasksTable->setTaskCompleted($values);
-        header('Location: /tasks/list');
-        exit();
+        if ($this->tasksTable->setTaskCompleted($values) === true) {
+            http_response_code(200);
+            header('Content-type: application/json');
+            echo json_encode(['ok' => true]);
+            exit();
+        } 
     }
 
     public function insertEditSubmit(): array { 
         $pageTitle = 'Insert task';
         if (isset($_POST['task'])) {
             $validation = new TaskValidation($_POST['task']);
-            [$values, $errors] = $validation->processTaskSubmit();
-            if($errors) {
+            $state  = $validation->validate();
+            if($state === false) {
+                $errors = $validation->getErrors();
                 return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
             }
+
+            $values = $validation->getData();
+
             $this->databaseTable->save($values);
             header('Location: /tasks/list');
             exit();
