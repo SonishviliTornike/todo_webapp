@@ -18,30 +18,26 @@ class TasksTable {
         if ($result === 1) {
             return UpdateResult::Changed;
         }
-
-        if ($result === 0){
-            $exists = $this->taskExists($values['id']);
-            if ($exists === true) {
-                return UpdateResult::Unchanged;
-            }
+        
+        $taskExists = $this->taskExists($values['id']);
+        if ($taskExists === true) {
+            return UpdateResult::Unchanged;
         }
         return UpdateResult::NotFound;
 
     }
 
-    private function taskExists(int $value) {
+    private function taskExists(int $id): bool {
         $query = 'SELECT `id` FROM `' . $this->table . '` WHERE `id` = :value';
 
         $stmt = $this->pdo->prepare($query);
         $values = [
-            ':value' => $value
+            ':value' => $id
         ];
         $stmt->execute($values);
         if ($stmt->fetchColumn() === false) {
-            return false;
-        } else {
-            return true;
         }
+        return true;
 
     }
     public function showHighPriorityTasks(int $limit = 15): array {
