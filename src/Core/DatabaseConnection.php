@@ -27,7 +27,7 @@ class DatabaseConnection {
             return $pdo;
         } catch (\PDOException $e) {
             error_log('Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
-            http_response_code(500);
+            http_response_code(503);
             die('Database connection couldn\'t be established.');
         }
     }

@@ -2,7 +2,6 @@
 
 namespace App\Model;
 use App\Model\Website;
-use PDOException;
 
 class EntryPoint {
     public function __construct(private Website $website) {}
@@ -25,7 +24,18 @@ class EntryPoint {
         }
     }
 
-
+    /** 
+        * Executes a controller action and ensures a valid response is produced.
+        *
+        * A controller action must adhere to one of the following two outcomes:
+        * 1. Return an array: This array will be used as the context to render 
+        * the appropriate view template.
+        * 2. Action sends its response and terminates via exit(), so control never
+        * returns to run()
+        * If an action fails to return an array or complete a response, this method 
+        * will throw a RuntimeException to prevent the application from hanging 
+        * or returning an empty, incomplete response.
+    */
     public function run(string $uri, string $method) {
         try {
             if ($uri == '') {
@@ -42,11 +52,13 @@ class EntryPoint {
                 $action .= 'Submit';
             }
             $controller = $this->website->getController($controllerName);
-            
             if (is_callable([$controller, $action])) { 
                 $isLoggedIn = $this->website->getAuthentication();
 
                 $page = $controller->$action(...$route);
+                if (!is_array($page)) {
+                    throw new \RuntimeException('In ' . $controllerName . '/'. $action . ' array was expected but ' . get_debug_type($page) . ' was returned');
+                }
                 
                 $pageTitle = $page['pageTitle'] ?? 'Untitled';
     
@@ -61,8 +73,14 @@ class EntryPoint {
             }
 
 
-        } catch (PDOException $e) {
-            error_log('Error:' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine());
+        } catch (\PDOException $e) {
+            error_log('DatabaseError:' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine());
+            http_response_code(503);
+            $pageTitle = 'Error';
+            $output = 'Service is unavailable';
+        }catch (\RuntimeException $e) {
+            error_log('RuntimeError: ' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine());
+            http_response_code(500);
             $pageTitle = 'Error';
             $output = 'Service is unavailable';
         }

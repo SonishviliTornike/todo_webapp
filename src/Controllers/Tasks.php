@@ -5,8 +5,6 @@ use App\Model\DatabaseTable;
 use App\Validation\TaskValidation;
 use App\Validation\TaskCompletionValidation;
 use App\Model\TasksTable;
-use Uri\WhatWg\UrlValidationError;
-
 
 class Tasks {
     public function __construct(private DatabaseTable $databaseTable, private TasksTable $tasksTable) {}
@@ -29,9 +27,11 @@ class Tasks {
         
     }
 
-    public function setTaskCompletedSubmit() {
+    public function setTaskCompletedSubmit(): void{
         $validation = new TaskCompletionValidation($_POST);
         $state = $validation->validate();
+        $values = $validation->getData();
+
 
         if ($state === false) {
             $errors = $validation->getErrors();
@@ -40,8 +40,9 @@ class Tasks {
             echo json_encode(['ok' => false, 'Error' => $errors]);
             exit();
 
-        }
-        $values = $validation->getData();
+        } 
+
+        
 
         if ($this->tasksTable->setTaskCompleted($values) === true) {
             http_response_code(200);
@@ -64,9 +65,9 @@ class Tasks {
             $values = $validation->getData();
 
             $this->databaseTable->save($values);
+            http_response_code(200);
             header('Location: /tasks/list');
             exit();
-
         }
         return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['']];
 
@@ -99,7 +100,7 @@ class Tasks {
         $taskId = (int)$taskId;
 
         $this->databaseTable->delete($taskId);
-
+        http_response_code(200);
         header('Location: /tasks/list');
         exit();
 
