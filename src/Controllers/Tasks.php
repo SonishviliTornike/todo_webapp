@@ -5,7 +5,7 @@ use App\Model\DatabaseTable;
 use App\Validation\TaskValidation;
 use App\Validation\TaskCompletionValidation;
 use App\Model\TasksTable;
-
+use App\Model\UpdateResult;
 class Tasks {
     public function __construct(private DatabaseTable $databaseTable, private TasksTable $tasksTable) {}
 
@@ -27,29 +27,24 @@ class Tasks {
         
     }
 
-    public function setTaskCompletedSubmit(): void{
+    public function setTaskCompletedSubmit(): never {
         $validation = new TaskCompletionValidation($_POST);
         $state = $validation->validate();
-        $values = $validation->getData();
-
-
-        if ($state === false) {
+        if ($state === false){ 
             $errors = $validation->getErrors();
-            http_response_code(400);
-            header('Content-type: application/json');
-            echo json_encode(['ok' => false, 'Error' => $errors]);
-            exit();
+            $this->jsonResponse(['ok' => false, 'errors' => $errors], 400);
+            
+        }
 
-        } 
+        $values = $validation->getData();
+        $result = $this->tasksTable->setTaskCompleted($values);
 
-        
+        match ($result) {
+            UpdateResult::Changed => $this->jsonResponse(['ok' => true], 200),
+            UpdateResult::Unchanged => $this->jsonResponse(['ok' => true], 200),
+            UpdateResult::NotFound => $this->jsonResponse(['ok' => false], 404)
+        };
 
-        if ($this->tasksTable->setTaskCompleted($values) === true) {
-            http_response_code(200);
-            header('Content-type: application/json');
-            echo json_encode(['ok' => true]);
-            exit();
-        } 
     }
 
     public function insertEditSubmit(): array { 
@@ -117,5 +112,13 @@ class Tasks {
             'tasks' => $result,
         ]];
     }
- 
+
+    private function jsonResponse(array $payload, int $responseCode): never {
+            http_response_code($responseCode);
+            header('Content-type: application/json');
+            echo json_encode($payload);
+            exit();
+    }
+
 }
+
