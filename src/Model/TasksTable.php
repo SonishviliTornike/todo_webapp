@@ -20,10 +20,10 @@ class TasksTable {
         }
         
         $taskExists = $this->taskExists($values['id']);
-        if ($taskExists === true) {
-            return UpdateResult::Unchanged;
+        if ($taskExists === false) {
+            return UpdateResult::NotFound;
         }
-        return UpdateResult::NotFound;
+        return UpdateResult::Unchanged;
 
     }
 
@@ -35,10 +35,7 @@ class TasksTable {
             ':value' => $id
         ];
         $stmt->execute($values);
-        if ($stmt->fetchColumn() === false) {
-        }
-        return true;
-
+        return $stmt->fetchColumn() !== false; 
     }
     public function showHighPriorityTasks(int $limit = 15): array {
         $query = "SELECT `id`, `task_title`, `task_description`, `due_at`, `priority`, is_completed FROM  `{$this->table}` 
