@@ -27,16 +27,18 @@ class TasksTable {
 
     }
 
-    private function taskExists(int $id): bool {
-        $query = 'SELECT `id` FROM `' . $this->table . '` WHERE `id` = :value';
+    private function taskExists(int $id, int $userId): bool {
+        $query = 'SELECT `id` FROM `' . $this->table . '` WHERE `id` = :id AND `user_id` = :user_id';
 
         $stmt = $this->pdo->prepare($query);
         $values = [
-            ':value' => $id
+            ':id' => $id,
+            ':user_id' => $userId
         ];
         $stmt->execute($values);
         return $stmt->fetchColumn() !== false; 
     }
+
     public function showHighPriorityTasks(int $limit = 15): array {
         $query = "SELECT `id`, `task_title`, `task_description`, `due_at`, `priority`, is_completed FROM  `{$this->table}` 
             WHERE `priority` < 2 
@@ -62,4 +64,30 @@ class TasksTable {
         return $stmt->fetch(\PDO::FETCH_NUM);
     }
 
+    public function updateTask(array $values, int $userId): UpdateResult {
+        $query = 'UPDATE `' . $this->table . '` SET 
+        `task_title` = :task_title, 
+        `task_description` = :task_description,
+        `due_at` = :due_at,
+        `priority` = :priority
+        WHERE `id` = :id AND `user_id` = :user_id';
+
+        $stmt = $this->pdo->prepare($query);
+        $values['user_id'] = $userId;
+        $stmt->execute($values);
+
+        $result = $stmt->rowCount();
+
+        if ($result === 1) {
+            return UpdateResult::Changed;
+        }
+
+        $taskExists = $this->taskExists($values['id'], $userId);
+
+        if ($taskExists === false) {
+            return UpdateResult::NotFound;
+            }
+            
+        return UpdateResult::Unchanged;
+    }
 }

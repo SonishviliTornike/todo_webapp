@@ -6,8 +6,10 @@ use App\Validation\TaskValidation;
 use App\Validation\TaskCompletionValidation;
 use App\Model\TasksTable;
 use App\Model\UpdateResult;
+use App\Core\Authentication;
+
 class Tasks {
-    public function __construct(private DatabaseTable $databaseTable, private TasksTable $tasksTable) {}
+    public function __construct(private DatabaseTable $databaseTable, private TasksTable $tasksTable, private Authentication $authentication) {}
 
     
     public function list(): array {
@@ -56,13 +58,27 @@ class Tasks {
                 $errors = $validation->getErrors();
                 return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
             }
-
+            
             $values = $validation->getData();
+            $userId = $this->authentication->getUserId();
+            if ($values['id'] === '') {
+                $values['user_id'] = $userId;
+                $this->databaseTable->save($values);
+                http_response_code(200);
+                header('Location: /tasks/list');
+                exit();
+            } else {
+                $result = $this->tasksTable->updateTask($values, $userId);
+                if ($result === UpdateResult::NotFound) {
+                    http_response_code(404);
+                    return ['pageTitle' => 'Not found', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => ['taskError' => ['Task not found']]]];
+                }
 
-            $this->databaseTable->save($values);
-            http_response_code(200);
-            header('Location: /tasks/list');
-            exit();
+                header('Location: /tasks/list');
+                exit();
+            }
+                
+
         }
         return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['']];
 
@@ -73,7 +89,7 @@ class Tasks {
             $errors = [];
             if($taskId <= 0) {
                 $errors['Erorr'][] = 'Error: Invalid primary key provided.';
-                return ['pageTitle' => 'Error', 'template'=> 'insertEdit.html.php', 'variables' => [ 'errors' => $errors]];
+                return ['pageTitle' => 'Error', 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
 
             }
             $task = $this->databaseTable->find($taskId);

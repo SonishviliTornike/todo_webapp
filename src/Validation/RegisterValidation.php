@@ -135,8 +135,6 @@ class RegisterValidation {
         $password = $input['password'] ?? '';
         $secondPassword = $input['secondPassword'] ?? '';     
     
-        var_dump('1:'  .$password);
-        var_dump('2:' . $secondPassword);
         if ($password !== $secondPassword) {
             $this->errors['password'][] = 'Passwords do not match';
             return;

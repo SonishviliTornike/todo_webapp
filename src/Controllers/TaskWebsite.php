@@ -32,7 +32,7 @@ class TaskWebsite implements \App\Model\Website {
             $allowedColumnNames = ['id', 'task_title'];
             $databaseTable = new DatabaseTable($this->conn, 'tasks', 'id', $allowedColumnNames);
             $tasksTable = new TasksTable($this->conn, 'tasks');
-            $controller = new Tasks($databaseTable, $tasksTable);
+            $controller = new Tasks($databaseTable, $tasksTable, $this->authentication);
 
         } elseif ($controllerName === 'users') {
             $registerValidation = new RegisterValidation($this->usersTable);

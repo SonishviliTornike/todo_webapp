@@ -29,4 +29,13 @@ class Authentication {
 
         session_destroy();
     }
+
+    public function getUserId(): int {
+        if (!isset($_SESSION['user_id'])) {
+            throw new \RuntimeException('getUserId called without an authenticated session - check route protection');
+        }
+
+        return $_SESSION['user_id'];
+    }
 }
+
