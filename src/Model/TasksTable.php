@@ -90,4 +90,5 @@ class TasksTable {
             
         return UpdateResult::Unchanged;
     }
+
 }

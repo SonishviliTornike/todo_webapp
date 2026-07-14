@@ -36,7 +36,7 @@
                     </span>
                 </td>
                 <td>
-                    <form action="/tasks/insertEdit/<?= $task['id'] ?>" method="get">
+                    <form action="/tasks/taskForm/<?= $task['id'] ?>" method="get">
                         <input type="hidden" name="id" value="<?= $task['id'] ?>">
                         <input type="submit" value="Edit Task">
                     </form>

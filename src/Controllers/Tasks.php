@@ -61,7 +61,7 @@ class Tasks {
             
             $values = $validation->getData();
             $userId = $this->authentication->getUserId();
-            if ($values['id'] === '') {
+            if (!isset($values['id'])) {
                 $values['user_id'] = $userId;
                 $this->databaseTable->save($values);
                 http_response_code(200);
@@ -84,14 +84,16 @@ class Tasks {
 
     }
 
-    public function insertEdit($taskId = null): array {    
+    public function taskForm($taskId = null): array {    
         if (isset($taskId)){
             $errors = [];
+            
             if($taskId <= 0) {
                 $errors['Erorr'][] = 'Error: Invalid primary key provided.';
                 return ['pageTitle' => 'Error', 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
 
             }
+            // $userId = $this->authentication->getUserId();
             $task = $this->databaseTable->find($taskId);
             
             return ['pageTitle' => 'Edit task', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];

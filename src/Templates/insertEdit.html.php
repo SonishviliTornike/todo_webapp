@@ -31,7 +31,6 @@
 </form>
 
 <?php if (!empty($errors)): ?>
-    <?php var_dump($errors);?>
     <div class="errors-container">
         <?php foreach ($errors as $err_key => $err_message_array):?>
             <?php foreach ($err_message_array as $message):?>
