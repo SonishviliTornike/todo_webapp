@@ -87,7 +87,7 @@
   <?php if ($isLoggedIn === false): ?>
     <a class="btn btn--primary btn--lg" href="/users/register">Start your list</a>
   <?php else: ?>
-    <a class="btn btn--primary btn--lg" href="/tasks/insertedit">Start your list</a>
+    <a class="btn btn--primary btn--lg" href="/tasks/taskForm">Start your list</a>
   <?php endif;?>
 </section>
 <?php if($isLoggedIn === false): ?>

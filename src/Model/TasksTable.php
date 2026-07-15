@@ -90,5 +90,25 @@ class TasksTable {
             
         return UpdateResult::Unchanged;
     }
+      public function findTask(int $value, int $userId): array | false {
+        if(empty($value)){
+            throw new \InvalidArgumentException('Error: Invalid argument provided.');
+        }
+
+
+        $query = 'SELECT `task_title`, `task_description`, `due_at`, `priority`  FROM `'  .  $this->table . '` WHERE `id` = :value AND `user_id` = :user_id';
+        
+        $stmt = $this->pdo->prepare($query);
+
+        $values = [
+            ':value' => $value,
+            ':user_id' => $userId
+        ];
+
+        $stmt->execute($values);
+
+        return $stmt->fetch();
+    }
+
 
 }

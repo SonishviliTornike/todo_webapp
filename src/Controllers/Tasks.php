@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 
 namespace App\Controllers;
 use App\Model\DatabaseTable;
@@ -93,14 +93,19 @@ class Tasks {
                 return ['pageTitle' => 'Error', 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
 
             }
-            // $userId = $this->authentication->getUserId();
-            $task = $this->databaseTable->find($taskId);
-            
-            return ['pageTitle' => 'Edit task', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];
-        }
+            $userId = $this->authentication->getUserId();
 
+            $task = $this->tasksTable->findTask($taskId, $userId);
+            if ($task === false) {
+                $tasks = $this->databaseTable->findAll();
+                $totalTasks = $this->tasksTable->totalTasks();
+                http_response_code(404);
+                return ['pageTitle' => 'Not found', 'template' => 'view_tasks.html.php', 'variables' => ['tasks' => $tasks, 'totalTasks'=> $totalTasks, 'errors' => ['taskError' => ['Task not found']]]];
+                } 
+            return ['pageTitle' => 'Edit task', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];            
+        }  
         return ['pageTitle' => 'Insert Task', 'template' => 'insertEdit.html.php', 'variables' => ['']];
-        }
+    }
     
 
     public function deleteSubmit() {
