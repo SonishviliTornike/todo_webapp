@@ -110,5 +110,20 @@ class TasksTable {
         return $stmt->fetch();
     }
 
+    public function findAllTasks(int $userId): array {
+
+        $query = 'SELECT * FROM `' . $this->table . '` WHERE `user_id` = :user_id';
+
+        $stmt  = $this->pdo->prepare($query);
+
+        $values = [
+            ':user_id' => $userId
+        ];
+        $stmt->execute($values);
+
+        return $stmt->fetchAll();
+
+    }
+
 
 }

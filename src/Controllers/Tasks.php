@@ -13,7 +13,10 @@ class Tasks {
     
     public function list(): array {
         $pageTitle = 'Tasks';
-        $tasks = $this->databaseTable->findAll();
+
+        $userId = $this->authentication->getUserId();
+        
+        $tasks = $this->tasksTable->findAllTasks($userId);
 
         $totalTasks = $this->tasksTable->totalTasks();
 

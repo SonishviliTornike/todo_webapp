@@ -81,7 +81,7 @@ is committed. No starting a new phase with an unfinished one open.
       restored is not a backup)
 - [ ] Secrets: prod .env never in git, different passwords than dev
 - [ ] Log rotation / at least a habit of reading logs
-- [ ] Move repo out of OneDrive-synced folders (NUL-byte corruption
+- [+] Move repo out of OneDrive-synced folders (NUL-byte corruption
       happened twice; Desktop is often synced on Windows — verify)
 
 ## Phase 7 — PRODUCT POLISH (after everything above)
