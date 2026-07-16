@@ -1,9 +1,9 @@
 <div class="add-edit-container">
     <?php if (empty($task['id'])):?>
         <h2>Add Task</h2>
-    <?else: ?>
+    <?php else: ?>
         <h2>Edit Task</h2>
-    <?endif;?>
+    <?php endif;?>
 </div>
 
 

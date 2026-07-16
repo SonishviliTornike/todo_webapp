@@ -1,5 +1,4 @@
-﻿<?php 
-
+<?php
 namespace App\Controllers;
 use App\Model\DatabaseTable;
 use App\Validation\TaskValidation;
