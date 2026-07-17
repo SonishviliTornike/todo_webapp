@@ -11,9 +11,9 @@ is committed. No starting a new phase with an unfinished one open.
   - [+] Authentication::getUserId(): int (throws RuntimeException when no session)
   - [+] Inject Authentication into Tasks controller (via TaskWebsite)
   - [+] Stamp user_id from session on task insert (never from POST)
-  - [ ] Scope ALL task reads to owner (list, index high-priority, totalTasks)
-  - [ ] Scope UPDATE / DELETE / edit-fetch to owner (WHERE ... AND user_id)
-  - [ ] Guest branch in index(): isLoggedIn() first, no query for guests
+  - [+] Scope ALL task reads to owner (list, index high-priority, totalTasks)
+  - [+] Scope UPDATE / DELETE / edit-fetch to owner (WHERE ... AND user_id)
+  - [+] Guest branch in index(): isLoggedIn() first, no query for guests
   - [ ] Decide + document: other user's task → 404 (do not reveal existence)
   - [ ] Two-account test: user B cannot see/complete/edit/delete user A's task
 - [ ] NOTES.md Lesson 9 "My words" (enums, never, match, DI)

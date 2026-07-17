@@ -23,7 +23,6 @@
         <option value="2" <?= $currentPrioirty == 2 ? 'selected' : '' ?>>Medium</option>
         <option value="3" <?= $currentPrioirty == 3 ? 'selected' : '' ?>>Low</option>
     </select><br><br>
-
     <input type="hidden" name="task[id]" id="id" value="<?= $task['id'] ?? ''?>">
     <div style="display:flex; gap:12px; align-items:center;">
         <input type="submit" name="submit" value="Save">
