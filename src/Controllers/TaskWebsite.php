@@ -10,17 +10,20 @@ use App\Controllers\Users;
 use App\Model\TasksTable;
 use App\Validation\RegisterValidation;
 use App\Validation\LoginValidation;
+use App\Core\CsrfToken;
 
 class TaskWebsite implements \App\Model\Website {
     private ?DatabaseConnection $pdo = null;
     private ?\PDO $conn = null;
     private ?Authentication $authentication = null;
     private ?DatabaseTable $usersTable = null;
+    private ?CsrfToken $csrf = null;
     public function __construct() {
         $this->pdo = new DatabaseConnection();
         $this->conn = $this->pdo->getPdoConnection();
         $this->usersTable = new  DatabaseTable($this->conn, 'users', 'id', ['email', 'id', 'user_name']);
         $this->authentication = new Authentication($this->usersTable, 'password_hash');
+        $this->csrf = new CsrfToken();
     }
     public function getDefaultRoute(): string {
         return 'tasks/index';
@@ -62,5 +65,9 @@ class TaskWebsite implements \App\Model\Website {
             exit();
         }
         return $uri;
+    }
+
+    public function getCsrf(): CsrfToken {
+        return $this->csrf;
     }
 }

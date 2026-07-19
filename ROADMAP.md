@@ -14,10 +14,9 @@ is committed. No starting a new phase with an unfinished one open.
   - [+] Scope ALL task reads to owner (list, index high-priority, totalTasks)
   - [+] Scope UPDATE / DELETE / edit-fetch to owner (WHERE ... AND user_id)
   - [+] Guest branch in index(): isLoggedIn() first, no query for guests
-  - [ ] Decide + document: other user's task → 404 (do not reveal existence)
-  - [ ] Two-account test: user B cannot see/complete/edit/delete user A's task
-- [ ] NOTES.md Lesson 9 "My words" (enums, never, match, DI)
-- [ ] Commit: "feat: scope tasks to their owner"
+  - [+] Decide + document: other user's task → 404 (do not reveal existence)
+  - [+] Two-account test: user B cannot see/complete/edit/delete user A's task
+  - [+] Commit: "feat: scope tasks to their owner"
 
 ## Phase 1 — SECURITY CORE (blockers: no production before these)
 

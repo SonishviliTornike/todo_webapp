@@ -23,7 +23,8 @@
         <option value="2" <?= $currentPrioirty == 2 ? 'selected' : '' ?>>Medium</option>
         <option value="3" <?= $currentPrioirty == 3 ? 'selected' : '' ?>>Low</option>
     </select><br><br>
-    <input type="hidden" name="task[id]" id="id" value="<?= $task['id'] ?? ''?>">
+    <input type="hidden" name="task[id]" id="id" value="<?= htmlspecialchars($task['id'] ?? '', ENT_QUOTES, 'UTF-8')?>">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8')?>">
     <div style="display:flex; gap:12px; align-items:center;">
         <input type="submit" name="submit" value="Save">
     </div>

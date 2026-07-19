@@ -6,7 +6,8 @@
 
     <label for="password">Enter password:</label>
     <input type="password" name="login[password]" id="password" autocomplete="current-password" required>
-
+    
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8')?>">
     <div class="form-row-end">
         <a class="link-quiet" href="/login/forgot">Forgot password?</a>
     </div>

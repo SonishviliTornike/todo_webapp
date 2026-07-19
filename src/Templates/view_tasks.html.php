@@ -42,6 +42,7 @@
                     </form>
                     <form action="/tasks/delete" method="post">
                         <input type="hidden" name='id' value="<?= $task['id'] ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8')?>">
                         <input type="submit" value="Remove Task">
                     </form>
                 </td>

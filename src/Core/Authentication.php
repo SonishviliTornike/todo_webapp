@@ -3,9 +3,7 @@
 namespace App\Core;
 
 class Authentication {
-    public function __construct(private \App\Model\DatabaseTable $users, private string $passwordColumn) {
-        if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-    }
+    public function __construct(private \App\Model\DatabaseTable $users, private string $passwordColumn) {}
 
 
     public function login(string $identity, string $userColumnName, string $password):bool {

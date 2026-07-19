@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
     <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
     <script>
         /* Set theme before first paint to avoid a flash of the wrong theme.
@@ -36,6 +37,7 @@
             <li><a href="/login/login">Log in</a></li>
         <?php else:?>
             <li><form action="/login/logout" method="post" class="logout-form">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8')?>">
                 <button type="submit">Log out</button>
             </form></li>
         <?php endif;?>

@@ -19,6 +19,8 @@
     <label for="secondPassword">Password confrimation:</label>
     <input type="password" name="users[secondPassword]" id="secondPassword" >
 
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8')?>">
+
     <input type="submit" name="submit" id="submit_user" value="Register">
 </form>
 

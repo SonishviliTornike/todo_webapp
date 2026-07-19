@@ -2,11 +2,12 @@
 
 namespace App\Model;
 use App\Model\Website;
+use App\Core\CsrfToken;
 
 class EntryPoint {
-    public function __construct(private Website $website) {}
+    public function __construct(private Website $website, private CsrfToken $csrf) {}
 
-    private function loadTemplate(string $templateFileName, array $variables = [], bool $isLoggedIn = false): string {
+    private function loadTemplate(string $templateFileName, array $variables = [], bool $isLoggedIn = false, string $csrfToken = ''): string {
         extract($variables);
 
         ob_start();
@@ -38,19 +39,32 @@ class EntryPoint {
     */
     public function run(string $uri, string $method) {
         try {
+            $csrfToken = $this->csrf->getToken();
             if ($uri == '') {
                 $uri = $this->website->getDefaultRoute();
             }
+
             $this->checkUri($uri);
+            
             $route = explode('/', $uri);
 
             $controllerName = array_shift($route);
             $action = array_shift($route);
 
+            if ($method === 'POST') {
+                $tokenState = $this->csrf->validateToken($_POST['csrf_token'] ?? ''); 
+                if ($tokenState === false) {
+                    http_response_code(403);
+                    exit('Invalid CSRF token');
+                }
+            }
+            
             $this->website->checkLogin($controllerName . '/' . $action);
+
             if ($method === 'POST') {
                 $action .= 'Submit';
             }
+
             $controller = $this->website->getController($controllerName);
             if (is_callable([$controller, $action])) { 
                 $isLoggedIn = $this->website->getAuthentication();
@@ -64,7 +78,7 @@ class EntryPoint {
     
                 $variables = $page['variables'] ?? [];
                 
-                $output = $this->loadTemplate($page['template'], $variables, $isLoggedIn);
+                $output = $this->loadTemplate($page['template'], $variables, $isLoggedIn, $csrfToken);
             } else {
                 $isLoggedIn = $this->website->getAuthentication();
                 http_response_code(404);
