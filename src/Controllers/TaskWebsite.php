@@ -18,10 +18,12 @@ class TaskWebsite implements \App\Model\Website {
     private ?Authentication $authentication = null;
     private ?DatabaseTable $usersTable = null;
     private ?CsrfToken $csrf = null;
+    private $allowedColumnNames = [];
     public function __construct() {
+        $this->allowedColumnNames = ['id', 'due_at', 'task_title', 'priority', 'is_completed', 'task_description', 'user_id', 'user_name', 'full_name', 'email', 'password_hash'];
         $this->pdo = new DatabaseConnection();
         $this->conn = $this->pdo->getPdoConnection();
-        $this->usersTable = new  DatabaseTable($this->conn, 'users', 'id', ['email', 'id', 'user_name']);
+        $this->usersTable = new  DatabaseTable($this->conn, 'users', 'id', $this->allowedColumnNames);
         $this->authentication = new Authentication($this->usersTable, 'password_hash');
         $this->csrf = new CsrfToken();
     }
@@ -32,8 +34,7 @@ class TaskWebsite implements \App\Model\Website {
     public function getController(string $controllerName): ? object {
         $controller = null;
         if ($controllerName === 'tasks') {
-            $allowedColumnNames = ['id', 'task_title'];
-            $databaseTable = new DatabaseTable($this->conn, 'tasks', 'id', $allowedColumnNames);
+            $databaseTable = new DatabaseTable($this->conn, 'tasks', 'id', $this->allowedColumnNames);
             $tasksTable = new TasksTable($this->conn, 'tasks');
             $controller = new Tasks($databaseTable, $tasksTable, $this->authentication);
 

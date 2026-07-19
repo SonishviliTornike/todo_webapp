@@ -4,12 +4,11 @@ namespace App\Model;
 
 class DatabaseTable {
     
-    public function __construct(private \PDO $pdo, private string $table, private string $primaryKey, private ?array $allowedColumNames){
-        $this->allowedColumNames[] = $this->primaryKey;
+    public function __construct(private \PDO $pdo, private string $table, private string $primaryKey, private ?array $allowedColumnNames){
+        $this->allowedColumnNames[] = $this->primaryKey;
     }
 
     public function findAll(): array {
-
         $query = 'SELECT * FROM `' . $this->table . '`';
 
         $stmt  = $this->pdo->prepare($query);
@@ -35,10 +34,12 @@ class DatabaseTable {
     
 
    
-    public function insert(array $values) {
+    public function insert(array $values): void {
         if (empty($values)) {
             throw new \InvalidArgumentException('Error: Empty values provided!');
         }
+        
+        $this->assertColumnsAllowed(array_keys($values));
 
         $query = 'INSERT INTO `' . $this->table . '` (';
 
@@ -65,11 +66,13 @@ class DatabaseTable {
 
     }
 
-    private function update(array $values) {
+    private function update(array $values): void {
 
         if (empty($values)) {
-            throw new \InvalidArgumentException("Error: emprty array was provided.");
+            throw new \InvalidArgumentException("Error: empty array was provided.");
         }
+
+        $this->assertColumnsAllowed(array_keys($values));
 
         $query = 'UPDATE `' . $this->table . '` SET ';
 
@@ -81,8 +84,10 @@ class DatabaseTable {
 
         
         $query .= ' WHERE `' . $this->primaryKey . '` = :primaryKey';
-
+        
         $values['primaryKey'] = $values[$this->primaryKey];
+        
+
 
         $stmt = $this->pdo->prepare($query);   
 
@@ -90,7 +95,7 @@ class DatabaseTable {
         $stmt->execute($values);
     }
 
-    public function save(array $record) {
+    public function save(array $record): void {
         if (empty($record[$this->primaryKey])) {
             unset($record[$this->primaryKey]);
             $this->insert($record);
@@ -102,18 +107,16 @@ class DatabaseTable {
 
     public function find($value, $columnName = null): array | false {
         if(empty($value)){
-            throw new \InvalidArgumentException('Error: Invalid argument provided.');
+            throw new \InvalidArgumentException('Invalid arguments: Invalid values provided.');
         }
         if (!isset($columnName)){
             $columnName = $this->primaryKey;
         }
 
-        if (!in_array($columnName, $this->allowedColumNames)) {
-            throw new \InvalidArgumentException('Error: Invalid column name provided.');
-        }
+        $this->assertColumnsAllowed([$columnName]);
 
 
-        $query = 'SELECT * FROM `'  .  $this->table . '` WHERE ' . $columnName . ' = :value';
+        $query = 'SELECT * FROM `'  .  $this->table . '` WHERE `' . $columnName . '` = :value';
         
         $stmt = $this->pdo->prepare($query);
 
@@ -124,4 +127,12 @@ class DatabaseTable {
         return $stmt->fetch();
     }
 
+
+    private function assertColumnsAllowed(array $columnNames): void {
+        foreach ($columnNames as $columnName) {
+            if (!in_array($columnName, $this->allowedColumnNames, true)) {
+                throw new \InvalidArgumentException('Invalid argument: Invalid column name provided: ' . $columnName);
+            }
+        }
+    }
 }

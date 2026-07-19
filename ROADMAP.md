@@ -7,7 +7,7 @@ is committed. No starting a new phase with an unfinished one open.
 
 ## Phase 0 — FINISH WHAT IS OPEN (current)
 
-- [ ] user_id binding (in progress):
+- [+] user_id binding (in progress):
   - [+] Authentication::getUserId(): int (throws RuntimeException when no session)
   - [+] Inject Authentication into Tasks controller (via TaskWebsite)
   - [+] Stamp user_id from session on task insert (never from POST)
@@ -20,7 +20,7 @@ is committed. No starting a new phase with an unfinished one open.
 
 ## Phase 1 — SECURITY CORE (blockers: no production before these)
 
-- [ ] CSRF protection on every state-changing endpoint
+- [+] CSRF protection on every state-changing endpoint
   (login, logout, register, task insert/edit, delete, complete).
   One token mechanism, session-stored, checked centrally.
 - [ ] Session hardening:
