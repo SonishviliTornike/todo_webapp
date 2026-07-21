@@ -9,7 +9,7 @@ class Authentication {
     public function login(string $identity, string $userColumnName, string $password):bool {
         $user = $this->users->find($identity, $userColumnName);
         if ($user !== false && password_verify($password, $user[$this->passwordColumn])) {
-            session_regenerate_id();
+            session_regenerate_id(true);
             $_SESSION['user_name'] = $user['user_name'];
             $_SESSION['user_id'] = $user['id'];
 
@@ -23,8 +23,15 @@ class Authentication {
     }
 
     public function logout(): void{
+        $params = session_get_cookie_params();
         session_unset();
-
+        setcookie(session_name(),'', [
+            'expires' => time() - 3600,
+            'path' => $params['path'], 
+            'domain' => $params['domain'],
+            'httponly' => $params['httponly'],
+            'secure' => $params['secure'],
+            'samesite' => $params['samesite'] ]);
         session_destroy();
     }
 
