@@ -29,10 +29,10 @@ Legend: [ ] open · [+] done · (!) new finding from 2026-07-19 review
 ## Phase 1 — SECURITY CORE (current; blockers: no production before these)
 
 - [ ] Session hardening:
-  - [ ] session_regenerate_id(true) on login (true = delete old session
+  - [+] session_regenerate_id(true) on login (true = delete old session
         file; without it the pre-login session id stays valid →
         session fixation)
-  - [ ] Full logout: session_unset + destroy AND expire the cookie
+  - [+] Full logout: session_unset + destroy AND expire the cookie
         (setcookie with past date — destroy() alone leaves the cookie
         in the browser)
   - [+] Cookie params: HttpOnly, SameSite=Lax (Secure flag waits for
