@@ -59,7 +59,7 @@ class TaskWebsite implements \App\Model\Website {
     }
 
     public function checkLogin(string $uri): string {
-        $allowedPages = ['tasks/index', 'login/login', 'users/register'];
+        $allowedPages = ['tasks/index', 'login/login', 'users/register', 'users/registersuccess'];
         if (!in_array($uri, $allowedPages, true) && !$this->authentication->isLoggedIn()) {
             http_response_code(302);
             header('location: /login/login');

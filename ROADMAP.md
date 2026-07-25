@@ -61,7 +61,7 @@ Legend: [ ] open · [+] done · (!) new finding from 2026-07-19 review
 ## Phase 2 — CORRECTNESS DEBT (known bugs, small, one sweep, one commit each)
 
 Broken flows:
-- [ ] (!) Register success page unreachable: registerSubmit redirects to
+- [+] (!) Register success page unreachable: registerSubmit redirects to
       /users/registersuccess but checkLogin allowedPages does not include
       it → guest gets bounced to /login/login and never sees the page.
       Decide: add to allowedPages, or auto-login after register, or
