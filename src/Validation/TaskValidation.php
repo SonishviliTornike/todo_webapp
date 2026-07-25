@@ -71,8 +71,12 @@ class TaskValidation {
     private function processTaskTitle() {
         $rawData = trim($this->input['task_title'] ?? '');
 
-        if ($rawData=== '' || mb_strlen($rawData) > 100) {
-            $this->errors['task_title'][] = 'Task title can\'t be empty or more than 100 characters';
+        if ($rawData === '') {
+            $this->errors['task_title'][] = 'Task title can\'t be empty';
+        }
+
+        if (mb_strlen($rawData) > 50) {
+            $this->errors['task_title'][] = 'Task title can\'t be more than 50 characters';
             return false;
         }
 
@@ -83,8 +87,12 @@ class TaskValidation {
     private function processTaskText() {
         $rawData =  trim($this->input['task_description'] ?? '');
 
-        if ($rawData === '' || mb_strlen($rawData) > 1000) {
-            $this->errors['task_description'][] = 'Task can\'t be empty or more than 1000 characters';
+        if ($rawData === '') {
+            $this->errors['task_description'][] = 'Task can\'t be empty';
+        }
+
+        if ($rawData === '' || mb_strlen($rawData) > 255) {
+            $this->errors['task_description'][] = 'Task can\'t be more than 255 characters';
             return false;
         }        
         $this->data['task_description'] = $rawData;

@@ -37,8 +37,21 @@ Legend: [ ] open · [+] done · (!) new finding from 2026-07-19 review
         in the browser)
   - [+] Cookie params: HttpOnly, SameSite=Lax (Secure flag waits for
         HTTPS in Phase 6)
-- [ ] Login brute-force protection (minimum: per-account attempt
-      counter + delay; store attempts + last_attempt_at)
+- [ ] Login brute-force protection — LAYERED (best practice = defense in depth):
+      Design decision 2026-07-23: separate login_attempts table, one row per
+      FAILED attempt (identifier, ip, attempted_at) — rows, not counter
+      columns, so the same table answers both "attempts for this account"
+      and "attempts for this IP", and a non-existent email still records
+      (no user row needed).
+  - [ ] Layer 1 (now): per-ACCOUNT exponential backoff (delay grows with
+        recent failure count; NOT permanent lockout — permanent lockout
+        lets an attacker DoS a victim's account)
+  - [ ] Layer 2 (later): per-IP rate limit (credential stuffing / spraying)
+  - [ ] Layer 3 (later): CAPTCHA after threshold
+  - [ ] Layer 4 (later): 2FA / MFA (separate feature, not brute-force per se)
+  - [ ] Constant response message ("wrong user or password" — never reveal
+        which) + constant timing (run password_verify on a dummy hash even
+        when the user does not exist, to kill timing-based enumeration)
 - [ ] Authentication must honor is_active flag (column exists in schema,
       is ignored in code); update last_login on successful login
 - [ ] AJAX completion endpoint: 403 CSRF failure returns plain text,
@@ -53,7 +66,7 @@ Broken flows:
       it → guest gets bounced to /login/login and never sees the page.
       Decide: add to allowedPages, or auto-login after register, or
       redirect to login with a flash message
-- [ ] (!) Schema vs validation length mismatch:
+- [+] (!) Schema vs validation length mismatch:
       tasks.task_title VARCHAR(50) but TaskValidation allows 100;
       task_description VARCHAR(255) but validation allows 1000.
       In strict mode a 51-char title = SQL error = 500.
@@ -111,16 +124,31 @@ Small fixes:
       (interface segregation); Response object instead of
       header/echo/exit inside controllers
 
-## Phase 4 — FORGOT PASSWORD (first full feature end-to-end)
+## Phase 4 — EMAIL FLOWS (first full features end-to-end; share the mailer)
 
-- [ ] password_resets table: user_id, token HASH (never plain),
-      expires_at, used_at
-- [ ] Request form: always answer "if this email exists, we sent a link"
-      (do not reveal which emails are registered)
-- [ ] Single-use, time-limited token; invalidate on use and on password
-      change
-- [ ] Reset form + validation reusing RegisterValidation password rules
-- [ ] Email sending (dev: mailpit container / log; prod: SMTP)
+Build the email-sending infrastructure ONCE here, then two features use it:
+registration verification and forgot-password. Same mailer, same token
+pattern (random, single-use, time-limited, only the HASH stored in DB).
+
+- [ ] Email sending infrastructure (dev: mailpit container / log;
+      prod: SMTP). Build first — both features below depend on it
+- [ ] (!) Registration email verification (new — was missing from roadmap):
+  - [ ] email_verifications table: user_id, token HASH, expires_at, used_at
+  - [ ] On register: create user as UNVERIFIED (is_active=0 or an
+        email_verified_at NULL column), send link, do NOT log them in yet
+  - [ ] Verify endpoint: valid+unexpired+unused token → mark verified,
+        invalidate token; then honor is_active at login (ties to Phase 1)
+  - [ ] Decide: block login until verified, or allow with a nag banner
+  - [ ] Resend-verification flow (with its own rate limit — reuses the
+        brute-force / rate-limit thinking from Phase 1)
+- [ ] Forgot password:
+  - [ ] password_resets table: user_id, token HASH (never plain),
+        expires_at, used_at
+  - [ ] Request form: always answer "if this email exists, we sent a link"
+        (do not reveal which emails are registered)
+  - [ ] Single-use, time-limited token; invalidate on use and on password
+        change
+  - [ ] Reset form + validation reusing RegisterValidation password rules
 
 ## Phase 5 — QUALITY TOOLING (start EARLY, parallel-friendly)
 
