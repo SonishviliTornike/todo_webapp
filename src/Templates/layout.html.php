@@ -31,7 +31,7 @@
 <nav>
     <ul>
         <li><a href="/">Home Page</a></li>
-        <li><a href="/tasks/taskForm">Add Task</a></li>
+        <li><a href="/tasks/taskform">Add Task</a></li>
         <li><a href="/tasks/list">View Task List</a></li>
         <?php if ($isLoggedIn === false): ?>
             <li><a href="/login/login">Log in</a></li>
