@@ -12,8 +12,6 @@ class Tasks {
 
     
     public function list(): array {
-        $pageTitle = 'Tasks';
-
         $userId = $this->authentication->getUserId();
 
         $tasks = $this->tasksTable->findAllTasks($userId);
@@ -21,7 +19,7 @@ class Tasks {
         $totalTasks = $this->tasksTable->totalTasks($userId);
 
         return [
-            'pageTitle' => $pageTitle, 
+            'pageTitle' => 'Tasks', 
             'template' => 'view_tasks.html.php',
             'variables' => [
                 'tasks' => $tasks,
@@ -54,7 +52,6 @@ class Tasks {
     }
 
     public function insertEditSubmit(): array { 
-        $pageTitle = 'Insert task';
         if (isset($_POST['task'])) {
             
             $validation = new TaskValidation($_POST['task']);
@@ -62,7 +59,7 @@ class Tasks {
             $state  = $validation->validate();
             if($state === false) {
                 $errors = $validation->getErrors();
-                return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
+                return ['pageTitle' => 'Add task', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => $errors]];
             }
             
             $userId = $this->authentication->getUserId();
@@ -77,7 +74,7 @@ class Tasks {
                 $result = $this->tasksTable->updateTask($values);
                 if ($result === UpdateResult::NotFound) {
                     http_response_code(404);
-                    return ['pageTitle' => 'Not found', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => ['taskError' => ['Task not found']]]];
+                    return ['pageTitle' => 'Not found', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $_POST['task'], 'errors' => ['_form' => ['Task not found']]]];
                 }
 
                 header('Location: /tasks/list');
@@ -86,7 +83,7 @@ class Tasks {
                 
 
         }
-        return ['pageTitle' => $pageTitle, 'template' => 'insertEdit.html.php', 'variables' => ['']];
+        return ['pageTitle' => 'Add task', 'template' => 'insertEdit.html.php', 'variables' => ['']];
 
     }
 
@@ -95,8 +92,8 @@ class Tasks {
             $errors = [];
             
             if($taskId <= 0) {
-                $errors['Erorr'][] = 'Error: Invalid primary key provided.';
-                return ['pageTitle' => 'Error', 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
+                $errors['_form'][] = 'Invalid primary key provided.';
+                return ['pageTitle' => 'Add task', 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
 
             }
             $userId = $this->authentication->getUserId();
@@ -106,11 +103,11 @@ class Tasks {
                 $tasks = $this->tasksTable->findAllTasks($userId);
                 $totalTasks = $this->tasksTable->totalTasks($userId);
                 http_response_code(404);
-                return ['pageTitle' => 'Not found', 'template' => 'view_tasks.html.php', 'variables' => ['tasks' => $tasks, 'totalTasks'=> $totalTasks, 'errors' => ['taskError' => ['Task not found']]]];
+                return ['pageTitle' => 'Not found', 'template' => 'view_tasks.html.php', 'variables' => ['tasks' => $tasks, 'totalTasks'=> $totalTasks, 'errors' => ['_form' => ['Task not found']]]];
                 } 
             return ['pageTitle' => 'Edit task', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];            
         }  
-        return ['pageTitle' => 'Insert Task', 'template' => 'insertEdit.html.php', 'variables' => ['']];
+        return ['pageTitle' => 'Add task', 'template' => 'insertEdit.html.php', 'variables' => ['']];
     }
     
 
@@ -118,7 +115,7 @@ class Tasks {
         $taskId = $_POST['id'] ?? null;
         $userId = $this->authentication->getUserId();
         if ($taskId === null || $taskId <= 0) {
-            $errors['Error'][] = 'Error: Invalid task';
+            $errors['_form'][] = 'Invalid task';
             
             $page = $this->list();
             
@@ -126,7 +123,7 @@ class Tasks {
 
             http_response_code(400);
 
-            return ['template' => 'view_tasks.html.php', 'pageTitle' => 'Error', 'variables' => $page['variables']];
+            return $page;
         }
         $taskId = (int)$taskId;
 

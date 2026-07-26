@@ -28,7 +28,7 @@ class Users {
         if (!empty($rawData)) {
             if(!$this->registerValidation->processUserRegister($rawData)) {
                 $errors = $this->registerValidation->getErrors();
-                return ['pageTitle' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => $errors, 'rawData' => $rawData]];
+                return ['pageTitle' => 'Register an account', 'template' => 'register.html.php', 'variables' => ['errors' => $errors, 'rawData' => $rawData]];
             }
             
             $cleanData = $this->registerValidation->getData();
@@ -39,7 +39,7 @@ class Users {
             exit();
 
         } else {
-            return ['pageTitle' => 'Error', 'template' => 'register.html.php', 'variables' => ['errors' => 'Error occured invalid input', 'rawData' => $rawData]];
+            return ['pageTitle' => 'Register an account', 'template' => 'register.html.php', 'variables' => ['errors' => ['_form' => ['Invalid input']], 'rawData' => $rawData]];
         }
 
     }
