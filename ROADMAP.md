@@ -84,18 +84,17 @@ Small fixes:
 - [+] Inconsistent error shape: [['Invalid credentials']] vs getErrors()
       structure vs Users errors-as-string ('Error occured invalid input').
       One shape everywhere: ['field' => ['message', ...]]
-- [ ] Register form repopulation reads wrong keys (userName/fullName
+- [+] Register form repopulation reads wrong keys (userName/fullName
       vs user_name/full_name)
-- [ ] "Password confrimation" label typo
-- [ ] Dead link: hero "Start your list" → /users/registrationform (renamed)
-- [ ] Dead link: "Forgot password?" → /login/forgot (404s; hide until Phase 4)
+- [+] "Password confrimation" label typo
+- [+] Dead link: hero "Start your list" → /users/registrationform (renamed)
 - [ ] app.js: checkbox toggles class BEFORE server confirms — if request
       fails, UI shows wrong state. Check res.ok, revert the toggle on
       failure
-- [ ] Global catch (\Throwable) safety net in EntryPoint — TypeError,
+- [+] Global catch (\Throwable) safety net in EntryPoint — TypeError,
       UnhandledMatchError, InvalidArgumentException are NOT caught by
       current PDOException/RuntimeException catches
-- [ ] LoginValidation: unused `use DatabaseTable` import, empty
+- [+] LoginValidation: unused `use DatabaseTable` import, empty
       constructor — remove
 
 ## Phase 3 — ARCHITECTURE CLEANUP

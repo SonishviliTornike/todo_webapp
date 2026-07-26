@@ -37,7 +37,9 @@ class EntryPoint {
         * will throw a RuntimeException to prevent the application from hanging 
         * or returning an empty, incomplete response.
     */
-    public function run(string $uri, string $method) {
+    public function run(string $uri, string $method): void {
+        $isLoggedIn = false;
+        $csrfToken = '';
         try {
             $csrfToken = $this->csrf->getToken();
             if ($uri == '') {
@@ -88,17 +90,16 @@ class EntryPoint {
 
 
         } catch (\PDOException $e) {
-            error_log('DatabaseError:' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine());
+            error_log(get_class($e) . ': ' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine() . ' from: ' . $e->getTraceAsString());
             http_response_code(503);
             $pageTitle = 'Error';
             $output = 'Service is unavailable';
-        }catch (\RuntimeException $e) {
-            error_log('RuntimeError: ' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine());
+        } catch (\Throwable $e) {
+            error_log(get_class($e) .': ' . $e->getMessage()  . ' in ' . $e->getFile() . ':' . $e->getLine() . ' from: ' . $e->getTraceAsString());
             http_response_code(500);
             $pageTitle = 'Error';
             $output = 'Service is unavailable';
         }
-
         include __DIR__ . '/../Templates/layout.html.php';
     }
 }
