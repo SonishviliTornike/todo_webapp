@@ -88,7 +88,7 @@ Small fixes:
       vs user_name/full_name)
 - [+] "Password confrimation" label typo
 - [+] Dead link: hero "Start your list" → /users/registrationform (renamed)
-- [ ] app.js: checkbox toggles class BEFORE server confirms — if request
+- [+] app.js: checkbox toggles class BEFORE server confirms — if request
       fails, UI shows wrong state. Check res.ok, revert the toggle on
       failure
 - [+] Global catch (\Throwable) safety net in EntryPoint — TypeError,
@@ -156,7 +156,7 @@ Priority raised 2026-07-19: eight identifier typos in one session
 the whitelist reject EVERY column. PHPStan level 0 catches all of them
 before commit.
 
-- [ ] PHPStan: phpstan.neon, start level 0-1, raise one level at a time,
+- [+] PHPStan: phpstan.neon, start level 0-1, raise one level at a time,
       fix as you go; composer script "analyse". DatabaseTable first
 - [ ] PHP-CS-Fixer with PSR-12 ruleset; composer script "fix"
 - [ ] PHPUnit: start with validators (pure, no DB — TaskValidation,

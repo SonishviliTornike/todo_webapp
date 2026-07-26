@@ -6,6 +6,10 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit443bea3b68727f042739b96ad952da9f
 {
+    public static $files = array (
+        '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'A' =>
         array (
