@@ -114,22 +114,25 @@ class Tasks {
     }
     
 
-    public function deleteSubmit() {
+    public function deleteSubmit(): array {
         $taskId = $_POST['id'] ?? null;
-
+        $userId = $this->authentication->getUserId();
         if ($taskId === null || $taskId <= 0) {
-                $errors['Erorr'][] = 'Error: Invalid primary key provided.';
-                return ['errors' => $errors, 'template' => 'view_tasks.html.php', 'pageTitle' => 'Error'];
+            $errors['Error'][] = 'Error: Invalid task';
+            
+            $page = $this->list();
+            
+            $page['variables']['errors'] = $errors;
+
+            http_response_code(400);
+
+            return ['template' => 'view_tasks.html.php', 'pageTitle' => 'Error', 'variables' => $page['variables']];
         }
         $taskId = (int)$taskId;
-        $userId = $this->authentication->getUserId();
 
         $this->tasksTable->deleteTask($taskId, $userId);
-        http_response_code(200);
         header('Location: /tasks/list');
         exit();
-
-
         
     }
 

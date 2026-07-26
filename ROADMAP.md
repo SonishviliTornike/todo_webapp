@@ -72,7 +72,7 @@ Broken flows:
       In strict mode a 51-char title = SQL error = 500.
       Pick ONE source of truth and align both sides (migration or
       validation change — document the decision)
-- [ ] Tasks::deleteSubmit error path returns errors at TOP level of the
+- [+] Tasks::deleteSubmit error path returns errors at TOP level of the
       array, but EntryPoint reads $page['variables'] → template gets no
       $tasks/$totalTasks → broken page. Same shape as every other action
 - [ ] Login::loginSubmit reads $rawData['identity'] after failed

@@ -51,3 +51,14 @@
             <?php endforeach; ?>
     </tbody>
 </table>
+<?php if (!empty($errors)): ?>
+    <div class="errors-container">
+        <?php foreach ($errors as $err_key => $err_message_array):?>
+            <?php foreach ($err_message_array as $message):?>
+                <p class="error-text">
+                    <?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?><br>
+                </p>
+            <?php endforeach; ?>
+        <?php endforeach;?>
+    </div>
+<?php endif; ?>
