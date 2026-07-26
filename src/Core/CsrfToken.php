@@ -4,9 +4,6 @@ namespace App\Core;
 
 
 Class CsrfToken {
-    public function __construct() {}
-
-
     public function getToken(): string {
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));

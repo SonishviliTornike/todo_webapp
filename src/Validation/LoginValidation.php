@@ -1,13 +1,11 @@
 <?php 
 
 namespace App\Validation;
-use App\Model\DatabaseTable;
 
 class LoginValidation {
     private $errors = [];
     private $data = [];
-    public function __construct() {
-    }
+    
     public function verify(array $rawData): bool {
         if (!$this->processIdentity($rawData) || !$this->processPassword($rawData)) {
             return false;
