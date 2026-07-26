@@ -75,7 +75,7 @@ Broken flows:
 - [+] Tasks::deleteSubmit error path returns errors at TOP level of the
       array, but EntryPoint reads $page['variables'] → template gets no
       $tasks/$totalTasks → broken page. Same shape as every other action
-- [ ] Login::loginSubmit reads $rawData['identity'] after failed
+- [+] Login::loginSubmit reads $rawData['identity'] after failed
       validation without ?? '' → undefined-key warning on malformed POST
 
 Small fixes:

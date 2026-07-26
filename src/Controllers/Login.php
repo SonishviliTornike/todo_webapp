@@ -16,19 +16,19 @@ class Login {
     }
 
 
-    public function loginSubmit() {
+    public function loginSubmit(): array {
         $rawData = $_POST['login'] ?? [];
 
         if (!$this->loginValidation->verify($rawData)) {
             $errors = $this->loginValidation->getErrors();
-            return ['template' => 'login.html.php', 'pageTitle' => 'Log in', 'variables' => ['errors' => $errors, 'identity' => $rawData['identity']] ];
+            return ['template' => 'login.html.php', 'pageTitle' => 'Log in', 'variables' => ['errors' => $errors, 'identity' => $rawData['identity'] ?? ''] ];
         }
         
         $validData = $this->loginValidation->getData();
         
 
         if (!$this->authentication->login($validData['identity'], $validData['userColumnName'], $validData['password'])) {
-            return ['template' => 'login.html.php', 'pageTitle' => 'Log in', 'variables' => ['identity' => $rawData['identity'], 'errors' => [['Invalid credentials']]]];
+            return ['template' => 'login.html.php', 'pageTitle' => 'Log in', 'variables' => ['identity' => $rawData['identity'] ?? '', 'errors' => [['Invalid credentials']]]];
         }
 
         header('Location: /tasks/index');
@@ -42,5 +42,4 @@ class Login {
         header('location: /login/login');
         exit();
     }
-
 } 
