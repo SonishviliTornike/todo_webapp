@@ -79,9 +79,9 @@ Broken flows:
       validation without ?? '' → undefined-key warning on malformed POST
 
 Small fixes:
-- [ ] http_response_code(200) before Location redirects (insertEditSubmit,
+- [+] http_response_code(200) before Location redirects (insertEditSubmit,
       deleteSubmit) — meaningless; the redirect is 302. Remove
-- [ ] Inconsistent error shape: [['Invalid credentials']] vs getErrors()
+- [+] Inconsistent error shape: [['Invalid credentials']] vs getErrors()
       structure vs Users errors-as-string ('Error occured invalid input').
       One shape everywhere: ['field' => ['message', ...]]
 - [ ] Register form repopulation reads wrong keys (userName/fullName

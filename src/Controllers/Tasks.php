@@ -67,7 +67,6 @@ class Tasks {
             $values['user_id'] = $userId;
             if (!isset($values['id'])) {
                 $this->databaseTable->save($values);
-                http_response_code(200);
                 header('Location: /tasks/list');
                 exit();
             } else {
