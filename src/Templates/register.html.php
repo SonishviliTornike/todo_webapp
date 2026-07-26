@@ -16,8 +16,8 @@
     <label for="password">Enter password</label>
     <input type="password" name="users[password]" id="password">
     
-    <label for="secondPassword">Password confrimation:</label>
-    <input type="password" name="users[secondPassword]" id="secondPassword" >
+    <label for="second_password">Password confirmation:</label>
+    <input type="password" name="users[second_password]" id="second_password" >
 
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8')?>">
 

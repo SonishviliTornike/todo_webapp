@@ -133,7 +133,7 @@ class RegisterValidation {
 
     private function processPassword(array $input) {
         $password = $input['password'] ?? '';
-        $secondPassword = $input['secondPassword'] ?? '';     
+        $secondPassword = $input['second_password'] ?? '';     
     
         if ($password !== $secondPassword) {
             $this->errors['password'][] = 'Passwords do not match';
