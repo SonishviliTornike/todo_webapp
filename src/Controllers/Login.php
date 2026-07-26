@@ -7,7 +7,7 @@ use App\Validation\LoginValidation;
 
 
 class Login {
-    public function __construct(private DatabaseTable $usersTable, private Authentication $authentication, private LoginValidation $loginValidation) {
+    public function __construct(private Authentication $authentication, private LoginValidation $loginValidation) {
         
     }
 
@@ -28,7 +28,7 @@ class Login {
         
 
         if (!$this->authentication->login($validData['identity'], $validData['userColumnName'], $validData['password'])) {
-            return ['template' => 'login.html.php', 'pageTitle' => 'Log in', 'variables' => ['identity' => $rawData['identity'] ?? '', 'errors' => [['Invalid credentials']]]];
+            return ['template' => 'login.html.php', 'pageTitle' => 'Log in', 'variables' => ['identity' => $rawData['identity'] ?? '', 'errors' => ['_form' => ['Invalid credentials']]]];
         }
 
         header('Location: /tasks/index');

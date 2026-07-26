@@ -44,7 +44,7 @@ class TaskWebsite implements \App\Model\Website {
 
         } elseif ($controllerName === 'login') {
             $loginValidation = new LoginValidation();
-            $controller = new Login($this->usersTable, $this->authentication, $loginValidation);
+            $controller = new Login($this->authentication, $loginValidation);
 
         }
 
