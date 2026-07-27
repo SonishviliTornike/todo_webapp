@@ -43,7 +43,7 @@ class TaskValidation {
             return;
         }
         
-        if((int)$id <= 0 || !ctype_digit($id)) {
+        if(!ctype_digit($id) || (int)$id <= 0 ) {
             $this->errors['id'][] = 'Task cant be updated invalid id.';
             return;
         }
