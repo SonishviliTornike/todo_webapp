@@ -113,16 +113,18 @@ class Tasks {
     public function deleteSubmit(): array {
         $taskId = $_POST['id'] ?? null;
         $userId = $this->authentication->getUserId();
-        if ($taskId === null || $taskId <= 0) {
+
+        if (!ctype_digit($taskId) || (int)$taskId <= 0) {
             $errors['_form'][] = 'Invalid task';
             
             $page = $this->list();
             
             $page['variables']['errors'] = $errors;
-
+    
             http_response_code(400);
-
+    
             return $page;
+            
         }
         $taskId = (int)$taskId;
 
