@@ -1,5 +1,7 @@
 <?php 
 
+declare(strict_types=1);
+
 namespace App\Core;
 
 class Authentication {
@@ -40,7 +42,7 @@ class Authentication {
             throw new \RuntimeException('getUserId called without an authenticated session - check route protection');
         }
 
-        return $_SESSION['user_id'];
+        return (int)$_SESSION['user_id'];
     }
 }
 

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controllers;
 use App\Model\DatabaseTable;
 use App\Validation\TaskValidation;
@@ -87,25 +90,28 @@ class Tasks {
     }
 
     public function taskForm($taskId = null): array {    
-        if (isset($taskId)){
-            $errors = [];
-            
-            if($taskId <= 0) {
-                $errors['_form'][] = 'Invalid primary key provided.';
-                return ['pageTitle' => 'Add task', 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
+        if (ctype_digit($taskId ?? '')) {
+            $taskId = (int)$taskId;
+        }
+            if (isset($taskId)){
+                $errors = [];
+                
+                if($taskId <= 0) {
+                    $errors['_form'][] = 'Invalid primary key provided.';
+                    return ['pageTitle' => 'Add task', 'template'=> 'insertEdit.html.php', 'variables' => ['errors' => $errors]];
 
-            }
-            $userId = $this->authentication->getUserId();
+                }
+                $userId = $this->authentication->getUserId();
 
-            $task = $this->tasksTable->findTask($taskId, $userId);
-            if ($task === false) {
-                $tasks = $this->tasksTable->findAllTasks($userId);
-                $totalTasks = $this->tasksTable->totalTasks($userId);
-                http_response_code(404);
-                return ['pageTitle' => 'Not found', 'template' => 'view_tasks.html.php', 'variables' => ['tasks' => $tasks, 'totalTasks'=> $totalTasks, 'errors' => ['_form' => ['Task not found']]]];
-                } 
-            return ['pageTitle' => 'Edit task', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];            
-        }  
+                $task = $this->tasksTable->findTask($taskId, $userId);
+                if ($task === false) {
+                    $tasks = $this->tasksTable->findAllTasks($userId);
+                    $totalTasks = $this->tasksTable->totalTasks($userId);
+                    http_response_code(404);
+                    return ['pageTitle' => 'Not found', 'template' => 'view_tasks.html.php', 'variables' => ['tasks' => $tasks, 'totalTasks'=> $totalTasks, 'errors' => ['_form' => ['Task not found']]]];
+                    } 
+                return ['pageTitle' => 'Edit task', 'template' => 'insertEdit.html.php', 'variables' => ['task' => $task]];            
+            }  
         return ['pageTitle' => 'Add task', 'template' => 'insertEdit.html.php', 'variables' => ['']];
     }
     

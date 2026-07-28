@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 use App\Model\Website;
 use App\Core\CsrfToken;
