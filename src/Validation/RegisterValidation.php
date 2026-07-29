@@ -52,13 +52,13 @@ class RegisterValidation {
             return;
         }
 
-        if(strlen($userName) < 3) {
+        if(mb_strlen($userName) < 3) {
             $this->errors['user_name'][] = 'User name must be min 3 characters long.';
             return;
 
         } 
         
-        if (strlen($userName) > 55) {
+        if (mb_strlen($userName) > 55) {
             $this->errors['user_name'][] = 'User name must be max 55 characters long.';
             return;
         }
@@ -82,7 +82,7 @@ class RegisterValidation {
             return;
         }
         
-        if (strlen($email) > 254){
+        if (mb_strlen($email) > 254){
             $this->errors['email'][] = 'Email can\'t be more than 254 characters long.';
             return;
         }
@@ -120,12 +120,12 @@ class RegisterValidation {
             return;
         }
         
-        if (strlen($fullName) < 3 ) {
+        if (mb_strlen($fullName) < 3 ) {
             $this->errors['full_name'][] = 'Full name can\'t be less than 3 characters long';
             return;
         }
 
-        if(strlen($fullName) > 100) {
+        if(mb_strlen($fullName) > 100) {
             $this->errors['full_name'][] = 'Full name can\'t be more than 100 characters long.';
             return;
         } 
@@ -147,11 +147,11 @@ class RegisterValidation {
             return;
         }
 
-        if(strlen($password) < 11) {
+        if(mb_strlen($password) < 11) {
             $this->errors['password'][] = 'Password must be minimum 11 characters long.';
             return;
         }
-        if (strlen($password) > 150) {
+        if (mb_strlen($password) > 150) {
             $this->errors['password'][] = 'Password must be maximum 150 characters long';
             return;
         }

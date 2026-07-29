@@ -37,12 +37,12 @@ class LoginValidation {
             $this->data['userColumnName'] = 'email';
     
         } else {
-            if (strlen($identity) < 3) {
+            if (mb_strlen($identity) < 3) {
                 $this->errors['identity'][]  = 'Username can\'t be less than 3 characters long';
                 return false;
             }
 
-            if (strlen($identity) > 55) {
+            if (mb_strlen($identity) > 55) {
                 $this->errors['identity'][] = 'Username can\'t be more than 55 characters long';
                 return false;
             }
