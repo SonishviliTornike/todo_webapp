@@ -1,4 +1,8 @@
-
+<?php
+/** @var array $totalTasks */
+/** @var string $csrfToken */
+/** @var array|null $tasks */
+?>
 <br><h3 class="total-tasks"><?= 'Total tasks: '. htmlspecialchars((int)$totalTasks[0], ENT_QUOTES, 'UTF-8') ?></h3><br>
 <table class="tasks-table">
     <thead>

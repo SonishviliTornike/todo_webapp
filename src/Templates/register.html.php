@@ -1,4 +1,9 @@
+<?php 
+/** @var array|null $rawData */
+/** @var array|null $errors */
+/** @var string $csrfToken  */
 
+?>
 <div class="register-container">
     <h2>Register an account</h2>
 </div>

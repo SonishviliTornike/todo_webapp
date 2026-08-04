@@ -1,3 +1,8 @@
+<?php
+/** @var array $task */
+/** @var array $errors */
+/** @var string $csrfToken */
+?>
 <div class="add-edit-container">
     <?php if (empty($task['id'])):?>
         <h2>Add Task</h2>

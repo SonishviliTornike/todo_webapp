@@ -1,10 +1,12 @@
-
+<?php
+/** @var bool $isLoggedIn */
+?>
 <section class="wrap hero">
   <div class="hero__copy">
     <span class="eyebrow">A todo app that gets out of the way</span>
     <h1 class="hero__title">Add it. Do it.<br><span class="struck">Cross it off.</span></h1>
     <p class="hero__sub">Tally keeps every task in one plain list and nothing else. The only thing left to think about is finishing them.</p>
-    <?php if ($isLoggedIn === false): ?>
+    <?php if ($isLoggedIn === false):?>
       <div class="hero__cta">
         <a class="btn btn--primary btn--lg" href="/users/register">Start your list</a>
         <a class="btn btn--ghost btn--lg" href="/login/login">Log in</a>
@@ -13,7 +15,7 @@
     <p class="hero__note">// free to start · no setup · open it and type</p>
   </div>
 
-  <?php if ($isLoggedIn === true): ?>
+  <?php if ($isLoggedIn === true):?>
     <?php if (isset($tasks)):?>
     <div class="demo" aria-label="Example task list">
       <div class="demo__head">
@@ -28,7 +30,7 @@
           <?php endforeach;?>
       </div>
     <?php endif;?>
-  <?php  else: ?>
+  <?php  else:?>
     
     <div class="demo" aria-label="Example task list">
       <div class="demo__head">
@@ -55,7 +57,7 @@
         <span class="task__box" aria-hidden="true"></span>
         Add a task…
       </div>
-    <?php endif; ?>
+    <?php endif;?>
   </div>
   
 </section>
@@ -84,9 +86,9 @@
 <section class="wrap closing">
   <span class="eyebrow">Ready when you are</span>
   <h2>Your first task is signing up.</h2>
-  <?php if ($isLoggedIn === false): ?>
+  <?php if ($isLoggedIn === false):?>
     <a class="btn btn--primary btn--lg" href="/users/register">Start your list</a>
-  <?php else: ?>
+  <?php else:?>
     <a class="btn btn--primary btn--lg" href="/tasks/taskform">Start your list</a>
   <?php endif;?>
 </section>

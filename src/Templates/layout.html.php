@@ -1,3 +1,10 @@
+<?php 
+/** @var bool $isLoggedIn */ 
+/** @var string $csrfToken */
+/** @var string $pageTitle */
+/** @var string $output */
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

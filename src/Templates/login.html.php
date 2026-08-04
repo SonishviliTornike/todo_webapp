@@ -1,4 +1,9 @@
+<?php
+/** @var string $csrfToken */
+/** @var string|null $identity */
+/** @var array|null $errors */
 
+?>
 
 <form action="" method="post">
     <label for="identity">Enter Username or Email:</label>
